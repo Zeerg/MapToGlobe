@@ -68,7 +68,19 @@ export default class MapToGlobe {
         // Update multi-moon system
         this.moonSystem.update();
 
+        // Update cloud lighting based on sun position
+        this.updateCloudLighting();
+
         this.instance.renderer.render(this.instance.scene, this.instance.camera);
+    }
+
+    private updateCloudLighting() {
+        // Get sun direction from the directional light
+        const sunLight = this.instance.light.children[0] as THREE.DirectionalLight;
+        if (sunLight) {
+            const sunDirection = sunLight.position.clone().normalize();
+            this.planet.UpdateSunDirection(sunDirection);
+        }
     }
 
     StopAnimation() {
@@ -289,5 +301,122 @@ export default class MapToGlobe {
     // Clear all moons
     ClearMoonSystem(): void {
         this.moonSystem.clearAllMoons();
+    }
+
+    /**
+     * ADVANCED CLOUD SYSTEM METHODS
+     */
+
+    // Add a new cloud layer
+    AddCloudLayer(name: string, altitude: number = 0.02, rotationSpeed: number = 0.001) {
+        return this.planet.AddCloudLayer(name, altitude, rotationSpeed);
+    }
+
+    // Remove a cloud layer
+    RemoveCloudLayer(name: string): boolean {
+        return this.planet.RemoveCloudLayer(name);
+    }
+
+    // Get a specific cloud layer
+    GetCloudLayer(name: string) {
+        return this.planet.GetCloudLayer(name);
+    }
+
+    // Clear all cloud layers
+    ClearAllCloudLayers(): void {
+        this.planet.ClearAllCloudLayers();
+    }
+
+    // Set cloud layer texture
+    SetCloudLayerTexture(layerName: string, file: File, densityMap?: File): void {
+        this.planet.SetCloudLayerTexture(layerName, file, densityMap);
+    }
+
+    // Cloud layer property setters
+    SetCloudLayerOpacity(layerName: string, opacity: number): void {
+        this.planet.SetCloudLayerOpacity(layerName, opacity);
+    }
+
+    SetCloudLayerDensity(layerName: string, density: number): void {
+        this.planet.SetCloudLayerDensity(layerName, density);
+    }
+
+    SetCloudLayerAtmosphericScattering(layerName: string, intensity: number): void {
+        this.planet.SetCloudLayerAtmosphericScattering(layerName, intensity);
+    }
+
+    SetCloudLayerRimLighting(layerName: string, intensity: number, color?: THREE.Vector3): void {
+        this.planet.SetCloudLayerRimLighting(layerName, intensity, color);
+    }
+
+    SetCloudLayerSpeed(layerName: string, speed: number): void {
+        this.planet.SetCloudLayerSpeed(layerName, speed);
+    }
+
+    // Cloud layer feature toggles
+    EnableCloudLayerAtmosphericScattering(layerName: string, enable: boolean): void {
+        this.planet.EnableCloudLayerAtmosphericScattering(layerName, enable);
+    }
+
+    EnableCloudLayerRimLighting(layerName: string, enable: boolean): void {
+        this.planet.EnableCloudLayerRimLighting(layerName, enable);
+    }
+
+    EnableCloudLayerAltitudeFading(layerName: string, enable: boolean): void {
+        this.planet.EnableCloudLayerAltitudeFading(layerName, enable);
+    }
+
+    // Preset cloud configurations
+    SetupEarthCloudLayers(): void {
+        this.planet.SetupEarthCloudLayers();
+    }
+
+    SetupVenusCloudLayers(): void {
+        this.planet.SetupVenusCloudLayers();
+    }
+
+    SetupJupiterCloudLayers(): void {
+        this.planet.SetupJupiterCloudLayers();
+    }
+
+    // Legacy cloud system methods (enhanced)
+    SetCloudOpacity(opacity: number): void {
+        this.planet.SetCloudOpacity(opacity);
+    }
+
+    SetCloudDensity(density: number): void {
+        this.planet.SetCloudDensity(density);
+    }
+
+    SetCloudAtmosphericScattering(intensity: number): void {
+        this.planet.SetCloudAtmosphericScattering(intensity);
+    }
+
+    SetCloudRimLighting(intensity: number, color?: THREE.Vector3): void {
+        this.planet.SetCloudRimLighting(intensity, color);
+    }
+
+    SetCloudSpeed(speed: number): void {
+        this.planet.SetCloudSpeed(speed);
+    }
+
+    SetCloudDensityMap(file: File): void {
+        this.planet.SetCloudDensityMap(file);
+    }
+
+    // Get cloud system information
+    GetCloudSystemInfo() {
+        return {
+            hasLegacyCloud: !!this.planet.cloudObject,
+            cloudLayers: this.planet.cloudLayers.map(layer => ({
+                name: layer.name,
+                altitude: layer.altitude,
+                rotationSpeed: layer.rotationSpeed,
+                opacity: layer.material.uniforms.cloudOpacity.value,
+                density: layer.material.uniforms.cloudDensity.value,
+                atmosphericScattering: layer.material.uniforms.atmosphericScattering.value,
+                rimLightIntensity: layer.material.uniforms.rimLightIntensity.value
+            }))
+        };
     }
 }

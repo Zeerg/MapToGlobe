@@ -114,6 +114,75 @@
                                     </span>
                                 </label>
                             </div>
+                            
+                            <!-- Cloud Density Map -->
+                            <div v-if="images.clouds">
+                                <input type="file" class="hidden" id="cloudDensitySelect" @change="setCloudDensityMap">
+                                <label for="cloudDensitySelect" class="cursor-pointer py-2 px-4 block text-sm text-gray-200 hover:bg-blue-500/20 hover:text-blue-300 rounded transition-colors">
+                                    <span class="flex items-center">
+                                        <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                            <path fill-rule="evenodd" d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z" clip-rule="evenodd" />
+                                        </svg>
+                                        Density Map
+                                    </span>
+                                </label>
+                            </div>
+
+                            <!-- Advanced Cloud Transparency Controls -->
+                            <div v-if="images.clouds" class="mt-4 space-y-3 border-t border-gray-700 pt-3">
+                                <h6 class="text-gray-400 px-2 text-xs font-medium">Cloud Transparency</h6>
+                                
+                                <div>
+                                    <label class="block text-xs text-gray-400 mb-2 px-2">Opacity: {{ menu.clouds.opacity.toFixed(2) }}</label>
+                                    <div class="px-2">
+                                        <vue-slider v-model="menu.clouds.opacity" :min="0" :max="1" :interval="0.01" :tooltip="'none'" @change="setCloudOpacity"></vue-slider>
+                                    </div>
+                                </div>
+                                
+                                <div>
+                                    <label class="block text-xs text-gray-400 mb-2 px-2">Density: {{ menu.clouds.density.toFixed(2) }}</label>
+                                    <div class="px-2">
+                                        <vue-slider v-model="menu.clouds.density" :min="0" :max="2" :interval="0.01" :tooltip="'none'" @change="setCloudDensity"></vue-slider>
+                                    </div>
+                                </div>
+                                
+                                <div>
+                                    <label class="block text-xs text-gray-400 mb-2 px-2">Atmospheric Scattering: {{ menu.clouds.scattering.toFixed(2) }}</label>
+                                    <div class="px-2">
+                                        <vue-slider v-model="menu.clouds.scattering" :min="0" :max="1" :interval="0.01" :tooltip="'none'" @change="setCloudScattering"></vue-slider>
+                                    </div>
+                                </div>
+                                
+                                <div>
+                                    <label class="block text-xs text-gray-400 mb-2 px-2">Rim Lighting: {{ menu.clouds.rimLight.toFixed(2) }}</label>
+                                    <div class="px-2">
+                                        <vue-slider v-model="menu.clouds.rimLight" :min="0" :max="2" :interval="0.01" :tooltip="'none'" @change="setCloudRimLight"></vue-slider>
+                                    </div>
+                                </div>
+                                
+                                <div>
+                                    <label class="block text-xs text-gray-400 mb-2 px-2">Cloud Speed: {{ menu.clouds.speed.toFixed(1) }}</label>
+                                    <div class="px-2">
+                                        <vue-slider v-model="menu.clouds.speed" :min="0" :max="5" :interval="0.1" :tooltip="'none'" @change="setCloudSpeed"></vue-slider>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Cloud Presets -->
+                            <div v-if="images.clouds" class="mt-4 border-t border-gray-700 pt-3">
+                                <h6 class="text-gray-400 px-2 py-1 text-xs font-medium">Cloud Presets</h6>
+                                <div class="grid grid-cols-1 gap-1">
+                                    <button type="button" class="cursor-pointer text-left w-full py-2 px-4 text-sm text-gray-200 hover:bg-blue-500/20 hover:text-blue-300 rounded transition-colors" @click="setupEarthClouds">
+                                        🌍 Earth Atmosphere
+                                    </button>
+                                    <button type="button" class="cursor-pointer text-left w-full py-2 px-4 text-sm text-gray-200 hover:bg-amber-500/20 hover:text-amber-300 rounded transition-colors" @click="setupVenusClouds">
+                                        🪐 Venus Clouds
+                                    </button>
+                                    <button type="button" class="cursor-pointer text-left w-full py-2 px-4 text-sm text-gray-200 hover:bg-orange-500/20 hover:text-orange-300 rounded transition-colors" @click="setupJupiterClouds">
+                                        🌌 Jupiter Bands
+                                    </button>
+                                </div>
+                            </div>
                         </div>
 
                         <div class="border-t border-gray-800 p-2">
@@ -609,6 +678,13 @@ export default defineComponent({
                 surface: false,
                 clouds: false
             },
+            clouds: {
+                opacity: 0.8,
+                density: 1.0,
+                scattering: 0.3,
+                rimLight: 0.5,
+                speed: 1.0
+            },
             atmosphere: {
                 enabled: false
             },
@@ -695,6 +771,62 @@ export default defineComponent({
                 this.maptoglobe.planet.SetCloudsImage(files[0]);
                 this.images.clouds = true;
             }
+        },
+        setCloudDensityMap(event: Event) {
+            const files = (event.target as HTMLInputElement).files;
+            if (files !== null) {
+                this.maptoglobe.SetCloudDensityMap(files[0]);
+            }
+        },
+        setCloudOpacity(value: number) {
+            this.maptoglobe.SetCloudOpacity(value);
+            this.saveCurrentState();
+        },
+        setCloudDensity(value: number) {
+            this.maptoglobe.SetCloudDensity(value);
+            this.saveCurrentState();
+        },
+        setCloudScattering(value: number) {
+            this.maptoglobe.SetCloudAtmosphericScattering(value);
+            this.saveCurrentState();
+        },
+        setCloudRimLight(value: number) {
+            this.maptoglobe.SetCloudRimLighting(value);
+            this.saveCurrentState();
+        },
+        setCloudSpeed(value: number) {
+            this.maptoglobe.SetCloudSpeed(value);
+            this.saveCurrentState();
+        },
+        setupEarthClouds() {
+            this.maptoglobe.SetupEarthCloudLayers();
+            // Update UI values to match Earth preset
+            this.clouds.opacity = 0.8;
+            this.clouds.density = 1.0;
+            this.clouds.scattering = 0.4;
+            this.clouds.rimLight = 0.5;
+            this.clouds.speed = 1.0;
+            this.saveCurrentState();
+        },
+        setupVenusClouds() {
+            this.maptoglobe.SetupVenusCloudLayers();
+            // Update UI values to match Venus preset
+            this.clouds.opacity = 0.95;
+            this.clouds.density = 1.5;
+            this.clouds.scattering = 0.8;
+            this.clouds.rimLight = 1.2;
+            this.clouds.speed = 2.0;
+            this.saveCurrentState();
+        },
+        setupJupiterClouds() {
+            this.maptoglobe.SetupJupiterCloudLayers();
+            // Update UI values to match Jupiter preset
+            this.clouds.opacity = 0.7;
+            this.clouds.density = 0.9;
+            this.clouds.scattering = 0.7;
+            this.clouds.rimLight = 0.9;
+            this.clouds.speed = 1.5;
+            this.saveCurrentState();
         },
         planetShininess(value: number) {
             ((this.maptoglobe.planet.object.material as THREE.Material[])[0] as THREE.MeshPhongMaterial).shininess = value;
@@ -943,6 +1075,13 @@ export default defineComponent({
                     images: {
                         surface: this.images.surface,
                         clouds: this.images.clouds
+                    },
+                    clouds: {
+                        opacity: this.clouds.opacity,
+                        density: this.clouds.density,
+                        scattering: this.clouds.scattering,
+                        rimLight: this.clouds.rimLight,
+                        speed: this.clouds.speed
                     }
                 };
                 
@@ -1008,6 +1147,22 @@ export default defineComponent({
                 this.images.surface = stored.images.surface;
                 this.images.clouds = stored.images.clouds;
                 
+                // Restore cloud settings if they exist
+                if (stored.clouds) {
+                    this.clouds.opacity = stored.clouds.opacity;
+                    this.clouds.density = stored.clouds.density;
+                    this.clouds.scattering = stored.clouds.scattering;
+                    this.clouds.rimLight = stored.clouds.rimLight;
+                    this.clouds.speed = stored.clouds.speed;
+                    
+                    // Apply cloud settings to the 3D scene
+                    this.maptoglobe.SetCloudOpacity(stored.clouds.opacity);
+                    this.maptoglobe.SetCloudDensity(stored.clouds.density);
+                    this.maptoglobe.SetCloudAtmosphericScattering(stored.clouds.scattering);
+                    this.maptoglobe.SetCloudRimLighting(stored.clouds.rimLight);
+                    this.maptoglobe.SetCloudSpeed(stored.clouds.speed);
+                }
+                
                 this.updateMoonSystemInfo();
             } catch (error) {
                 console.error('Error loading stored data:', error);
@@ -1041,6 +1196,13 @@ export default defineComponent({
                 this.images.surface = false;
                 this.images.clouds = false;
                 this.atmosphere.enabled = false;
+                
+                // Reset cloud settings to defaults
+                this.clouds.opacity = 0.8;
+                this.clouds.density = 1.0;
+                this.clouds.scattering = 0.3;
+                this.clouds.rimLight = 0.5;
+                this.clouds.speed = 1.0;
                 
                 // Apply default values to the 3D scene
                 ((this.maptoglobe.planet.object.material as THREE.Material[])[0] as THREE.MeshPhongMaterial).shininess = 60;

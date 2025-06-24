@@ -167,29 +167,111 @@
                     </div>
                 </div>
 
-                <!-- Rings Controls -->
+                <!-- Enhanced Rings System -->
                 <div class="mb-8">
-                    <h3 class="text-2xl font-semibold text-white mb-4">🪐 Rings</h3>
+                    <h3 class="text-2xl font-semibold text-white mb-4">🪐 Advanced Ring System</h3>
                     <div class="bg-gray-800 border border-gray-700 rounded-lg p-6">
-                        <p class="text-gray-300 mb-4">Create Saturn-like rings around your planet with custom textures and transparency.</p>
+                        <p class="text-gray-300 mb-6">Create realistic planetary ring systems with multiple presets and full customization control. From Saturn's majestic rings to Jupiter's subtle dust bands.</p>
+                        
+                        <!-- Ring Presets -->
+                        <div class="mb-6">
+                            <h4 class="text-lg font-semibold text-amber-400 mb-3">🎯 Ring System Presets</h4>
+                            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
+                                <div class="bg-gray-700/30 rounded-lg p-3 text-center">
+                                    <div class="text-yellow-400 font-medium mb-1">Saturn</div>
+                                    <div class="text-xs text-gray-300">Large golden rings</div>
+                                    <div class="text-xs text-gray-400">Classic appearance</div>
+                                </div>
+                                <div class="bg-gray-700/30 rounded-lg p-3 text-center">
+                                    <div class="text-blue-400 font-medium mb-1">Uranus</div>
+                                    <div class="text-xs text-gray-300">Narrow blue rings</div>
+                                    <div class="text-xs text-gray-400">Subtle & vertical</div>
+                                </div>
+                                <div class="bg-gray-700/30 rounded-lg p-3 text-center">
+                                    <div class="text-orange-400 font-medium mb-1">Jupiter</div>
+                                    <div class="text-xs text-gray-300">Thin brown rings</div>
+                                    <div class="text-xs text-gray-400">Dust-like bands</div>
+                                </div>
+                                <div class="bg-gray-700/30 rounded-lg p-3 text-center">
+                                    <div class="text-purple-400 font-medium mb-1">Custom</div>
+                                    <div class="text-xs text-gray-300">Full control</div>
+                                    <div class="text-xs text-gray-400">Your design</div>
+                                </div>
+                            </div>
+                        </div>
+
                         <div class="grid md:grid-cols-2 gap-6">
+                            <!-- Size & Scale Controls -->
                             <div>
-                                <h4 class="text-lg font-semibold text-blue-300 mb-3">Textures</h4>
+                                <h4 class="text-lg font-semibold text-blue-300 mb-3">📏 Size & Scale (Custom Mode)</h4>
                                 <ul class="space-y-2 text-gray-300">
-                                    <li>• <strong>Surface:</strong> Main ring appearance</li>
-                                    <li>• <strong>Transparency:</strong> Alpha channel map</li>
-                                    <li>• Rectangular format required</li>
-                                    <li>• Vertical bands represent ring structure</li>
+                                    <li>• <strong>Inner Radius:</strong> 0.5 - 8.0 units</li>
+                                    <li>• <strong>Outer Radius:</strong> 1.0 - 12.0 units</li>
+                                    <li>• <strong>Thickness:</strong> 0.2 - 8.0 units</li>
+                                    <li>• <strong>Real-time Preview:</strong> Instant geometry updates</li>
+                                    <li>• <strong>Auto-calculations:</strong> Thickness syncs with radii</li>
                                 </ul>
                             </div>
+
+                            <!-- Appearance Controls -->
                             <div>
-                                <h4 class="text-lg font-semibold text-blue-300 mb-3">Properties</h4>
+                                <h4 class="text-lg font-semibold text-blue-300 mb-3">🎨 Appearance & Animation</h4>
                                 <ul class="space-y-2 text-gray-300">
-                                    <li>• Toggle ring visibility</li>
-                                    <li>• Independent rotation controls</li>
-                                    <li>• Customizable transparency patterns</li>
-                                    <li>• Realistic lighting effects</li>
+                                    <li>• <strong>Opacity:</strong> 0.1 - 1.0 transparency control</li>
+                                    <li>• <strong>Rotation Speed:</strong> 0.0 - 3.0x animation</li>
+                                    <li>• <strong>Preset Colors:</strong> Realistic tinting per type</li>
+                                    <li>• <strong>Dynamic Lighting:</strong> Responds to scene lighting</li>
+                                    <li>• <strong>Auto-Enable:</strong> Rings appear when preset selected</li>
                                 </ul>
+                            </div>
+
+                            <!-- Texture System -->
+                            <div>
+                                <h4 class="text-lg font-semibold text-green-400 mb-3">🖼️ Texture System</h4>
+                                <ul class="space-y-2 text-gray-300">
+                                    <li>• <strong>Surface Texture:</strong> Main ring appearance</li>
+                                    <li>• <strong>Transparency Map:</strong> Alpha channel for gaps</li>
+                                    <li>• <strong>Format:</strong> Rectangular images (any ratio)</li>
+                                    <li>• <strong>Orientation:</strong> Vertical bands = ring structure</li>
+                                    <li>• <strong>Mapping:</strong> Auto UV-mapping from inner to outer</li>
+                                </ul>
+                            </div>
+
+                            <!-- Advanced Features -->
+                            <div>
+                                <h4 class="text-lg font-semibold text-purple-400 mb-3">⚡ Advanced Features</h4>
+                                <ul class="space-y-2 text-gray-300">
+                                    <li>• <strong>Memory Efficient:</strong> Smart resource management</li>
+                                    <li>• <strong>Smooth Updates:</strong> Debounced slider interactions</li>
+                                    <li>• <strong>Error Recovery:</strong> Graceful handling of failures</li>
+                                    <li>• <strong>Persistent State:</strong> Settings saved automatically</li>
+                                    <li>• <strong>Transform Controls:</strong> Independent ring rotation</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <!-- Usage Instructions -->
+                        <div class="mt-6 bg-blue-900/20 border border-blue-700 rounded-lg p-4">
+                            <h5 class="text-blue-300 font-semibold mb-3">🎮 How to Use</h5>
+                            <div class="grid md:grid-cols-2 gap-4">
+                                <div>
+                                    <h6 class="text-yellow-300 font-medium mb-2">Quick Start</h6>
+                                    <ol class="text-sm text-gray-300 space-y-1 list-decimal list-inside">
+                                        <li>Click any preset button (Saturn recommended)</li>
+                                        <li>Rings auto-appear with realistic settings</li>
+                                        <li>Upload textures for custom appearance</li>
+                                        <li>Switch to Custom for full control</li>
+                                    </ol>
+                                </div>
+                                <div>
+                                    <h6 class="text-yellow-300 font-medium mb-2">Advanced Customization</h6>
+                                    <ol class="text-sm text-gray-300 space-y-1 list-decimal list-inside">
+                                        <li>Select "Custom" preset</li>
+                                        <li>Adjust size sliders in real-time</li>
+                                        <li>Fine-tune opacity and rotation</li>
+                                        <li>Add surface and transparency textures</li>
+                                    </ol>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -283,7 +365,7 @@
                                     <li>• <strong>Complete Moon Systems:</strong> All moons with individual properties</li>
                                     <li>• <strong>Planet Settings:</strong> Shininess, texture states, controls</li>
                                     <li>• <strong>Lighting Configuration:</strong> Sun and ambient intensity</li>
-                                    <li>• <strong>Ring Visibility:</strong> Ring system state</li>
+                                    <li>• <strong>Advanced Ring System:</strong> Type, size, opacity, rotation, and visibility</li>
                                     <li>• <strong>Legacy Moon:</strong> Original moon system compatibility</li>
                                     <li>• <strong>Atmosphere Settings:</strong> All environmental properties</li>
                                 </ul>

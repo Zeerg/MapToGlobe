@@ -317,33 +317,101 @@
                                 </div>
                             </div>
 
-                            <div class="space-y-3">
+                            <div v-if="ringsVisible" class="space-y-4">
+                                <!-- Ring System Type Presets -->
                                 <div>
-                                    <input type="file" class="hidden" id="ringsSurfaceSelect" @change="setRingsImage" :disabled="!ringsVisible">
-                                    <label for="ringsSurfaceSelect" class="cursor-pointer py-2 px-4 block text-sm text-gray-200 hover:bg-amber-500/20 hover:text-amber-300 rounded transition-colors">
-                                        <span class="flex items-center">
-                                            <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
-                                                <path fill-rule="evenodd" d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z" clip-rule="evenodd" />
-                                            </svg>
-                                            Surface Texture
-                                        </span>
-                                    </label>
-                                </div>
-                                <div>
-                                    <input type="file" class="hidden" id="ringsTransparencySelect" @change="setRingsTransparency" :disabled="!ringsVisible">
-                                    <label for="ringsTransparencySelect" class="cursor-pointer py-2 px-4 block text-sm text-gray-200 hover:bg-amber-500/20 hover:text-amber-300 rounded transition-colors">
-                                        <span class="flex items-center">
-                                            <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
-                                                <path d="M5.5 16a3.5 3.5 0 01-.369-6.98 4 4 0 117.753-1.977A4.5 4.5 0 1113.5 16h-8z" />
-                                            </svg>
-                                            Transparency Map
-                                        </span>
-                                    </label>
+                                    <h4 class="text-gray-400 text-xs font-medium mb-2 uppercase tracking-wider">Ring System Type</h4>
+                                    <div class="grid grid-cols-2 gap-2">
+                                        <button @click="setRingSystemType('saturn')" 
+                                                class="px-3 py-2 text-xs text-gray-200 border border-gray-700 rounded hover:bg-amber-500/20 hover:border-amber-500/50 transition-colors"
+                                                :class="{ 'bg-amber-500/30 border-amber-500': menu.rings.systemType === 'saturn' }">
+                                            Saturn
+                                        </button>
+                                        <button @click="setRingSystemType('uranus')" 
+                                                class="px-3 py-2 text-xs text-gray-200 border border-gray-700 rounded hover:bg-amber-500/20 hover:border-amber-500/50 transition-colors"
+                                                :class="{ 'bg-amber-500/30 border-amber-500': menu.rings.systemType === 'uranus' }">
+                                            Uranus
+                                        </button>
+                                        <button @click="setRingSystemType('jupiter')" 
+                                                class="px-3 py-2 text-xs text-gray-200 border border-gray-700 rounded hover:bg-amber-500/20 hover:border-amber-500/50 transition-colors"
+                                                :class="{ 'bg-amber-500/30 border-amber-500': menu.rings.systemType === 'jupiter' }">
+                                            Jupiter
+                                        </button>
+                                        <button @click="setRingSystemType('custom')" 
+                                                class="px-3 py-2 text-xs text-gray-200 border border-gray-700 rounded hover:bg-amber-500/20 hover:border-amber-500/50 transition-colors"
+                                                :class="{ 'bg-amber-500/30 border-amber-500': menu.rings.systemType === 'custom' }">
+                                            Custom
+                                        </button>
+                                    </div>
                                 </div>
 
-                                <div v-if="ringsVisible">
+                                <!-- Ring Size Controls -->
+                                <div v-if="menu.rings.systemType === 'custom'">
+                                    <h4 class="text-gray-400 text-xs font-medium mb-2 uppercase tracking-wider">Size & Scale</h4>
+                                    <div class="space-y-3">
+                                        <div>
+                                            <label class="block text-xs text-gray-400 mb-1">Inner Radius: {{ menu.rings.innerRadius.toFixed(1) }}</label>
+                                            <vue-slider v-model="menu.rings.innerRadius" :min="0.5" :max="8" :interval="0.1" :tooltip="'none'" @change="updateRingInnerRadius"></vue-slider>
+                                        </div>
+                                        <div>
+                                            <label class="block text-xs text-gray-400 mb-1">Outer Radius: {{ menu.rings.outerRadius.toFixed(1) }}</label>
+                                            <vue-slider v-model="menu.rings.outerRadius" :min="1" :max="12" :interval="0.1" :tooltip="'none'" @change="updateRingOuterRadius"></vue-slider>
+                                        </div>
+                                        <div>
+                                            <label class="block text-xs text-gray-400 mb-1">Thickness: {{ menu.rings.thickness.toFixed(1) }}</label>
+                                            <vue-slider v-model="menu.rings.thickness" :min="0.2" :max="8" :interval="0.1" :tooltip="'none'" @change="updateRingThickness"></vue-slider>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Ring Appearance Controls -->
+                                <div>
+                                    <h4 class="text-gray-400 text-xs font-medium mb-2 uppercase tracking-wider">Appearance</h4>
+                                    <div class="space-y-3">
+                                        <div>
+                                            <label class="block text-xs text-gray-400 mb-1">Opacity: {{ menu.rings.opacity.toFixed(2) }}</label>
+                                            <vue-slider v-model="menu.rings.opacity" :min="0.1" :max="1" :interval="0.01" :tooltip="'none'" @change="updateRingOpacity"></vue-slider>
+                                        </div>
+                                        <div>
+                                            <label class="block text-xs text-gray-400 mb-1">Rotation Speed: {{ menu.rings.rotationSpeed.toFixed(1) }}</label>
+                                            <vue-slider v-model="menu.rings.rotationSpeed" :min="0" :max="3" :interval="0.1" :tooltip="'none'" @change="updateRingRotationSpeed"></vue-slider>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Texture Controls -->
+                                <div>
+                                    <h4 class="text-gray-400 text-xs font-medium mb-2 uppercase tracking-wider">Textures</h4>
+                                    <div class="space-y-2">
+                                        <div>
+                                            <input type="file" class="hidden" id="ringsSurfaceSelect" @change="setRingsImage">
+                                            <label for="ringsSurfaceSelect" class="cursor-pointer py-2 px-4 block text-sm text-gray-200 hover:bg-amber-500/20 hover:text-amber-300 rounded transition-colors">
+                                                <span class="flex items-center">
+                                                    <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                                        <path fill-rule="evenodd" d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z" clip-rule="evenodd" />
+                                                    </svg>
+                                                    Surface Texture
+                                                </span>
+                                            </label>
+                                        </div>
+                                        <div>
+                                            <input type="file" class="hidden" id="ringsTransparencySelect" @change="setRingsTransparency">
+                                            <label for="ringsTransparencySelect" class="cursor-pointer py-2 px-4 block text-sm text-gray-200 hover:bg-amber-500/20 hover:text-amber-300 rounded transition-colors">
+                                                <span class="flex items-center">
+                                                    <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                                        <path d="M5.5 16a3.5 3.5 0 01-.369-6.98 4 4 0 117.753-1.977A4.5 4.5 0 1113.5 16h-8z" />
+                                                    </svg>
+                                                    Transparency Map
+                                                </span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Controls Toggle -->
+                                <div>
                                     <button type="button" class="cursor-pointer text-left w-full py-2 px-4 text-sm text-gray-200 hover:bg-amber-500/20 hover:text-amber-300 rounded transition-colors" value="rings" @click="toggleControls">
-                                        Toggle Controls
+                                        Toggle Ring Controls
                                     </button>
                                 </div>
                             </div>
@@ -603,6 +671,14 @@ export default defineComponent({
                 light: {
                     sunIntensity: 0.4,
                     ambientIntensity: 0.6
+                },
+                rings: {
+                    systemType: 'saturn' as 'saturn' | 'uranus' | 'jupiter' | 'custom',
+                    innerRadius: 3,
+                    outerRadius: 5,
+                    thickness: 2,
+                    opacity: 0.8,
+                    rotationSpeed: 0.5
                 }
             },
             images: {
@@ -632,7 +708,8 @@ export default defineComponent({
             customMoonCounter: 1,
             hasStoredData: false,
             storageInfo: { size: 0, timestamp: undefined as number | undefined },
-            isLoadingStoredData: false
+            isLoadingStoredData: false,
+            ringUpdateTimeout: null as number | null
         }
     },
     created() {
@@ -731,6 +808,95 @@ export default defineComponent({
             const files = (event.target as HTMLInputElement).files;
             if (files !== null)
                 this.maptoglobe.rings.SetTransparencyImage(files[0]);
+        },
+        
+        // NEW RING CONTROL METHODS
+        setRingSystemType(type: 'saturn' | 'uranus' | 'jupiter' | 'custom') {
+            console.log('setRingSystemType called with:', type); // Debug log
+            
+            // Auto-enable rings if they're not visible and user selected a preset
+            if (!this.ringsVisible && type !== 'custom') {
+                console.log('Auto-enabling rings for preset:', type);
+                this.ringsVisible = true;
+                this.maptoglobe.ToggleRings();
+            }
+            
+            this.menu.rings.systemType = type;
+            this.maptoglobe.LoadRingSystemType(type);
+            
+            // Update UI values based on the selected system type
+            if (type !== 'custom') {
+                const config = this.maptoglobe.GetRingConfig();
+                console.log('Retrieved config:', config); // Debug log
+                this.menu.rings.innerRadius = config.innerRadius;
+                this.menu.rings.outerRadius = config.outerRadius;
+                this.menu.rings.thickness = config.outerRadius - config.innerRadius;
+                this.menu.rings.opacity = config.opacity;
+                this.menu.rings.rotationSpeed = config.rotationSpeed;
+            }
+            
+            this.saveCurrentState();
+        },
+        
+        updateRingInnerRadius(value: number) {
+            this.menu.rings.innerRadius = value;
+            this.debounceRingUpdate(() => {
+                this.maptoglobe.SetRingInnerRadius(value);
+                this.updateRingThicknessFromRadii();
+                this.saveCurrentState();
+            });
+        },
+        
+        updateRingOuterRadius(value: number) {
+            this.menu.rings.outerRadius = value;
+            this.debounceRingUpdate(() => {
+                this.maptoglobe.SetRingOuterRadius(value);
+                this.updateRingThicknessFromRadii();
+                this.saveCurrentState();
+            });
+        },
+        
+        updateRingThickness(value: number) {
+            this.menu.rings.thickness = value;
+            this.debounceRingUpdate(() => {
+                this.maptoglobe.SetRingThickness(value);
+                // Update the UI radii values based on the new thickness
+                const config = this.maptoglobe.GetRingConfig();
+                this.menu.rings.innerRadius = config.innerRadius;
+                this.menu.rings.outerRadius = config.outerRadius;
+                this.saveCurrentState();
+            });
+        },
+        
+        updateRingThicknessFromRadii() {
+            // Helper method to update thickness when radii change
+            this.menu.rings.thickness = this.menu.rings.outerRadius - this.menu.rings.innerRadius;
+        },
+        
+        updateRingOpacity(value: number) {
+            this.menu.rings.opacity = value;
+            this.maptoglobe.SetRingOpacity(value);
+            this.saveCurrentState();
+        },
+        
+        updateRingRotationSpeed(value: number) {
+            this.menu.rings.rotationSpeed = value;
+            this.maptoglobe.SetRingRotationSpeed(value);
+            this.saveCurrentState();
+        },
+        
+        debounceRingUpdate(callback: () => void) {
+            if (this.ringUpdateTimeout) {
+                clearTimeout(this.ringUpdateTimeout);
+            }
+            this.ringUpdateTimeout = setTimeout(() => {
+                try {
+                    callback();
+                } catch (error) {
+                    console.error('Error in ring update:', error);
+                }
+                this.ringUpdateTimeout = null;
+            }, 100); // 100ms debounce
         },
         setBgBlack() {
             this.maptoglobe.SetBGBlack();
@@ -931,7 +1097,13 @@ export default defineComponent({
                         shininess: this.menu.planet.shininess
                     },
                     rings: {
-                        visible: this.ringsVisible
+                        visible: this.ringsVisible,
+                        systemType: this.menu.rings.systemType,
+                        innerRadius: this.menu.rings.innerRadius,
+                        outerRadius: this.menu.rings.outerRadius,
+                        thickness: this.menu.rings.thickness,
+                        opacity: this.menu.rings.opacity,
+                        rotationSpeed: this.menu.rings.rotationSpeed
                     },
                     lighting: {
                         sunIntensity: this.menu.light.sunIntensity,
@@ -997,6 +1169,25 @@ export default defineComponent({
                     this.maptoglobe.ToggleRings();
                 }
                 
+                // Restore ring settings (regardless of visibility)
+                if (stored.rings.systemType) {
+                    this.menu.rings.systemType = stored.rings.systemType;
+                    this.menu.rings.innerRadius = stored.rings.innerRadius || 3;
+                    this.menu.rings.outerRadius = stored.rings.outerRadius || 5;
+                    this.menu.rings.thickness = stored.rings.thickness || 2;
+                    this.menu.rings.opacity = stored.rings.opacity || 0.8;
+                    this.menu.rings.rotationSpeed = stored.rings.rotationSpeed || 0.5;
+                    
+                    // Apply the ring configuration
+                    this.maptoglobe.LoadRingSystemType(stored.rings.systemType);
+                    if (stored.rings.systemType === 'custom') {
+                        this.maptoglobe.SetRingInnerRadius(stored.rings.innerRadius);
+                        this.maptoglobe.SetRingOuterRadius(stored.rings.outerRadius);
+                        this.maptoglobe.SetRingOpacity(stored.rings.opacity);
+                        this.maptoglobe.SetRingRotationSpeed(stored.rings.rotationSpeed);
+                    }
+                }
+                
                 // Restore lighting
                 this.menu.light.sunIntensity = stored.lighting.sunIntensity;
                 this.menu.light.ambientIntensity = stored.lighting.ambientIntensity;
@@ -1036,6 +1227,14 @@ export default defineComponent({
                 this.menu.moon.distance = 3;
                 this.menu.light.sunIntensity = 0.4;
                 this.menu.light.ambientIntensity = 0.6;
+                
+                // Reset ring values to defaults
+                this.menu.rings.systemType = 'saturn';
+                this.menu.rings.innerRadius = 3;
+                this.menu.rings.outerRadius = 5;
+                this.menu.rings.thickness = 2;
+                this.menu.rings.opacity = 0.8;
+                this.menu.rings.rotationSpeed = 0.5;
                 
                 // Reset image flags
                 this.images.surface = false;

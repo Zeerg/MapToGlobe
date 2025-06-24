@@ -6,7 +6,7 @@ import Scene from './Scene';
 import Planet from './Planet';
 import Moon from './Moon';
 import MoonSystem, { MoonConfig } from './MoonSystem';
-import Rings from './Rings';
+import Rings, { RingSystemType } from './Rings';
 
 interface CanvasElement extends HTMLCanvasElement {
     captureStream(frameRate?: number): MediaStream;
@@ -68,6 +68,9 @@ export default class MapToGlobe {
         // Update multi-moon system
         this.moonSystem.update();
 
+        // Update ring system rotation
+        this.rings.Update();
+
         this.instance.renderer.render(this.instance.scene, this.instance.camera);
     }
 
@@ -85,6 +88,55 @@ export default class MapToGlobe {
 
     ToggleRings() {
         this.rings.Toggle();
+    }
+
+    /**
+     * RING SYSTEM METHODS
+     */
+
+    // Set ring inner radius
+    SetRingInnerRadius(radius: number) {
+        this.rings.SetInnerRadius(radius);
+    }
+
+    // Set ring outer radius
+    SetRingOuterRadius(radius: number) {
+        this.rings.SetOuterRadius(radius);
+    }
+
+    // Set ring thickness
+    SetRingThickness(thickness: number) {
+        this.rings.SetThickness(thickness);
+    }
+
+    // Set ring opacity
+    SetRingOpacity(opacity: number) {
+        this.rings.SetOpacity(opacity);
+    }
+
+    // Set ring color
+    SetRingColor(color: number) {
+        this.rings.SetColor(color);
+    }
+
+    // Set ring rotation speed
+    SetRingRotationSpeed(speed: number) {
+        this.rings.SetRotationSpeed(speed);
+    }
+
+    // Load predefined ring system
+    LoadRingSystemType(type: RingSystemType) {
+        this.rings.LoadRingSystemType(type);
+    }
+
+    // Get current ring configuration
+    GetRingConfig() {
+        return this.rings.GetConfig();
+    }
+
+    // Get available ring types
+    GetAvailableRingTypes() {
+        return Rings.GetAvailableRingTypes();
     }
 
     SetBGBlack() {

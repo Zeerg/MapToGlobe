@@ -87,7 +87,6 @@ export class StorageManager {
             };
             
             localStorage.setItem(STORAGE_KEY, JSON.stringify(newState));
-            console.log('State saved to localStorage');
             return true;
         } catch (error) {
             console.error('Failed to save state to localStorage:', error);

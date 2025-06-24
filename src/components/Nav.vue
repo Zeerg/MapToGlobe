@@ -674,11 +674,11 @@ export default defineComponent({
                 },
                 rings: {
                     systemType: 'saturn' as 'saturn' | 'uranus' | 'jupiter' | 'custom',
-                    innerRadius: 3,
-                    outerRadius: 5,
-                    thickness: 2,
-                    opacity: 0.8,
-                    rotationSpeed: 0.5
+                    innerRadius: 2.0,  // Ensure within slider bounds (0.5-8)
+                    outerRadius: 4.0,  // Ensure within slider bounds (1-12) 
+                    thickness: 2.0,    // Ensure within slider bounds (0.2-8)
+                    opacity: 0.8,      // Already within bounds (0.1-1)
+                    rotationSpeed: 0.5 // Already within bounds (0-3)
                 }
             },
             images: {
@@ -812,11 +812,8 @@ export default defineComponent({
         
         // NEW RING CONTROL METHODS
         setRingSystemType(type: 'saturn' | 'uranus' | 'jupiter' | 'custom') {
-            console.log('setRingSystemType called with:', type); // Debug log
-            
             // Auto-enable rings if they're not visible and user selected a preset
             if (!this.ringsVisible && type !== 'custom') {
-                console.log('Auto-enabling rings for preset:', type);
                 this.ringsVisible = true;
                 this.maptoglobe.ToggleRings();
             }
@@ -827,7 +824,6 @@ export default defineComponent({
             // Update UI values based on the selected system type
             if (type !== 'custom') {
                 const config = this.maptoglobe.GetRingConfig();
-                console.log('Retrieved config:', config); // Debug log
                 this.menu.rings.innerRadius = config.innerRadius;
                 this.menu.rings.outerRadius = config.outerRadius;
                 this.menu.rings.thickness = config.outerRadius - config.innerRadius;
@@ -1172,11 +1168,12 @@ export default defineComponent({
                 // Restore ring settings (regardless of visibility)
                 if (stored.rings.systemType) {
                     this.menu.rings.systemType = stored.rings.systemType;
-                    this.menu.rings.innerRadius = stored.rings.innerRadius || 3;
-                    this.menu.rings.outerRadius = stored.rings.outerRadius || 5;
-                    this.menu.rings.thickness = stored.rings.thickness || 2;
-                    this.menu.rings.opacity = stored.rings.opacity || 0.8;
-                    this.menu.rings.rotationSpeed = stored.rings.rotationSpeed || 0.5;
+                    // Validate values against slider constraints
+                    this.menu.rings.innerRadius = Math.max(0.5, Math.min(8, stored.rings.innerRadius || 3));
+                    this.menu.rings.outerRadius = Math.max(1, Math.min(12, stored.rings.outerRadius || 5));
+                    this.menu.rings.thickness = Math.max(0.2, Math.min(8, stored.rings.thickness || 2));
+                    this.menu.rings.opacity = Math.max(0.1, Math.min(1, stored.rings.opacity || 0.8));
+                    this.menu.rings.rotationSpeed = Math.max(0, Math.min(3, stored.rings.rotationSpeed || 0.5));
                     
                     // Apply the ring configuration
                     this.maptoglobe.LoadRingSystemType(stored.rings.systemType);
@@ -1230,11 +1227,11 @@ export default defineComponent({
                 
                 // Reset ring values to defaults
                 this.menu.rings.systemType = 'saturn';
-                this.menu.rings.innerRadius = 3;
-                this.menu.rings.outerRadius = 5;
-                this.menu.rings.thickness = 2;
-                this.menu.rings.opacity = 0.8;
-                this.menu.rings.rotationSpeed = 0.5;
+                this.menu.rings.innerRadius = 2.0;   // Within slider bounds (0.5-8)
+                this.menu.rings.outerRadius = 4.0;   // Within slider bounds (1-12)
+                this.menu.rings.thickness = 2.0;     // Within slider bounds (0.2-8)
+                this.menu.rings.opacity = 0.8;       // Within slider bounds (0.1-1)
+                this.menu.rings.rotationSpeed = 0.5; // Within slider bounds (0-3)
                 
                 // Reset image flags
                 this.images.surface = false;

@@ -29,10 +29,10 @@ export default class Rings {
 
         // Default Saturn-like ring configuration
         this.currentConfig = {
-            innerRadius: 3,
-            outerRadius: 5,
+            innerRadius: 2.0,  // Valid range for sliders
+            outerRadius: 4.0,  // Valid range for sliders
             segments: 96,
-            opacity: 1.0,
+            opacity: 0.8,      // Valid range for sliders
             rotationSpeed: 0.5,
             color: 0xffffff
         };
@@ -84,7 +84,7 @@ export default class Rings {
                         }
                         if (this.object.geometry.index) {
                             try {
-                                delete this.object.geometry.index;
+                                this.object.geometry.index = null;
                             } catch (indexError) {
                                 // Ignore index cleanup error
                             }
@@ -128,9 +128,15 @@ export default class Rings {
         const geometry = new THREE.RingGeometry(
             this.currentConfig.innerRadius, 
             this.currentConfig.outerRadius, 
-            this.currentConfig.segments, 
-            1
+            Math.max(8, this.currentConfig.segments), // Ensure minimum segments
+            1, // phi segments (keep at 1)
+            0, // theta start
+            Math.PI * 2 // theta length (full circle)
         );
+        
+        // Force geometry computation to ensure attributes are available
+        geometry.computeBoundingBox();
+        geometry.computeBoundingSphere();
         
         const material = new THREE.MeshLambertMaterial({ 
             transparent: true, 
@@ -146,8 +152,9 @@ export default class Rings {
         // Configure UV mapping for textures
         // https://discourse.threejs.org/t/applying-a-texture-to-a-ringgeometry/9990
         try {
-            const pos = geometry.attributes.position;
-            if (pos && geometry.attributes.uv) {
+            // Check if geometry attributes are now available after computation
+            if (geometry.attributes && geometry.attributes.position && geometry.attributes.uv) {
+                const pos = geometry.attributes.position;
                 const v3 = new THREE.Vector3();
                 const minRadius = this.currentConfig.innerRadius;
                 const maxRadius = this.currentConfig.outerRadius;
@@ -159,6 +166,12 @@ export default class Rings {
                     const u = (distance - minRadius) / (maxRadius - minRadius);
                     geometry.attributes.uv.setXY(i, u, 1);
                 }
+                
+                // Mark UV attribute as needing update
+                geometry.attributes.uv.needsUpdate = true;
+            } else {
+                // If attributes are still not available, skip UV mapping
+                // This is not critical for basic ring functionality
             }
         } catch (error) {
             console.warn('Error configuring ring UV mapping:', error);
@@ -169,14 +182,11 @@ export default class Rings {
     }
 
     Toggle() {
-        console.log('Toggle rings called'); // Debug log
         const existingRing = this.planet.children.find(child => child.name === "rings");
         if (!existingRing) {
             this.planet.add(this.object);
-            console.log('Added rings to planet'); // Debug log
         } else {
             this.planet.remove(existingRing);
-            console.log('Removed rings from planet'); // Debug log
         }
     }
 
@@ -206,7 +216,11 @@ export default class Rings {
      * Set the inner radius of the ring system
      */
     SetInnerRadius(radius: number) {
-        this.currentConfig.innerRadius = Math.max(0.1, radius);
+        this.currentConfig.innerRadius = Math.max(0.5, Math.min(8, radius));
+        // Ensure outer radius is always larger than inner radius
+        if (this.currentConfig.outerRadius <= this.currentConfig.innerRadius) {
+            this.currentConfig.outerRadius = this.currentConfig.innerRadius + 0.5;
+        }
         this.updateGeometry();
     }
 
@@ -214,7 +228,11 @@ export default class Rings {
      * Set the outer radius of the ring system
      */
     SetOuterRadius(radius: number) {
-        this.currentConfig.outerRadius = Math.max(this.currentConfig.innerRadius + 0.1, radius);
+        this.currentConfig.outerRadius = Math.max(1, Math.min(12, radius));
+        // Ensure outer radius is always larger than inner radius
+        if (this.currentConfig.outerRadius <= this.currentConfig.innerRadius) {
+            this.currentConfig.innerRadius = Math.max(0.5, this.currentConfig.outerRadius - 0.5);
+        }
         this.updateGeometry();
     }
 
@@ -292,8 +310,6 @@ export default class Rings {
      * Load a predefined ring system type
      */
     LoadRingSystemType(type: RingSystemType) {
-        console.log('Loading ring system type:', type); // Debug log
-        
         switch (type) {
             case 'saturn':
                 this.currentConfig = {
@@ -328,21 +344,16 @@ export default class Rings {
             case 'custom':
             default:
                 // Keep current configuration for custom type
-                console.log('Custom ring type selected, keeping current config');
                 return;
         }
         
-        console.log('New ring config:', this.currentConfig); // Debug log
-        
         // Store visibility state before creating new mesh
         const wasVisible = this.planet.children.some(child => child.name === "rings");
-        console.log('Ring was visible:', wasVisible); // Debug log
         
         // Remove existing ring if it exists
         const existingRing = this.planet.children.find(child => child.name === "rings");
         if (existingRing) {
             this.planet.remove(existingRing);
-            console.log('Removed existing ring'); // Debug log
         }
         
         // Always recreate the ring mesh with new configuration
@@ -351,7 +362,6 @@ export default class Rings {
         // If ring was visible, make sure the new ring is also visible
         if (wasVisible) {
             this.planet.add(this.object);
-            console.log('Ring visibility restored'); // Debug log
         }
     }
 

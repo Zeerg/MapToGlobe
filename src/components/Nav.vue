@@ -7,35 +7,28 @@
             <div class="text-sm text-blue-300 mt-0 px-6 py-4 text-center bg-gradient-to-r from-gray-900 to-black border-b border-gray-700 w-full">
                 <div class="flex items-center justify-center">
                     <div class="relative">
-                        <svg class="h-12 w-12 mr-3 text-blue-400 rotating-planet" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" fill="none">
+                        <svg class="w-10 h-10 text-blue-400 animate-spin mr-3" style="animation-duration: 20s;" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
                             <!-- Planet body -->
-                            <circle cx="50" cy="50" r="45" fill="url(#planetGradient)" stroke="currentColor" stroke-width="2"/>
-                            
-                            <!-- Continent shapes -->
-                            <g class="continents" fill="rgba(59, 130, 246, 0.6)">
-                                <path d="M25 30 Q35 25 45 30 Q55 35 50 45 Q40 50 30 45 Q20 40 25 30 Z"/>
-                                <path d="M60 20 Q70 18 75 25 Q80 35 75 40 Q65 42 60 35 Q55 25 60 20 Z"/>
-                                <path d="M20 60 Q30 55 40 62 Q45 70 35 75 Q25 80 15 75 Q10 65 20 60 Z"/>
-                                <path d="M65 55 Q75 52 82 58 Q85 68 80 75 Q70 78 65 70 Q60 60 65 55 Z"/>
-                            </g>
-                            
-                            <!-- Atmosphere glow -->
-                            <circle cx="50" cy="50" r="47" fill="none" stroke="rgba(59, 130, 246, 0.3)" stroke-width="1"/>
-                            
-                            <!-- Gradient definitions -->
                             <defs>
-                                <radialGradient id="planetGradient" cx="0.3" cy="0.3" r="0.8">
-                                    <stop offset="0%" style="stop-color:rgba(96, 165, 250, 0.8);stop-opacity:1" />
-                                    <stop offset="70%" style="stop-color:rgba(59, 130, 246, 0.6);stop-opacity:1" />
-                                    <stop offset="100%" style="stop-color:rgba(37, 99, 235, 0.4);stop-opacity:1" />
+                                <radialGradient id="planetGradientHeader" cx="30%" cy="30%">
+                                    <stop offset="0%" style="stop-color:#60A5FA"/>
+                                    <stop offset="70%" style="stop-color:#3B82F6"/>
+                                    <stop offset="100%" style="stop-color:#1E40AF"/>
                                 </radialGradient>
                             </defs>
+                            <circle cx="50" cy="50" r="45" fill="url(#planetGradientHeader)" stroke="#1E40AF" stroke-width="1"/>
+                            
+                            <!-- Continents -->
+                            <path d="M25 35 Q35 25 45 35 Q55 40 65 35 Q75 30 85 40 L85 45 Q75 50 65 45 Q55 50 45 45 Q35 55 25 45 Z" fill="#1E40AF" opacity="0.8"/>
+                            <path d="M15 55 Q25 50 35 60 Q45 65 55 60 L55 70 Q45 75 35 70 Q25 80 15 70 Z" fill="#1E40AF" opacity="0.8"/>
+                            <ellipse cx="70" cy="65" rx="12" ry="8" fill="#1E40AF" opacity="0.8"/>
+                            
+                            <!-- Atmosphere glow -->
+                            <circle cx="50" cy="50" r="47" fill="none" stroke="#60A5FA" stroke-width="1" opacity="0.3"/>
                         </svg>
-                        <div class="absolute -top-1 -right-1 w-3 h-3 bg-blue-400 rounded-full animate-pulse"></div>
                     </div>
                     <div>
                         <h1 class="text-lg font-bold text-white">MapToGlobe</h1>
-                        <p class="text-xs text-gray-300">Transform images into 3D globes</p>
                     </div>
                 </div>
             </div>

@@ -20,7 +20,7 @@ export default class Scene {
 
         // Renderer
         const renderer = new THREE.WebGLRenderer({ canvas: element, alpha: true, preserveDrawingBuffer: true, antialias: true });
-        renderer.setSize((element.parentElement as HTMLDivElement).clientWidth, window.innerHeight); // Need to set height or width minus navbar
+        renderer.setSize((element.parentElement as HTMLDivElement).clientWidth, (element.parentElement as HTMLDivElement).clientHeight); // Use parent container height instead of window height
         renderer.shadowMap.enabled = true;
 
         // Camera
@@ -69,9 +69,9 @@ export default class Scene {
         scene.add(this.pivotObject);
 
         window.addEventListener("resize", () => {
-            this.camera.aspect = (element.parentElement as HTMLDivElement).clientWidth / window.innerHeight;
+            this.camera.aspect = (element.parentElement as HTMLDivElement).clientWidth / (element.parentElement as HTMLDivElement).clientHeight;
             this.camera.updateProjectionMatrix();
-            this.renderer.setSize((element.parentElement as HTMLDivElement).clientWidth, window.innerHeight);
+            this.renderer.setSize((element.parentElement as HTMLDivElement).clientWidth, (element.parentElement as HTMLDivElement).clientHeight);
         });
 
         this.scene = scene;

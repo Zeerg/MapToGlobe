@@ -1,5 +1,5 @@
 <template>
-    <div class="h-screen bg-gradient-to-b from-gray-900 via-black to-gray-900 overflow-y-auto shadow-2xl border-r border-gray-800">
+    <div class="h-screen bg-gradient-to-b from-gray-900 via-black to-gray-900 overflow-y-auto shadow-2xl border-r border-gray-800 relative z-30 nav-container">
         <Loader v-if="loading" class="absolute w-full h-full inset-0" :message="loader.message" />
         
         <!-- Header -->
@@ -315,13 +315,14 @@
                                     <span class="text-sm text-gray-200">Transparent</span>
                                 </label>
                                 
-                                <div class="cursor-pointer p-3 rounded-lg hover:bg-gray-800/50 transition-colors">
+                                <label class="flex items-center cursor-pointer p-3 rounded-lg hover:bg-gray-800/50 transition-colors">
+                                    <input type="radio" name="bgType" class="sr-only" id="imageBGRadio" @change="triggerImageSelect">
+                                    <div class="w-4 h-4 border-2 border-gray-700 rounded-full mr-3 relative">
+                                        <div class="w-2 h-2 bg-blue-400 rounded-full absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 opacity-0 radio-dot"></div>
+                                    </div>
+                                    <span class="text-sm text-gray-200">Custom Image</span>
                                     <input type="file" class="hidden" id="imageBG" @change="setBgImage">
-                                    <label for="imageBG" class="flex items-center cursor-pointer">
-                                        <div class="w-4 h-4 border-2 border-gray-700 rounded-full mr-3"></div>
-                                        <span class="text-sm text-gray-200">Custom Image</span>
-                                    </label>
-                                </div>
+                                </label>
                             </div>
                         </div>
                     </div>
@@ -569,8 +570,17 @@ export default defineComponent({
         setBgTransparent() {
             this.maptoglobe.SetBGTransparent();
         },
+        triggerImageSelect() {
+            const fileInput = document.getElementById('imageBG') as HTMLInputElement;
+            if (fileInput) {
+                fileInput.click();
+            }
+        },
         setBgImage(event: Event) {
-            (document.querySelector("#imageBG + input") as HTMLInputElement).checked = true;
+            const radioButton = document.querySelector("#imageBGRadio") as HTMLInputElement;
+            if (radioButton) {
+                radioButton.checked = true;
+            }
             const files = (event.target as HTMLInputElement).files;
             if (files !== null) {
                 this.maptoglobe.SetBGImage(files[0]);
@@ -656,6 +666,12 @@ export default defineComponent({
     /* Smooth animations for collapsible sections */
     [v-show] {
         transition: all 0.3s ease-in-out;
+    }
+
+    /* Ensure nav background is always solid */
+    .nav-container {
+        background: linear-gradient(to bottom, #111827, #000000, #111827) !important;
+        backdrop-filter: blur(10px);
     }
 
     /* Custom scrollbar for the navigation */

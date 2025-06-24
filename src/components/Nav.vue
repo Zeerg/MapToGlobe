@@ -37,11 +37,18 @@
         <nav class="mt-6 select-none px-4">
             <!-- Objects Section -->
             <div class="mb-6">
-                <h3 class="text-gray-400 font-semibold text-sm uppercase tracking-wider mb-3 flex items-center">
-                    <span class="w-2 h-2 bg-blue-400 rounded-full mr-2"></span>
-                    Objects
-                </h3>
+                <button @click="menu.open.objects = !menu.open.objects" 
+                        class="w-full flex justify-between items-center py-2 px-2 text-gray-400 font-semibold text-sm uppercase tracking-wider cursor-pointer hover:bg-gray-800/30 focus:outline-none rounded-lg transition-all duration-200 group">
+                    <span class="flex items-center">
+                        <span class="w-2 h-2 bg-blue-400 rounded-full mr-2"></span>
+                        Objects
+                    </span>
+                    <svg class="h-3 w-3 transition-transform duration-200" :class="{ 'rotate-90': menu.open.objects }" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M9 5L16 12L9 19" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                    </svg>
+                </button>
                 
+                <div v-show="menu.open.objects" class="mt-3">
                 <!-- Planet -->
                 <div class="mb-4">
                     <button @click="menu.open.planet = !menu.open.planet" 
@@ -133,7 +140,7 @@
                     </div>
                 </div>
 
-                <!-- Moon -->
+                <!-- Multi-Moon System -->
                 <div class="mb-4">
                     <button @click="menu.open.moon = !menu.open.moon" 
                             class="w-full flex justify-between items-center py-3 px-4 text-gray-100 cursor-pointer hover:bg-gray-800/50 focus:outline-none rounded-lg transition-all duration-200 hover:shadow-lg group">
@@ -143,7 +150,10 @@
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
                                 </svg>
                             </div>
-                            <span class="font-medium">Moon</span>
+                            <span class="font-medium">Moon System</span>
+                            <span v-if="moonSystemInfo.visibleMoons > 0" class="ml-2 px-2 py-1 bg-purple-500/30 text-purple-300 text-xs rounded-full">
+                                {{ moonSystemInfo.visibleMoons }}
+                            </span>
                         </span>
                         <svg class="h-4 w-4 transition-transform duration-200" :class="{ 'rotate-90': menu.open.moon }" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path d="M9 5L16 12L9 19" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
@@ -152,8 +162,9 @@
 
                     <div v-show="menu.open.moon" class="bg-gray-900/50 rounded-lg mt-2 overflow-hidden">
                         <div class="p-4">
-                            <div class="flex items-center justify-between mb-4">
-                                <label class="text-sm font-medium text-gray-200">Show Moon</label>
+                            <!-- Legacy Single Moon Toggle -->
+                            <div class="flex items-center justify-between mb-4 pb-3 border-b border-gray-700">
+                                <label class="text-sm font-medium text-gray-200">Legacy Moon</label>
                                 <div class="relative">
                                     <input type="checkbox" class="sr-only" id="moonToggle" @change="toggleMoon">
                                     <label for="moonToggle" class="flex items-center cursor-pointer">
@@ -165,47 +176,110 @@
                                 </div>
                             </div>
 
-                            <div class="space-y-3">
-                                <div>
-                                    <input type="file" class="hidden" id="moonSurfaceSelect" @change="setMoonImage" :disabled="!moonIsVisible">
-                                    <label for="moonSurfaceSelect" class="cursor-pointer py-2 px-4 block text-sm text-gray-200 hover:bg-purple-500/20 hover:text-purple-300 rounded transition-colors">
-                                        <span class="flex items-center">
-                                            <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
-                                                <path fill-rule="evenodd" d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z" clip-rule="evenodd" />
-                                            </svg>
-                                            Surface Texture
-                                        </span>
-                                    </label>
-                                </div>
-
-                                <div v-if="moonIsVisible">
-                                    <button @click="menu.moon.controls = !menu.moon.controls" 
-                                            class="w-full flex justify-between items-center py-2 px-4 text-gray-200 text-sm hover:bg-purple-500/20 hover:text-purple-300 rounded transition-colors">
-                                        <span>Controls</span>
-                                        <svg class="h-4 w-4 transition-transform duration-200" :class="{ 'rotate-90': menu.moon.controls }" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                            <path d="M9 5L16 12L9 19" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
-                                        </svg>
+                            <!-- Moon System Presets -->
+                            <div class="mb-4">
+                                <label class="block text-sm font-medium text-gray-200 mb-3">Moon System Presets</label>
+                                <div class="grid grid-cols-2 gap-2">
+                                    <button @click="loadMoonPreset('earth')" 
+                                            class="py-2 px-3 text-xs text-gray-200 bg-blue-500/20 hover:bg-blue-500/30 rounded transition-colors">
+                                        🌍 Earth
                                     </button>
+                                    <button @click="loadMoonPreset('jupiter')" 
+                                            class="py-2 px-3 text-xs text-gray-200 bg-orange-500/20 hover:bg-orange-500/30 rounded transition-colors">
+                                        🪐 Jupiter
+                                    </button>
+                                    <button @click="loadMoonPreset('saturn')" 
+                                            class="py-2 px-3 text-xs text-gray-200 bg-yellow-500/20 hover:bg-yellow-500/30 rounded transition-colors">
+                                        🪐 Saturn
+                                    </button>
+                                    <button @click="loadMoonPreset('custom')" 
+                                            class="py-2 px-3 text-xs text-gray-200 bg-purple-500/20 hover:bg-purple-500/30 rounded transition-colors">
+                                        ✨ Custom
+                                    </button>
+                                </div>
+                            </div>
 
-                                    <div v-show="menu.moon.controls" class="mt-3 space-y-3 pl-4">
-                                        <button type="button" class="cursor-pointer text-left w-full py-2 px-3 text-xs text-gray-300 hover:bg-purple-500/20 hover:text-purple-300 rounded transition-colors" value="orbit" @click="toggleControls">
-                                            Orbit Controls
-                                        </button>
-                                        <button type="button" class="cursor-pointer text-left w-full py-2 px-3 text-xs text-gray-300 hover:bg-purple-500/20 hover:text-purple-300 rounded transition-colors" value="rotation" @click="toggleControls">
-                                            Rotation Controls
-                                        </button>
-                                        
-                                        <div>
-                                            <label class="block text-xs text-gray-400 mb-2">Scale: {{ menu.moon.scale }}</label>
-                                            <vue-slider v-model="menu.moon.scale" :min="0.1" :max="4" :interval="0.1" :tooltip="'none'" @change="moonScale"></vue-slider>
+                            <!-- System Controls -->
+                            <div class="mb-4 flex gap-2">
+                                <button @click="showAllMoons" 
+                                        class="flex-1 py-2 px-3 text-xs text-gray-200 bg-green-500/20 hover:bg-green-500/30 rounded transition-colors">
+                                    Show All
+                                </button>
+                                <button @click="hideAllMoons" 
+                                        class="flex-1 py-2 px-3 text-xs text-gray-200 bg-red-500/20 hover:bg-red-500/30 rounded transition-colors">
+                                    Hide All
+                                </button>
+                                <button @click="clearMoonSystem" 
+                                        class="flex-1 py-2 px-3 text-xs text-gray-200 bg-gray-500/20 hover:bg-gray-500/30 rounded transition-colors">
+                                    Clear
+                                </button>
+                            </div>
+
+                            <!-- Individual Moon Controls -->
+                            <div v-if="moonSystemInfo.totalMoons > 0" class="space-y-3">
+                                <h4 class="text-sm font-medium text-gray-200 border-t border-gray-700 pt-3">Individual Moons</h4>
+                                <div v-for="moon in moonSystemInfo.moons" :key="moon.id" 
+                                     class="bg-gray-800/50 rounded-lg p-3 space-y-2">
+                                    <div class="flex items-center justify-between">
+                                        <span class="text-sm font-medium text-gray-200">{{ moon.name }}</span>
+                                        <div class="flex items-center gap-2">
+                                            <button @click="toggleMoonVisibility(moon.id)" 
+                                                    class="px-2 py-1 text-xs rounded transition-colors"
+                                                    :class="moon.visible ? 'bg-green-500/20 text-green-300' : 'bg-gray-500/20 text-gray-400'">
+                                                {{ moon.visible ? 'Visible' : 'Hidden' }}
+                                            </button>
+                                            <button @click="removeMoon(moon.id)" 
+                                                    class="px-2 py-1 text-xs bg-red-500/20 text-red-300 hover:bg-red-500/30 rounded transition-colors">
+                                                Remove
+                                            </button>
                                         </div>
-                                        
+                                    </div>
+
+                                    <div v-if="moon.visible" class="space-y-2 pl-2 border-l-2 border-purple-500/30">
                                         <div>
-                                            <label class="block text-xs text-gray-400 mb-2">Distance: {{ menu.moon.distance }}</label>
-                                            <vue-slider v-model="menu.moon.distance" :min="3" :max="20" :interval="0.1" :tooltip="'none'" @change="moonDistance"></vue-slider>
+                                            <label class="block text-xs text-gray-400 mb-1">Size: {{ moon.size.toFixed(2) }}</label>
+                                            <vue-slider v-model="moon.size" :min="0.1" :max="2" :interval="0.05" :tooltip="'none'" 
+                                                      @change="(value) => updateMoonSize(moon.id, value)"></vue-slider>
+                                        </div>
+                                        <div>
+                                            <label class="block text-xs text-gray-400 mb-1">Distance: {{ moon.distance.toFixed(1) }}</label>
+                                            <vue-slider v-model="moon.distance" :min="3" :max="50" :interval="0.5" :tooltip="'none'" 
+                                                      @change="(value) => updateMoonDistance(moon.id, value)"></vue-slider>
+                                        </div>
+                                        <div>
+                                            <label class="block text-xs text-gray-400 mb-1">Orbit Speed: {{ moon.orbitSpeed.toFixed(1) }}</label>
+                                            <vue-slider v-model="moon.orbitSpeed" :min="0.0" :max="5" :interval="0.1" :tooltip="'none'" 
+                                                      @change="(value) => updateMoonOrbitSpeed(moon.id, value)"></vue-slider>
+                                        </div>
+                                        <div>
+                                            <label class="block text-xs text-gray-400 mb-1">Rotation Speed: {{ moon.rotationSpeed.toFixed(1) }}</label>
+                                            <vue-slider v-model="moon.rotationSpeed" :min="0.0" :max="5" :interval="0.1" :tooltip="'none'" 
+                                                      @change="(value) => updateMoonRotationSpeed(moon.id, value)"></vue-slider>
+                                        </div>
+                                        <div>
+                                            <input type="file" class="hidden" :id="`moonTexture_${moon.id}`" @change="(event) => setMoonTexture(moon.id, event)">
+                                            <label :for="`moonTexture_${moon.id}`" class="cursor-pointer py-1 px-2 block text-xs text-gray-200 hover:bg-purple-500/20 hover:text-purple-300 rounded transition-colors">
+                                                <span class="flex items-center">
+                                                    <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                                        <path fill-rule="evenodd" d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z" clip-rule="evenodd" />
+                                                    </svg>
+                                                    Custom Texture
+                                                </span>
+                                            </label>
                                         </div>
                                     </div>
                                 </div>
+                            </div>
+
+                            <!-- Add Custom Moon -->
+                            <div class="mt-4 pt-3 border-t border-gray-700">
+                                <button @click="addCustomMoon" 
+                                        class="w-full py-2 px-4 text-sm text-gray-200 bg-purple-500/20 hover:bg-purple-500/30 rounded transition-colors flex items-center justify-center">
+                                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                                    </svg>
+                                    Add Custom Moon
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -363,16 +437,23 @@
                         </div>
                     </div>
                 </div>
+                </div>
             </div>
 
             <!-- Export Section -->
             <div class="mb-6">
-                <h3 class="text-gray-400 font-semibold text-sm uppercase tracking-wider mb-3 flex items-center">
-                    <span class="w-2 h-2 bg-green-400 rounded-full mr-2"></span>
-                    Export
-                </h3>
+                <button @click="menu.open.export = !menu.open.export" 
+                        class="w-full flex justify-between items-center py-2 px-2 text-gray-400 font-semibold text-sm uppercase tracking-wider cursor-pointer hover:bg-gray-800/30 focus:outline-none rounded-lg transition-all duration-200 group">
+                    <span class="flex items-center">
+                        <span class="w-2 h-2 bg-green-400 rounded-full mr-2"></span>
+                        Export
+                    </span>
+                    <svg class="h-3 w-3 transition-transform duration-200" :class="{ 'rotate-90': menu.open.export }" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M9 5L16 12L9 19" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                    </svg>
+                </button>
                 
-                <div class="space-y-2">
+                <div v-show="menu.open.export" class="mt-3 space-y-2">
                     <button class="w-full flex items-center py-3 px-4 text-gray-100 cursor-pointer hover:bg-gray-800/50 focus:outline-none rounded-lg transition-all duration-200 hover:shadow-lg group" @click="takeScreenshot">
                         <div class="p-2 bg-green-500/20 rounded-lg mr-3 group-hover:bg-green-500/30 transition-colors">
                             <svg class="w-5 h-5 text-green-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -396,6 +477,62 @@
                             <div class="text-xs text-gray-400">Create rotating GIF</div>
                         </div>
                     </button>
+                </div>
+            </div>
+
+            <!-- Storage Management Section -->
+            <div class="mb-6">
+                <button @click="menu.open.storage = !menu.open.storage" 
+                        class="w-full flex justify-between items-center py-2 px-2 text-gray-400 font-semibold text-sm uppercase tracking-wider cursor-pointer hover:bg-gray-800/30 focus:outline-none rounded-lg transition-all duration-200 group">
+                    <span class="flex items-center">
+                        <span class="w-2 h-2 bg-purple-400 rounded-full mr-2"></span>
+                        Storage
+                        <span v-if="hasStoredData" class="ml-2 px-2 py-1 bg-green-500/30 text-green-300 text-xs rounded-full">
+                            Saved
+                        </span>
+                    </span>
+                    <svg class="h-3 w-3 transition-transform duration-200" :class="{ 'rotate-90': menu.open.storage }" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M9 5L16 12L9 19" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                    </svg>
+                </button>
+                
+                <div v-show="menu.open.storage" class="mt-3">
+                <!-- Storage Info -->
+                <div v-if="hasStoredData" class="bg-gray-800/30 rounded-lg p-3 mb-3">
+                    <div class="flex items-center justify-between text-xs text-gray-400 mb-2">
+                        <span>Auto-saved locally</span>
+                        <span>{{ Math.round(storageInfo.size / 1024) }}KB</span>
+                    </div>
+                    <div v-if="storageInfo.timestamp" class="text-xs text-gray-500">
+                        Last saved: {{ new Date(storageInfo.timestamp).toLocaleString() }}
+                    </div>
+                </div>
+                
+                <div class="space-y-2">
+                    <button class="w-full flex items-center py-3 px-4 text-gray-100 cursor-pointer hover:bg-gray-800/50 focus:outline-none rounded-lg transition-all duration-200 hover:shadow-lg group" @click="saveCurrentState">
+                        <div class="p-2 bg-green-500/20 rounded-lg mr-3 group-hover:bg-green-500/30 transition-colors">
+                            <svg class="w-5 h-5 text-green-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4" />
+                            </svg>
+                        </div>
+                        <div class="text-left">
+                            <div class="font-medium">Save State</div>
+                            <div class="text-xs text-gray-400">Store current configuration</div>
+                        </div>
+                    </button>
+                    
+                    <button class="w-full flex items-center py-3 px-4 text-gray-100 cursor-pointer hover:bg-gray-800/50 focus:outline-none rounded-lg transition-all duration-200 hover:shadow-lg group" @click="clearCanvas">
+                        <div class="p-2 bg-red-500/20 rounded-lg mr-3 group-hover:bg-red-500/30 transition-colors">
+                            <svg class="w-5 h-5 text-red-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                            </svg>
+                        </div>
+                        <div class="text-left">
+                            <div class="font-medium">Clear Canvas</div>
+                            <div class="text-xs text-gray-400">Reset all settings & storage</div>
+                        </div>
+                    </button>
+                </div>
                 </div>
             </div>
 
@@ -426,6 +563,7 @@ import Loader from '@/components/Loader.vue';
 import 'vue-slider-component/theme/antd.css';
 import MapToGlobe from '../assets/MapToGlobe/MapToGlobe';
 import * as THREE from 'three';
+import { StorageManager, StoredAppState, StoredMoonConfig } from '../utils/storage';
 
 interface CanvasElement extends HTMLCanvasElement {
     captureStream(frameRate?: number): MediaStream;
@@ -445,6 +583,9 @@ export default defineComponent({
 
             menu: {
                 open: {
+                    objects: true,
+                    export: false,
+                    storage: false,
                     planet: false,
                     moon: false,
                     rings: false,
@@ -474,7 +615,24 @@ export default defineComponent({
             moonIsVisible: false,
             ringsVisible: false,
             controls: null,
-            maptoglobe: {} as MapToGlobe
+            maptoglobe: {} as MapToGlobe,
+            moonSystemInfo: {
+                totalMoons: 0,
+                visibleMoons: 0,
+                moons: [] as Array<{
+                    id: string;
+                    name: string;
+                    visible: boolean;
+                    size: number;
+                    distance: number;
+                    orbitSpeed: number;
+                    rotationSpeed: number;
+                }>
+            },
+            customMoonCounter: 1,
+            hasStoredData: false,
+            storageInfo: { size: 0, timestamp: undefined as number | undefined },
+            isLoadingStoredData: false
         }
     },
     created() {
@@ -496,6 +654,13 @@ export default defineComponent({
         this.menu.light.ambientIntensity = this.maptoglobe.instance.ambient.intensity;
         this.menu.moon.distance = this.maptoglobe.moon.moon.position.x;
         this.menu.moon.scale = this.maptoglobe.moon.moon.scale.x;
+        
+        // Initialize moon system info
+        this.updateMoonSystemInfo();
+        
+        // Load stored data and update storage info
+        this.loadStoredData();
+        this.updateStorageInfo();
     },
     methods: {
         setSurfaceImage(event: Event) {
@@ -533,6 +698,7 @@ export default defineComponent({
         },
         planetShininess(value: number) {
             ((this.maptoglobe.planet.object.material as THREE.Material[])[0] as THREE.MeshPhongMaterial).shininess = value;
+            this.saveCurrentState();
         },
         toggleMoon() {
             this.moonIsVisible = !this.moonIsVisible;
@@ -542,6 +708,7 @@ export default defineComponent({
             else {
                 this.maptoglobe.RemoveMoon();
             }
+            this.saveCurrentState();
         },
         setMoonImage(event: Event) {
             const files = (event.target as HTMLInputElement).files;
@@ -552,6 +719,7 @@ export default defineComponent({
         toggleRings() {
             this.ringsVisible = !this.ringsVisible;
             this.maptoglobe.ToggleRings();
+            this.saveCurrentState();
         },
         setRingsImage(event: Event) {
             const files = (event.target as HTMLInputElement).files;
@@ -610,18 +778,115 @@ export default defineComponent({
         },
         moonScale(value: number) {
             this.maptoglobe.moon.Scale(value);
+            this.saveCurrentState();
         },
         moonDistance(value: number) {
             this.maptoglobe.moon.Distance(value);
+            this.saveCurrentState();
         },
         sunIntensity(value: number) {
             this.maptoglobe.instance.SetSunIntensity(value);
+            this.saveCurrentState();
         },
         ambientIntensity(value: number) {
             this.maptoglobe.instance.SetAmbientIntensity(value);
+            this.saveCurrentState();
         },
         takeScreenshot() {
             this.maptoglobe.Screenshot(document.getElementById("scene") as CanvasElement);
+        },
+        
+        // Multi-Moon System Methods
+        updateMoonSystemInfo() {
+            this.moonSystemInfo = this.maptoglobe.GetMoonSystemInfo();
+            // Auto-save after moon system changes (with small delay to ensure state is updated)
+            // But don't save while we're loading stored data to prevent recursion
+            if (!this.isLoadingStoredData) {
+                this.$nextTick(() => {
+                    this.saveCurrentState();
+                });
+            }
+        },
+        
+        loadMoonPreset(presetName: 'earth' | 'jupiter' | 'saturn' | 'custom') {
+            this.maptoglobe.LoadMoonPreset(presetName);
+            this.updateMoonSystemInfo();
+        },
+        
+        showAllMoons() {
+            this.maptoglobe.ShowAllMoons();
+            this.updateMoonSystemInfo();
+        },
+        
+        hideAllMoons() {
+            this.maptoglobe.HideAllMoons();
+            this.updateMoonSystemInfo();
+        },
+        
+        clearMoonSystem() {
+            this.maptoglobe.ClearMoonSystem();
+            this.updateMoonSystemInfo();
+        },
+        
+        toggleMoonVisibility(moonId: string) {
+            const moon = this.moonSystemInfo.moons.find(m => m.id === moonId);
+            if (moon) {
+                if (moon.visible) {
+                    this.maptoglobe.HideMoon(moonId);
+                } else {
+                    this.maptoglobe.ShowMoon(moonId);
+                }
+                this.updateMoonSystemInfo();
+            }
+        },
+        
+        removeMoon(moonId: string) {
+            this.maptoglobe.RemoveMoonFromSystem(moonId);
+            this.updateMoonSystemInfo();
+        },
+        
+        updateMoonSize(moonId: string, size: number) {
+            this.maptoglobe.UpdateMoonSize(moonId, size);
+            this.updateMoonSystemInfo();
+        },
+        
+        updateMoonDistance(moonId: string, distance: number) {
+            this.maptoglobe.UpdateMoonDistance(moonId, distance);
+            this.updateMoonSystemInfo();
+        },
+        
+        updateMoonOrbitSpeed(moonId: string, speed: number) {
+            this.maptoglobe.UpdateMoonOrbitSpeed(moonId, speed);
+            this.updateMoonSystemInfo();
+        },
+        
+        updateMoonRotationSpeed(moonId: string, speed: number) {
+            this.maptoglobe.UpdateMoonRotationSpeed(moonId, speed);
+            this.updateMoonSystemInfo();
+        },
+        
+        setMoonTexture(moonId: string, event: Event) {
+            const files = (event.target as HTMLInputElement).files;
+            if (files !== null) {
+                this.maptoglobe.SetMoonTexture(moonId, files[0]);
+            }
+        },
+        
+        addCustomMoon() {
+            const moonConfig = {
+                id: `custom_${this.customMoonCounter}`,
+                name: `Custom Moon ${this.customMoonCounter}`,
+                size: 0.3,
+                distance: 8 + (this.customMoonCounter * 3),
+                orbitSpeed: 1.0,
+                rotationSpeed: 1.0,
+                visible: true,
+                color: Math.floor(Math.random() * 0xffffff)
+            };
+            
+            this.maptoglobe.AddMoonToSystem(moonConfig);
+            this.customMoonCounter++;
+            this.updateMoonSystemInfo();
         },
         makeGif() {
             this.maptoglobe.Gif(document.getElementById("scene") as CanvasElement);
@@ -629,6 +894,166 @@ export default defineComponent({
         async Load(item: string) {
             // Load functionality removed - no longer supported without Firebase
             console.warn('Load functionality is not available without Firebase configuration');
+        },
+        
+        // Storage Management Methods
+        updateStorageInfo() {
+            this.hasStoredData = StorageManager.hasStoredData();
+            this.storageInfo = StorageManager.getStorageInfo();
+        },
+        
+        saveCurrentState() {
+            try {
+                // Get fresh moon system info to ensure we have the latest data
+                const currentMoonInfo = this.maptoglobe.GetMoonSystemInfo();
+                const allMoons = this.maptoglobe.GetAllMoons();
+                
+                const state: Partial<StoredAppState> = {
+                    moonSystem: {
+                        moons: currentMoonInfo.moons.map(moon => ({
+                            id: moon.id,
+                            name: moon.name,
+                            size: moon.size,
+                            distance: moon.distance,
+                            orbitSpeed: moon.orbitSpeed,
+                            rotationSpeed: moon.rotationSpeed,
+                            visible: moon.visible,
+                            color: allMoons.find(m => m.config.id === moon.id)?.config.color
+                        })),
+                        customMoonCounter: this.customMoonCounter
+                    },
+                    legacyMoon: {
+                        visible: this.moonIsVisible,
+                        scale: this.menu.moon.scale,
+                        distance: this.menu.moon.distance
+                    },
+                    planet: {
+                        shininess: this.menu.planet.shininess
+                    },
+                    rings: {
+                        visible: this.ringsVisible
+                    },
+                    lighting: {
+                        sunIntensity: this.menu.light.sunIntensity,
+                        ambientIntensity: this.menu.light.ambientIntensity
+                    },
+                    atmosphere: {
+                        enabled: this.atmosphere.enabled
+                    },
+                    images: {
+                        surface: this.images.surface,
+                        clouds: this.images.clouds
+                    }
+                };
+                
+                const success = StorageManager.saveState(state);
+                if (success) {
+                    this.updateStorageInfo();
+                } else {
+                    console.error('Failed to save state');
+                }
+                return success;
+            } catch (error) {
+                console.error('Error saving state:', error);
+                return false;
+            }
+        },
+        
+        loadStoredData() {
+            try {
+                if (!StorageManager.hasStoredData()) {
+                    return;
+                }
+                
+                this.isLoadingStoredData = true; // Prevent auto-save during load
+                const stored = StorageManager.loadState();
+                
+                // Restore moon system
+                if (stored.moonSystem.moons.length > 0) {
+                    this.maptoglobe.ClearMoonSystem();
+                    stored.moonSystem.moons.forEach(moonConfig => {
+                        this.maptoglobe.AddMoonToSystem(moonConfig);
+                    });
+                }
+                this.customMoonCounter = stored.moonSystem.customMoonCounter;
+                
+                // Restore legacy moon
+                if (stored.legacyMoon.visible) {
+                    this.moonIsVisible = true;
+                    this.maptoglobe.AddMoon();
+                    this.menu.moon.scale = stored.legacyMoon.scale;
+                    this.menu.moon.distance = stored.legacyMoon.distance;
+                    this.maptoglobe.moon.Scale(stored.legacyMoon.scale);
+                    this.maptoglobe.moon.Distance(stored.legacyMoon.distance);
+                }
+                
+                // Restore planet settings
+                this.menu.planet.shininess = stored.planet.shininess;
+                ((this.maptoglobe.planet.object.material as THREE.Material[])[0] as THREE.MeshPhongMaterial).shininess = stored.planet.shininess;
+                
+                // Restore rings
+                if (stored.rings.visible) {
+                    this.ringsVisible = true;
+                    this.maptoglobe.ToggleRings();
+                }
+                
+                // Restore lighting
+                this.menu.light.sunIntensity = stored.lighting.sunIntensity;
+                this.menu.light.ambientIntensity = stored.lighting.ambientIntensity;
+                this.maptoglobe.instance.SetSunIntensity(stored.lighting.sunIntensity);
+                this.maptoglobe.instance.SetAmbientIntensity(stored.lighting.ambientIntensity);
+                
+                // Restore other settings
+                this.atmosphere.enabled = stored.atmosphere.enabled;
+                this.images.surface = stored.images.surface;
+                this.images.clouds = stored.images.clouds;
+                
+                this.updateMoonSystemInfo();
+            } catch (error) {
+                console.error('Error loading stored data:', error);
+            } finally {
+                this.isLoadingStoredData = false; // Re-enable auto-save
+            }
+        },
+        
+        clearCanvas() {
+            try {
+                // Clear the 3D scene
+                this.maptoglobe.ClearMoonSystem();
+                this.maptoglobe.RemoveMoon();
+                if (this.ringsVisible) {
+                    this.maptoglobe.ToggleRings();
+                }
+                
+                // Reset all UI state to defaults
+                this.moonIsVisible = false;
+                this.ringsVisible = false;
+                this.customMoonCounter = 1;
+                
+                // Reset menu values to defaults
+                this.menu.planet.shininess = 60;
+                this.menu.moon.scale = 1;
+                this.menu.moon.distance = 3;
+                this.menu.light.sunIntensity = 0.4;
+                this.menu.light.ambientIntensity = 0.6;
+                
+                // Reset image flags
+                this.images.surface = false;
+                this.images.clouds = false;
+                this.atmosphere.enabled = false;
+                
+                // Apply default values to the 3D scene
+                ((this.maptoglobe.planet.object.material as THREE.Material[])[0] as THREE.MeshPhongMaterial).shininess = 60;
+                this.maptoglobe.instance.SetSunIntensity(0.4);
+                this.maptoglobe.instance.SetAmbientIntensity(0.6);
+                
+                // Clear local storage
+                StorageManager.clearState();
+                this.updateStorageInfo();
+                this.updateMoonSystemInfo();
+            } catch (error) {
+                console.error('Error clearing canvas:', error);
+            }
         }
     }
 })

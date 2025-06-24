@@ -5,6 +5,7 @@ import CanvasVideo from './CanvasVideo';
 import Scene from './Scene';
 import Planet from './Planet';
 import Moon from './Moon';
+import MoonSystem, { MoonConfig } from './MoonSystem';
 import Rings from './Rings';
 
 interface CanvasElement extends HTMLCanvasElement {
@@ -17,7 +18,8 @@ export default class MapToGlobe {
     private animationId: number;
     instance: Scene;
     planet: Planet;
-    moon: Moon;
+    moon: Moon; // Legacy single moon for backward compatibility
+    moonSystem: MoonSystem; // New multi-moon system
     rings: Rings;
     sunFar = false;
     private lastSunUpdate = 0;
@@ -27,7 +29,8 @@ export default class MapToGlobe {
         this.planet = new Planet();
         this.instance.pivotObject.add(this.planet.object);
 
-        this.moon = new Moon(this.planet.object);
+        this.moon = new Moon(this.planet.object); // Keep for backward compatibility
+        this.moonSystem = new MoonSystem(this.planet.object); // New multi-moon system
         this.rings = new Rings(this.planet.object);
 
         let oldDistance = this.instance.camera.getWorldPosition(new THREE.Vector3(0,0,0)).distanceTo(this.planet.object.getWorldPosition(new THREE.Vector3(0,0,0)));
@@ -61,6 +64,9 @@ export default class MapToGlobe {
 
         // SCIENCE FEATURE: Update planetary rotation
         this.planet.UpdateRotation();
+        
+        // Update multi-moon system
+        this.moonSystem.update();
 
         this.instance.renderer.render(this.instance.scene, this.instance.camera);
     }
@@ -164,5 +170,124 @@ export default class MapToGlobe {
             { name: 'Mercury', key: 'mercury' },
             { name: 'Saturn', key: 'saturn' }
         ];
+    }
+
+    /**
+     * MULTI-MOON SYSTEM METHODS
+     */
+
+    // Add a single moon with custom configuration
+    AddMoonToSystem(config: MoonConfig): void {
+        this.moonSystem.addMoon(config);
+    }
+
+    // Remove a specific moon by ID
+    RemoveMoonFromSystem(moonId: string): boolean {
+        return this.moonSystem.removeMoon(moonId);
+    }
+
+    // Load a preset moon system
+    LoadMoonPreset(presetName: 'earth' | 'jupiter' | 'saturn' | 'custom'): void {
+        this.moonSystem.clearAllMoons();
+        
+        let preset: MoonConfig[] = [];
+        switch (presetName) {
+            case 'earth':
+                preset = MoonSystem.getEarthMoonPreset();
+                break;
+            case 'jupiter':
+                preset = MoonSystem.getJupiterMoonPreset();
+                break;
+            case 'saturn':
+                preset = MoonSystem.getSaturnMoonPreset();
+                break;
+            case 'custom':
+                preset = MoonSystem.getCustomMoonPreset();
+                break;
+        }
+        
+        preset.forEach(config => this.moonSystem.addMoon(config));
+    }
+
+    // Get all moons in the system
+    GetAllMoons() {
+        return this.moonSystem.getAllMoons();
+    }
+
+    // Show/hide specific moon
+    ShowMoon(moonId: string): void {
+        this.moonSystem.showMoon(moonId);
+    }
+
+    HideMoon(moonId: string): void {
+        this.moonSystem.hideMoon(moonId);
+    }
+
+    // Show/hide all moons
+    ShowAllMoons(): void {
+        this.moonSystem.showAllMoons();
+    }
+
+    HideAllMoons(): void {
+        this.moonSystem.hideAllMoons();
+    }
+
+    // Update moon properties
+    UpdateMoonSize(moonId: string, size: number): void {
+        const moon = this.moonSystem.getMoon(moonId);
+        if (moon) {
+            moon.setSize(size);
+        }
+    }
+
+    UpdateMoonDistance(moonId: string, distance: number): void {
+        const moon = this.moonSystem.getMoon(moonId);
+        if (moon) {
+            moon.setDistance(distance);
+        }
+    }
+
+    UpdateMoonOrbitSpeed(moonId: string, speed: number): void {
+        const moon = this.moonSystem.getMoon(moonId);
+        if (moon) {
+            moon.setOrbitSpeed(speed);
+        }
+    }
+
+    UpdateMoonRotationSpeed(moonId: string, speed: number): void {
+        const moon = this.moonSystem.getMoon(moonId);
+        if (moon) {
+            moon.setRotationSpeed(speed);
+        }
+    }
+
+    // Set moon texture
+    SetMoonTexture(moonId: string, file: File): void {
+        const moon = this.moonSystem.getMoon(moonId);
+        if (moon) {
+            moon.setTexture(file);
+        }
+    }
+
+    // Get moon system statistics
+    GetMoonSystemInfo() {
+        return {
+            totalMoons: this.moonSystem.getAllMoons().length,
+            visibleMoons: this.moonSystem.getVisibleMoonCount(),
+            moons: this.moonSystem.getAllMoons().map(moon => ({
+                id: moon.config.id,
+                name: moon.config.name,
+                visible: moon.config.visible,
+                size: moon.config.size,
+                distance: moon.config.distance,
+                orbitSpeed: moon.config.orbitSpeed,
+                rotationSpeed: moon.config.rotationSpeed
+            }))
+        };
+    }
+
+    // Clear all moons
+    ClearMoonSystem(): void {
+        this.moonSystem.clearAllMoons();
     }
 }

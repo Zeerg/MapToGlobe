@@ -81,29 +81,87 @@
                     </div>
                 </div>
 
-                <!-- Moon Controls -->
+                <!-- Multi-Moon System -->
                 <div class="mb-8">
-                    <h3 class="text-2xl font-semibold text-white mb-4">🌙 Moon</h3>
+                    <h3 class="text-2xl font-semibold text-white mb-4">🌙 Multi-Moon System</h3>
                     <div class="bg-gray-800 border border-gray-700 rounded-lg p-6">
-                        <p class="text-gray-300 mb-4">Add a realistic moon orbiting your planet with customizable properties.</p>
+                        <p class="text-gray-300 mb-4">Create complex moon systems with multiple orbiting satellites, realistic presets, and individual control over each moon's properties.</p>
+                        
+                        <!-- Preset Systems -->
+                        <div class="mb-6">
+                            <h4 class="text-lg font-semibold text-purple-300 mb-3">🌍 Preset Moon Systems</h4>
+                            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
+                                <div class="bg-blue-500/10 border border-blue-500/30 rounded-lg p-3 text-center">
+                                    <div class="text-2xl mb-2">🌍</div>
+                                    <h5 class="text-blue-300 font-semibold">Earth</h5>
+                                    <p class="text-xs text-gray-400">Single Luna moon with realistic proportions</p>
+                                </div>
+                                <div class="bg-orange-500/10 border border-orange-500/30 rounded-lg p-3 text-center">
+                                    <div class="text-2xl mb-2">🪐</div>
+                                    <h5 class="text-orange-300 font-semibold">Jupiter</h5>
+                                    <p class="text-xs text-gray-400">Io, Europa, Ganymede, Callisto</p>
+                                </div>
+                                <div class="bg-yellow-500/10 border border-yellow-500/30 rounded-lg p-3 text-center">
+                                    <div class="text-2xl mb-2">🪐</div>
+                                    <h5 class="text-yellow-300 font-semibold">Saturn</h5>
+                                    <p class="text-xs text-gray-400">Mimas, Titan, Iapetus</p>
+                                </div>
+                                <div class="bg-purple-500/10 border border-purple-500/30 rounded-lg p-3 text-center">
+                                    <div class="text-2xl mb-2">✨</div>
+                                    <h5 class="text-purple-300 font-semibold">Custom</h5>
+                                    <p class="text-xs text-gray-400">Three colorful example moons</p>
+                                </div>
+                            </div>
+                        </div>
+
                         <div class="grid md:grid-cols-2 gap-6">
                             <div>
-                                <h4 class="text-lg font-semibold text-blue-300 mb-3">Features</h4>
+                                <h4 class="text-lg font-semibold text-blue-300 mb-3">🎮 Individual Moon Controls</h4>
                                 <ul class="space-y-2 text-gray-300">
-                                    <li>• Toggle moon visibility</li>
-                                    <li>• Upload custom surface texture</li>
-                                    <li>• Adjustable size and distance</li>
-                                    <li>• Independent rotation controls</li>
+                                    <li>• <strong>Size:</strong> 0.1x to 2x scale per moon</li>
+                                    <li>• <strong>Distance:</strong> 3 to 50 units orbital radius</li>
+                                    <li>• <strong>Orbit Speed:</strong> 0.0 to 5x (0.0 = paused)</li>
+                                    <li>• <strong>Rotation Speed:</strong> 0.0 to 5x (0.0 = paused)</li>
+                                    <li>• <strong>Custom Textures:</strong> Individual texture per moon</li>
+                                    <li>• <strong>Visibility Toggle:</strong> Show/hide each moon</li>
+                                    <li>• <strong>Color Variants:</strong> Random colors for new moons</li>
                                 </ul>
                             </div>
                             <div>
-                                <h4 class="text-lg font-semibold text-blue-300 mb-3">Controls</h4>
+                                <h4 class="text-lg font-semibold text-blue-300 mb-3">🔧 System Management</h4>
                                 <ul class="space-y-2 text-gray-300">
-                                    <li>• <strong>Scale:</strong> 0.1x to 4x size</li>
-                                    <li>• <strong>Distance:</strong> 3 to 20 units</li>
-                                    <li>• <strong>Orbit Controls:</strong> Manual positioning</li>
-                                    <li>• <strong>Rotation:</strong> Independent spinning</li>
+                                    <li>• <strong>Add Custom Moons:</strong> Unlimited moon creation</li>
+                                    <li>• <strong>Remove Individual:</strong> Delete specific moons</li>
+                                    <li>• <strong>Show/Hide All:</strong> Bulk visibility controls</li>
+                                    <li>• <strong>Clear System:</strong> Remove all moons at once</li>
+                                    <li>• <strong>Real-time Counter:</strong> Active moon display</li>
+                                    <li>• <strong>Legacy Support:</strong> Original single moon still works</li>
                                 </ul>
+                            </div>
+                        </div>
+
+                        <!-- Advanced Features -->
+                        <div class="mt-6 bg-gray-700/30 rounded-lg p-4">
+                            <h4 class="text-lg font-semibold text-green-300 mb-3">⚡ Advanced Features</h4>
+                            <div class="grid md:grid-cols-2 gap-4">
+                                <div>
+                                    <h5 class="text-yellow-300 font-medium mb-2">Realistic Physics</h5>
+                                    <ul class="text-sm text-gray-300 space-y-1">
+                                        <li>• Independent orbital mechanics per moon</li>
+                                        <li>• Realistic shadow casting and lighting</li>
+                                        <li>• Random starting positions for variety</li>
+                                        <li>• Smooth orbital animations</li>
+                                    </ul>
+                                </div>
+                                <div>
+                                    <h5 class="text-yellow-300 font-medium mb-2">Pause & Control</h5>
+                                    <ul class="text-sm text-gray-300 space-y-1">
+                                        <li>• Set speeds to 0.0 to pause motion</li>
+                                        <li>• Create tidally locked moons</li>
+                                        <li>• Stationary reference points</li>
+                                        <li>• Educational step-by-step observation</li>
+                                    </ul>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -211,6 +269,83 @@
                         </div>
                     </div>
                 </div>
+
+                <!-- Local Storage System -->
+                <div class="mb-8">
+                    <h3 class="text-2xl font-semibold text-white mb-4">💾 Local Storage & Persistence</h3>
+                    <div class="bg-gray-800 border border-gray-700 rounded-lg p-6">
+                        <p class="text-gray-300 mb-4">MapToGlobe automatically saves your work locally in your browser, so you never lose your progress. All data is stored on your device - nothing is sent to external servers.</p>
+                        
+                        <div class="grid md:grid-cols-2 gap-6">
+                            <div>
+                                <h4 class="text-lg font-semibold text-purple-400 mb-3">🔄 Auto-Save Features</h4>
+                                <ul class="space-y-2 text-gray-300">
+                                    <li>• <strong>Complete Moon Systems:</strong> All moons with individual properties</li>
+                                    <li>• <strong>Planet Settings:</strong> Shininess, texture states, controls</li>
+                                    <li>• <strong>Lighting Configuration:</strong> Sun and ambient intensity</li>
+                                    <li>• <strong>Ring Visibility:</strong> Ring system state</li>
+                                    <li>• <strong>Legacy Moon:</strong> Original moon system compatibility</li>
+                                    <li>• <strong>Atmosphere Settings:</strong> All environmental properties</li>
+                                </ul>
+                            </div>
+                            <div>
+                                <h4 class="text-lg font-semibold text-purple-400 mb-3">🎮 Storage Controls</h4>
+                                <ul class="space-y-2 text-gray-300">
+                                    <li>• <strong>Save State:</strong> Manual save trigger (also auto-saves)</li>
+                                    <li>• <strong>Storage Info:</strong> View saved data size and timestamp</li>
+                                    <li>• <strong>Clear Canvas:</strong> Reset everything and clear storage</li>
+                                    <li>• <strong>Saved Indicator:</strong> Green badge shows when data exists</li>
+                                    <li>• <strong>Auto-Load:</strong> Restores your work when you return</li>
+                                    <li>• <strong>Error Handling:</strong> Graceful fallbacks if storage fails</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <!-- Technical Details -->
+                        <div class="mt-6 bg-gray-700/30 rounded-lg p-4">
+                            <h4 class="text-lg font-semibold text-blue-300 mb-3">🔧 Technical Details</h4>
+                            <div class="grid md:grid-cols-2 gap-4">
+                                <div>
+                                    <h5 class="text-yellow-300 font-medium mb-2">Storage Technology</h5>
+                                    <ul class="text-sm text-gray-300 space-y-1">
+                                        <li>• Browser Local Storage API</li>
+                                        <li>• JSON serialization for complex data</li>
+                                        <li>• Versioned storage format</li>
+                                        <li>• Automatic compression for efficiency</li>
+                                    </ul>
+                                </div>
+                                <div>
+                                    <h5 class="text-yellow-300 font-medium mb-2">Privacy & Security</h5>
+                                    <ul class="text-sm text-gray-300 space-y-1">
+                                        <li>• All data stays on your device</li>
+                                        <li>• No cloud synchronization</li>
+                                        <li>• Per-browser storage isolation</li>
+                                        <li>• Cleared when you clear browser data</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Storage Limitations -->
+                        <div class="mt-4 bg-yellow-900/20 border border-yellow-700 rounded-lg p-4">
+                            <div class="flex items-start">
+                                <svg class="w-6 h-6 text-yellow-400 mr-3 mt-1 flex-shrink-0" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                </svg>
+                                <div>
+                                    <h5 class="text-yellow-300 font-semibold mb-2">Storage Limitations</h5>
+                                    <ul class="text-gray-300 space-y-1 text-sm">
+                                        <li>• <strong>Browser-Specific:</strong> Settings don't transfer between different browsers</li>
+                                        <li>• <strong>Device-Specific:</strong> Data doesn't sync across devices</li>
+                                        <li>• <strong>Texture Files:</strong> Uploaded images are not stored (only settings)</li>
+                                        <li>• <strong>Storage Quota:</strong> Limited by browser's local storage limits (~5-10MB)</li>
+                                        <li>• <strong>Incognito Mode:</strong> Data is cleared when private browsing session ends</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </section>
 
             <!-- Navigation -->
@@ -295,7 +430,15 @@
                     </div>
                     <div class="bg-gray-800 border border-gray-700 rounded-lg p-6">
                         <h3 class="text-lg font-semibold text-white mb-3">Q: Can I save my work for later?</h3>
-                        <p class="text-gray-300">A: Currently, MapToGlobe operates as a local application without cloud saving. Use the export features to save screenshots or animations of your creations. You'll need to re-upload your textures if you refresh the page.</p>
+                        <p class="text-gray-300">A: Yes! MapToGlobe automatically saves your complete configuration to your browser's local storage. This includes all moon systems, planet settings, lighting, and ring configurations. Your work will be restored when you return to the application. However, uploaded texture files are not stored - you'll need to re-upload images if you clear your browser data or switch devices.</p>
+                    </div>
+                    <div class="bg-gray-800 border border-gray-700 rounded-lg p-6">
+                        <h3 class="text-lg font-semibold text-white mb-3">Q: Will my settings sync across different devices or browsers?</h3>
+                        <p class="text-gray-300">A: No, the local storage is specific to each browser on each device. Settings saved in Chrome won't appear in Firefox, and settings on your laptop won't appear on your phone. This is by design to keep all your data private and local to your device.</p>
+                    </div>
+                    <div class="bg-gray-800 border border-gray-700 rounded-lg p-6">
+                        <h3 class="text-lg font-semibold text-white mb-3">Q: How do I clear my saved data?</h3>
+                        <p class="text-gray-300">A: Use the "Clear Canvas" button in the Storage section to reset all settings and clear your saved data. Alternatively, clearing your browser's local storage or browsing data will also remove MapToGlobe's saved settings.</p>
                     </div>
                 </div>
             </section>

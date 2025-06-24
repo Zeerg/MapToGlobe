@@ -439,7 +439,7 @@ export default defineComponent({
         return {
             loading: false,
             loader: {
-                message: null
+                message: undefined as string | undefined
             },
 
             menu: {

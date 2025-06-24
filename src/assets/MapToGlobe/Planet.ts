@@ -1,8 +1,13 @@
 import * as THREE from 'three';
+import { AstronomyCalculator } from './Astronomy';
 
 export default class Planet {
     object: THREE.Mesh;
     cloudObject: THREE.Mesh;
+    currentPlanetType = 'earth';
+    rotationSpeed = 0;
+    realTimeRotation = false;
+    timeScale = 1;
 
     constructor(json?: THREE.Mesh) {
         if (json) {
@@ -11,11 +16,14 @@ export default class Planet {
             return;
         }
         
+        // Use simple MeshPhongMaterial instead of day/night shader
+        const surfaceMaterial = new THREE.MeshPhongMaterial({
+            shininess: 60
+        });
+        
         const materialArray = [
-            new THREE.MeshPhongMaterial({
-                shininess: 60
-            }), // main material
-            new THREE.ShaderMaterial({ visible: false }) // material for atmopshere
+            surfaceMaterial,
+            new THREE.ShaderMaterial({ visible: false }) // material for atmosphere
         ];
 
         const sphereGeometry = new THREE.SphereBufferGeometry(2, 100, 100);
@@ -35,6 +43,9 @@ export default class Planet {
         this.object = object;
 
         this.cloudObject = this.CreateNewCloudMesh();
+        
+        // Initialize rotation speed
+        this.updateRotationSpeed();
     }
 
     SetSurfaceImage(file: File) {
@@ -153,5 +164,51 @@ export default class Planet {
                 });
             });
         }
+    }
+
+    /**
+     * SCIENCE FEATURE: Planetary Rotation
+     */
+    
+    SetPlanetType(planetType: string) {
+        this.currentPlanetType = planetType;
+        this.updateRotationSpeed();
+    }
+
+    EnableRealTimeRotation(enable: boolean) {
+        this.realTimeRotation = enable;
+    }
+
+    SetTimeScale(scale: number) {
+        this.timeScale = scale;
+    }
+
+    UpdateRotation() {
+        if (this.realTimeRotation && this.rotationSpeed > 0) {
+            this.object.rotation.y += this.rotationSpeed * this.timeScale;
+        }
+    }
+
+    private updateRotationSpeed() {
+        // Rotation speeds for different planets (radians per frame at 60fps)
+        const planetSpeeds = {
+            earth: 0.001,
+            mars: 0.00097,
+            jupiter: 0.0041,
+            venus: -0.000004, // Retrograde
+            mercury: 0.000017,
+            saturn: 0.0038
+        };
+        
+        this.rotationSpeed = planetSpeeds[this.currentPlanetType as keyof typeof planetSpeeds] || planetSpeeds.earth;
+    }
+
+    GetPlanetInfo() {
+        return {
+            type: this.currentPlanetType,
+            rotationSpeed: this.rotationSpeed,
+            realTimeRotation: this.realTimeRotation,
+            timeScale: this.timeScale
+        };
     }
 }

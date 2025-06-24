@@ -2,6 +2,9 @@
 node_modules
 /dist
 
+# Build outputs
+*.tgz
+*.tar.gz
 
 # local env files
 .env.local
@@ -22,4 +25,24 @@ pnpm-debug.log*
 *.sln
 *.sw?
 
+# Deployment and tool caches
 .firebase/**/*
+.wrangler/
+wrangler.log
+wrangler.toml
+
+# Docker volumes (if any)
+.docker-data/
+
+# Coverage and test outputs
+coverage/
+.nyc_output/
+
+# Temporary files
+*.tmp
+*.temp
+.cache/
+
+# OS generated files
+Thumbs.db
+ehthumbs.db

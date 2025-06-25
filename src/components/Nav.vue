@@ -85,14 +85,19 @@
                             <div class="border border-gray-700 rounded-lg overflow-hidden">
                                 <button @click="menu.open.planetTextures = !menu.open.planetTextures" 
                                         class="w-full flex justify-between items-center py-2 px-3 text-gray-200 hover:bg-gray-700/30 transition-colors">
-                                    <span class="text-sm font-medium">🖼️ Textures</span>
+                                    <span class="text-sm font-medium flex items-center">
+                                        <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                            <path fill-rule="evenodd" d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z" clip-rule="evenodd" />
+                                        </svg>
+                                        Textures
+                                    </span>
                                     <svg class="h-3 w-3 transition-transform duration-200" :class="{ 'rotate-90': menu.open.planetTextures }" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                                         <path d="M9 5L16 12L9 19" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
                                     </svg>
                                 </button>
                                 <div v-show="menu.open.planetTextures" class="p-3 bg-gray-800/30 space-y-2">
                                     <div>
-                                        <input type="file" class="hidden" id="surfaceFileSelect" @change="setSurfaceImage">
+                                        <input type="file" class="hidden" id="surfaceFileSelect" accept="image/*" @change="setSurfaceImage">
                                         <label for="surfaceFileSelect" class="cursor-pointer py-2 px-3 block text-sm text-gray-200 hover:bg-blue-500/20 hover:text-blue-300 rounded transition-colors">
                                             <span class="flex items-center">
                                                 <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
@@ -103,7 +108,7 @@
                                         </label>
                                     </div>
                                     <div>
-                                        <input type="file" class="hidden" id="heightmapFileSelect" @change="setHeightmapImage" :disabled="!images.surface">
+                                        <input type="file" class="hidden" id="heightmapFileSelect" accept="image/*" @change="setHeightmapImage" :disabled="!images.surface">
                                         <label for="heightmapFileSelect" class="cursor-pointer py-2 px-3 block text-sm text-gray-200 hover:bg-blue-500/20 hover:text-blue-300 rounded transition-colors" :class="{ 'opacity-50 cursor-not-allowed': !images.surface }">
                                             <span class="flex items-center">
                                                 <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
@@ -114,7 +119,7 @@
                                         </label>
                                     </div>
                                     <div>
-                                        <input type="file" class="hidden" id="specularFileSelect" @change="setSpecularImage" :disabled="!images.surface">
+                                        <input type="file" class="hidden" id="specularFileSelect" accept="image/*" @change="setSpecularImage" :disabled="!images.surface">
                                         <label for="specularFileSelect" class="cursor-pointer py-2 px-3 block text-sm text-gray-200 hover:bg-blue-500/20 hover:text-blue-300 rounded transition-colors" :class="{ 'opacity-50 cursor-not-allowed': !images.surface }">
                                             <span class="flex items-center">
                                                 <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
@@ -124,17 +129,7 @@
                                             </span>
                                         </label>
                                     </div>
-                                    <div>
-                                        <input type="file" class="hidden" id="cloudsFileSelect" @change="setCloudsImage" :disabled="!images.surface">
-                                        <label for="cloudsFileSelect" class="cursor-pointer py-2 px-3 block text-sm text-gray-200 hover:bg-blue-500/20 hover:text-blue-300 rounded transition-colors" :class="{ 'opacity-50 cursor-not-allowed': !images.surface }">
-                                            <span class="flex items-center">
-                                                <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
-                                                    <path d="M5.5 16a3.5 3.5 0 01-.369-6.98 4 4 0 117.753-1.977A4.5 4.5 0 1113.5 16h-8z" />
-                                                </svg>
-                                                Cloud Layer
-                                            </span>
-                                        </label>
-                                    </div>
+
                                 </div>
                             </div>
                             
@@ -142,7 +137,13 @@
                             <div class="border border-gray-700 rounded-lg overflow-hidden">
                                 <button @click="menu.open.planetAppearance = !menu.open.planetAppearance" 
                                         class="w-full flex justify-between items-center py-2 px-3 text-gray-200 hover:bg-gray-700/30 transition-colors">
-                                    <span class="text-sm font-medium">🎨 Appearance</span>
+                                    <span class="text-sm font-medium flex items-center">
+                                        <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                            <path d="M7 4a3 3 0 016 0v4a3 3 0 11-6 0V4z" />
+                                            <path d="M5.5 9.643a.75.75 0 00-1.5 0V10c0 3.06 2.29 5.585 5.25 5.954V17.5a.75.75 0 001.5 0v-1.546A6.001 6.001 0 0016 10v-.357a.75.75 0 00-1.5 0V10a4.5 4.5 0 01-9 0v-.357z" />
+                                        </svg>
+                                        Appearance
+                                    </span>
                                     <svg class="h-3 w-3 transition-transform duration-200" :class="{ 'rotate-90': menu.open.planetAppearance }" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                                         <path d="M9 5L16 12L9 19" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
                                     </svg>
@@ -159,7 +160,12 @@
                             <div class="border border-gray-700 rounded-lg overflow-hidden">
                                 <button @click="menu.open.planetMotion = !menu.open.planetMotion" 
                                         class="w-full flex justify-between items-center py-2 px-3 text-gray-200 hover:bg-gray-700/30 transition-colors">
-                                    <span class="text-sm font-medium">🔄 Motion</span>
+                                    <span class="text-sm font-medium flex items-center">
+                                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                                        </svg>
+                                        Motion
+                                    </span>
                                     <svg class="h-3 w-3 transition-transform duration-200" :class="{ 'rotate-90': menu.open.planetMotion }" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                                         <path d="M9 5L16 12L9 19" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
                                     </svg>
@@ -179,7 +185,12 @@
                             <div class="border border-gray-700 rounded-lg overflow-hidden">
                                 <button @click="menu.open.planetShape = !menu.open.planetShape" 
                                         class="w-full flex justify-between items-center py-2 px-3 text-gray-200 hover:bg-gray-700/30 transition-colors">
-                                    <span class="text-sm font-medium">📐 Shape</span>
+                                    <span class="text-sm font-medium flex items-center">
+                                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+                                        </svg>
+                                        Shape
+                                    </span>
                                     <svg class="h-3 w-3 transition-transform duration-200" :class="{ 'rotate-90': menu.open.planetShape }" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                                         <path d="M9 5L16 12L9 19" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
                                     </svg>
@@ -212,26 +223,103 @@
                                     </button>
                                 </div>
                             </div>
-
-                            <!-- Debug Tools Subsection -->
+                            
+                            <!-- Clouds Subsection -->
                             <div class="border border-gray-700 rounded-lg overflow-hidden">
-                                <button @click="menu.open.planetDebug = !menu.open.planetDebug" 
+                                <button @click="menu.open.planetClouds = !menu.open.planetClouds" 
                                         class="w-full flex justify-between items-center py-2 px-3 text-gray-200 hover:bg-gray-700/30 transition-colors">
-                                    <span class="text-sm font-medium">🔧 Debug Tools</span>
-                                    <svg class="h-3 w-3 transition-transform duration-200" :class="{ 'rotate-90': menu.open.planetDebug }" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <span class="text-sm font-medium flex items-center">
+                                        <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                            <path d="M5.5 16a3.5 3.5 0 01-.369-6.98 4 4 0 117.753-1.977A4.5 4.5 0 1113.5 16h-8z" />
+                                        </svg>
+                                        Clouds
+                                    </span>
+                                    <svg class="h-3 w-3 transition-transform duration-200" :class="{ 'rotate-90': menu.open.planetClouds }" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                                         <path d="M9 5L16 12L9 19" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
                                     </svg>
                                 </button>
-                                <div v-show="menu.open.planetDebug" class="p-3 bg-gray-800/30 space-y-2">
-                                    <button type="button" class="cursor-pointer text-left w-full py-2 px-3 text-sm text-gray-200 hover:bg-blue-500/20 hover:text-blue-300 rounded transition-colors" @click="toggleAxis">
-                                        Toggle Axis
-                                    </button>
-                                    <button type="button" class="cursor-pointer text-left w-full py-2 px-3 text-sm text-gray-200 hover:bg-blue-500/20 hover:text-blue-300 rounded transition-colors" value="planet" @click="toggleControls">
-                                        Toggle Planet Controls
-                                    </button>
-                                    <button type="button" class="cursor-pointer text-left w-full py-2 px-3 text-sm text-gray-200 hover:bg-blue-500/20 hover:text-blue-300 rounded transition-colors" value="clouds" @click="toggleControls" :disabled="!images.clouds">
-                                        Toggle Cloud Controls
-                                    </button>
+                                <div v-show="menu.open.planetClouds" class="p-3 bg-gray-800/30 space-y-3">
+                                    <!-- Cloud Texture Upload -->
+                                    <div>
+                                        <input type="file" class="hidden" id="cloudsFileSelect" accept="image/*" @change="setCloudsImage">
+                                        <label for="cloudsFileSelect" class="cursor-pointer py-2 px-3 block text-sm text-gray-200 hover:bg-blue-500/20 hover:text-blue-300 rounded transition-colors bg-gray-700/30 border border-gray-600">
+                                            <span class="flex items-center">
+                                                <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                                    <path d="M5.5 16a3.5 3.5 0 01-.369-6.98 4 4 0 117.753-1.977A4.5 4.5 0 1113.5 16h-8z" />
+                                                </svg>
+                                                {{ images.clouds ? 'Change Cloud Texture' : 'Load Cloud Texture' }}
+                                            </span>
+                                        </label>
+                                    </div>
+                                    
+                                    <!-- Cloud Opacity -->
+                                    <div :class="{ 'opacity-50': !images.clouds }">
+                                        <label class="block text-xs text-gray-400 mb-2">
+                                            Cloud Opacity: {{ menu.clouds.opacity.toFixed(2) }}
+                                            <span class="text-gray-500">({{ getCloudOpacityDescription(menu.clouds.opacity) }})</span>
+                                        </label>
+                                        <vue-slider v-model="menu.clouds.opacity" :min="0" :max="1" :interval="0.01" :tooltip="'none'" @change="setCloudOpacity" :disabled="!images.clouds"></vue-slider>
+                                    </div>
+                                    
+                                    <!-- Cloud Controls Toggle -->
+                                    <div class="flex items-center justify-between" :class="{ 'opacity-50': !images.clouds }">
+                                        <label class="text-sm font-medium text-gray-200">3D Cloud Controls</label>
+                                        <div class="relative">
+                                            <input type="checkbox" class="sr-only" id="cloudControlsToggle" @change="toggleControls" value="clouds" :disabled="!images.clouds">
+                                            <label for="cloudControlsToggle" class="flex items-center cursor-pointer" :class="{ 'cursor-not-allowed': !images.clouds }">
+                                                <div class="relative">
+                                                    <div class="block bg-gray-700 w-12 h-6 rounded-full"></div>
+                                                    <div class="dot absolute left-1 top-1 bg-white w-4 h-4 rounded-full transition" :class="{ 'transform translate-x-6': cloudControlsVisible }"></div>
+                                                </div>
+                                            </label>
+                                        </div>
+                                    </div>
+                                    
+                                    <p v-if="!images.clouds" class="text-xs text-gray-500 italic">Load a cloud texture to enable all cloud controls</p>
+                                </div>
+                            </div>
+
+                            <!-- Visual Helpers Subsection -->
+                            <div class="border border-gray-700 rounded-lg overflow-hidden">
+                                <button @click="menu.open.planetHelpers = !menu.open.planetHelpers" 
+                                        class="w-full flex justify-between items-center py-2 px-3 text-gray-200 hover:bg-gray-700/30 transition-colors">
+                                    <span class="text-sm font-medium flex items-center">
+                                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                                        </svg>
+                                        Controls
+                                    </span>
+                                    <svg class="h-3 w-3 transition-transform duration-200" :class="{ 'rotate-90': menu.open.planetHelpers }" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M9 5L16 12L9 19" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                                    </svg>
+                                </button>
+                                <div v-show="menu.open.planetHelpers" class="p-3 bg-gray-800/30 space-y-3">
+                                    <div class="flex items-center justify-between">
+                                        <label class="text-sm font-medium text-gray-200">Show Axis</label>
+                                        <div class="relative">
+                                            <input type="checkbox" class="sr-only" id="axisToggle" @change="toggleAxis">
+                                            <label for="axisToggle" class="flex items-center cursor-pointer">
+                                                <div class="relative">
+                                                    <div class="block bg-gray-700 w-12 h-6 rounded-full"></div>
+                                                    <div class="dot absolute left-1 top-1 bg-white w-4 h-4 rounded-full transition" :class="{ 'transform translate-x-6': axisVisible }"></div>
+                                                </div>
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="flex items-center justify-between">
+                                        <label class="text-sm font-medium text-gray-200">Planet Controls</label>
+                                        <div class="relative">
+                                            <input type="checkbox" class="sr-only" id="planetControlsToggle" @change="toggleControls" value="planet">
+                                            <label for="planetControlsToggle" class="flex items-center cursor-pointer">
+                                                <div class="relative">
+                                                    <div class="block bg-gray-700 w-12 h-6 rounded-full"></div>
+                                                    <div class="dot absolute left-1 top-1 bg-white w-4 h-4 rounded-full transition" :class="{ 'transform translate-x-6': planetControlsVisible }"></div>
+                                                </div>
+                                            </label>
+                                        </div>
+                                    </div>
+
                                 </div>
                             </div>
                         </div>
@@ -266,12 +354,17 @@
                             <div class="border border-gray-700 rounded-lg overflow-hidden">
                                 <button @click="menu.open.moonLegacy = !menu.open.moonLegacy" 
                                         class="w-full flex justify-between items-center py-2 px-3 text-gray-200 hover:bg-gray-700/30 transition-colors">
-                                    <span class="text-sm font-medium">🌙 Legacy Moon</span>
+                                    <span class="text-sm font-medium flex items-center">
+                                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+                                        </svg>
+                                        Legacy Moon
+                                    </span>
                                     <svg class="h-3 w-3 transition-transform duration-200" :class="{ 'rotate-90': menu.open.moonLegacy }" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                                         <path d="M9 5L16 12L9 19" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
                                     </svg>
                                 </button>
-                                <div v-show="menu.open.moonLegacy" class="p-3 bg-gray-800/30">
+                                <div v-show="menu.open.moonLegacy" class="p-3 bg-gray-800/30 space-y-3">
                                     <div class="flex items-center justify-between">
                                         <label class="text-sm font-medium text-gray-200">Show Legacy Moon</label>
                                         <div class="relative">
@@ -284,6 +377,44 @@
                                             </label>
                                         </div>
                                     </div>
+                                    
+                                    <!-- Legacy Moon Controls (only show when moon is visible) -->
+                                    <div v-if="moonIsVisible" class="space-y-3 pl-2 border-l-2 border-purple-500/30">
+                                        <div>
+                                            <label class="block text-xs text-gray-400 mb-2">
+                                                Size: {{ menu.moon.scale.toFixed(2) }}
+                                                <span class="text-gray-500">({{ menu.moon.scale < 0.5 ? 'Tiny' : menu.moon.scale < 1 ? 'Small' : menu.moon.scale < 1.5 ? 'Normal' : menu.moon.scale < 2 ? 'Large' : 'Huge' }})</span>
+                                            </label>
+                                            <vue-slider v-model="menu.moon.scale" :min="0.1" :max="3.0" :interval="0.1" :tooltip="'none'" @change="moonScale"></vue-slider>
+                                        </div>
+                                        <div>
+                                            <label class="block text-xs text-gray-400 mb-2">
+                                                Distance: {{ menu.moon.distance.toFixed(1) }}
+                                                <span class="text-gray-500">({{ menu.moon.distance < 2 ? 'Very Close' : menu.moon.distance < 4 ? 'Close' : menu.moon.distance < 8 ? 'Normal' : menu.moon.distance < 15 ? 'Far' : 'Very Far' }})</span>
+                                            </label>
+                                            <vue-slider v-model="menu.moon.distance" :min="1.5" :max="20" :interval="0.5" :tooltip="'none'" @change="moonDistance"></vue-slider>
+                                        </div>
+                                        <div>
+                                            <label class="block text-xs text-gray-400 mb-2">
+                                                Rotation Speed: {{ menu.moon.rotationSpeed.toFixed(1) }}
+                                                <span class="text-gray-500">({{ getRotationSpeedDescription(menu.moon.rotationSpeed) }})</span>
+                                            </label>
+                                            <vue-slider v-model="menu.moon.rotationSpeed" :min="0.0" :max="5.0" :interval="0.1" :tooltip="'none'" @change="moonRotationSpeed"></vue-slider>
+                                        </div>
+                                        
+                                        <!-- Legacy Moon Texture -->
+                                        <div>
+                                            <input type="file" class="hidden" id="legacyMoonFileSelect" accept="image/*" @change="setLegacyMoonImage">
+                                            <label for="legacyMoonFileSelect" class="cursor-pointer py-2 px-3 block text-sm text-gray-200 hover:bg-purple-500/20 hover:text-purple-300 rounded transition-colors bg-gray-700/30 border border-gray-600">
+                                                <span class="flex items-center">
+                                                    <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                                        <path fill-rule="evenodd" d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z" clip-rule="evenodd" />
+                                                    </svg>
+                                                    Load Moon Texture
+                                                </span>
+                                            </label>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
 
@@ -291,7 +422,12 @@
                             <div class="border border-gray-700 rounded-lg overflow-hidden">
                                 <button @click="menu.open.moonPresets = !menu.open.moonPresets" 
                                         class="w-full flex justify-between items-center py-2 px-3 text-gray-200 hover:bg-gray-700/30 transition-colors">
-                                    <span class="text-sm font-medium">🪐 System Presets</span>
+                                    <span class="text-sm font-medium flex items-center">
+                                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z" />
+                                        </svg>
+                                        System Presets
+                                    </span>
                                     <svg class="h-3 w-3 transition-transform duration-200" :class="{ 'rotate-90': menu.open.moonPresets }" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                                         <path d="M9 5L16 12L9 19" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
                                     </svg>
@@ -322,7 +458,13 @@
                             <div class="border border-gray-700 rounded-lg overflow-hidden">
                                 <button @click="menu.open.moonManagement = !menu.open.moonManagement" 
                                         class="w-full flex justify-between items-center py-2 px-3 text-gray-200 hover:bg-gray-700/30 transition-colors">
-                                    <span class="text-sm font-medium">⚙️ System Management</span>
+                                    <span class="text-sm font-medium flex items-center">
+                                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                        </svg>
+                                        System Management
+                                    </span>
                                     <svg class="h-3 w-3 transition-transform duration-200" :class="{ 'rotate-90': menu.open.moonManagement }" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                                         <path d="M9 5L16 12L9 19" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
                                     </svg>
@@ -355,7 +497,12 @@
                             <div v-if="moonSystemInfo.totalMoons > 0" class="border border-gray-700 rounded-lg overflow-hidden">
                                 <button @click="menu.open.moonIndividual = !menu.open.moonIndividual" 
                                         class="w-full flex justify-between items-center py-2 px-3 text-gray-200 hover:bg-gray-700/30 transition-colors">
-                                    <span class="text-sm font-medium">🌕 Individual Moons ({{ moonSystemInfo.visibleMoons }}/{{ moonSystemInfo.totalMoons }})</span>
+                                    <span class="text-sm font-medium flex items-center">
+                                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+                                        </svg>
+                                        Individual Moons ({{ moonSystemInfo.visibleMoons }}/{{ moonSystemInfo.totalMoons }})
+                                    </span>
                                     <svg class="h-3 w-3 transition-transform duration-200" :class="{ 'rotate-90': menu.open.moonIndividual }" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                                         <path d="M9 5L16 12L9 19" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
                                     </svg>
@@ -386,7 +533,7 @@
                                                     Rename
                                                 </button>
                                                 <button v-if="moon.visible"
-                                                        @click="toggleMoonControls(moon.id)" 
+                                                        @click="toggleMoonControlsVisibility(moon.id)" 
                                                         class="px-2 py-1 text-xs bg-blue-500/20 text-blue-300 hover:bg-blue-500/30 rounded transition-colors">
                                                     {{ moonControlsVisible[moon.id] ? 'Hide' : 'Controls' }}
                                                 </button>
@@ -424,12 +571,16 @@
                                                           @change="(value) => updateMoonRotationSpeed(moon.id, value)"></vue-slider>
                                             </div>
                                             <div>
-                                                <label class="block text-xs text-gray-400 mb-1">Retrograde: {{ moon.retrograde.toFixed(0) }}° ({{ getOrbitDirection(moon.retrograde) }})</label>
+                                                <label class="block text-xs text-gray-400 mb-1">Orbit Direction: {{ getOrbitDirection(moon.retrograde) }}</label>
+                                                <div class="flex justify-between text-xs text-gray-500 mb-1">
+                                                    <span>Clockwise</span>
+                                                    <span>Counter-Clockwise</span>
+                                                </div>
                                                 <vue-slider v-model="moon.retrograde" :min="0" :max="180" :interval="5" :tooltip="'none'" 
-                                                          @change="(value) => updateMoonRetrograde(moon.id, value)"></vue-slider>
+                                                          @change="(value) => updateMoonOrbitDirection(moon.id, value)"></vue-slider>
                                             </div>
                                             <div>
-                                                <input type="file" class="hidden" :id="`moonTexture_${moon.id}`" @change="(event) => setMoonTexture(moon.id, event)">
+                                                <input type="file" class="hidden" :id="`moonTexture_${moon.id}`" accept="image/*" @change="(event) => setMoonTexture(moon.id, event)">
                                                 <label :for="`moonTexture_${moon.id}`" class="cursor-pointer py-1 px-2 block text-xs text-gray-200 hover:bg-purple-500/20 hover:text-purple-300 rounded transition-colors">
                                                     <span class="flex items-center">
                                                         <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
@@ -438,6 +589,71 @@
                                                         Custom Texture
                                                     </span>
                                                 </label>
+                                            </div>
+                                            
+                                            <!-- 3D Transform Controls -->
+                                            <div class="border border-gray-600 rounded-lg overflow-hidden mt-3">
+                                                <button @click="toggleMoonTransformControls(moon.id)" 
+                                                        class="w-full flex justify-between items-center py-2 px-3 text-gray-200 hover:bg-gray-700/30 transition-colors bg-gray-700/20">
+                                                    <span class="text-xs font-medium flex items-center">
+                                                        <svg class="w-3 h-3 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 9l3 3-3 3m5 0h3M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v14a2 2 0 002 2z" />
+                                                        </svg>
+                                                        3D Transform Controls
+                                                    </span>
+                                                    <svg class="h-3 w-3 transition-transform duration-200" :class="{ 'rotate-90': moonTransformControlsVisible[moon.id] }" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                        <path d="M9 5L16 12L9 19" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                                                    </svg>
+                                                </button>
+                                                <div v-show="moonTransformControlsVisible[moon.id]" class="p-3 bg-gray-800/40 space-y-3">
+                                                    <!-- Position Controls -->
+                                                    <div class="flex items-center justify-between">
+                                                        <label class="text-xs font-medium text-gray-200">Position Controls</label>
+                                                        <div class="relative">
+                                                            <input type="checkbox" class="sr-only" :id="`moonPositionControls-${moon.id}`" @change="toggleMoonControls($event, moon.id, 'position')" :checked="moonPositionControlsVisible[moon.id]">
+                                                            <label :for="`moonPositionControls-${moon.id}`" class="flex items-center cursor-pointer">
+                                                                <div class="relative">
+                                                                    <div class="block bg-gray-700 w-10 h-5 rounded-full"></div>
+                                                                    <div class="dot absolute left-0.5 top-0.5 bg-white w-3 h-3 rounded-full transition" :class="{ 'transform translate-x-5': moonPositionControlsVisible[moon.id] }"></div>
+                                                                </div>
+                                                            </label>
+                                                        </div>
+                                                    </div>
+
+                                                    <!-- Rotation Controls -->
+                                                    <div class="flex items-center justify-between">
+                                                        <label class="text-xs font-medium text-gray-200">Rotation Controls</label>
+                                                        <div class="relative">
+                                                            <input type="checkbox" class="sr-only" :id="`moonRotationControls-${moon.id}`" @change="toggleMoonControls($event, moon.id, 'rotation')" :checked="moonRotationControlsVisible[moon.id]">
+                                                            <label :for="`moonRotationControls-${moon.id}`" class="flex items-center cursor-pointer">
+                                                                <div class="relative">
+                                                                    <div class="block bg-gray-700 w-10 h-5 rounded-full"></div>
+                                                                    <div class="dot absolute left-0.5 top-0.5 bg-white w-3 h-3 rounded-full transition" :class="{ 'transform translate-x-5': moonRotationControlsVisible[moon.id] }"></div>
+                                                                </div>
+                                                            </label>
+                                                        </div>
+                                                    </div>
+
+                                                    <!-- Scale Controls -->
+                                                    <div class="flex items-center justify-between">
+                                                        <label class="text-xs font-medium text-gray-200">Scale Controls</label>
+                                                        <div class="relative">
+                                                            <input type="checkbox" class="sr-only" :id="`moonScaleControls-${moon.id}`" @change="toggleMoonControls($event, moon.id, 'scale')" :checked="moonScaleControlsVisible[moon.id]">
+                                                            <label :for="`moonScaleControls-${moon.id}`" class="flex items-center cursor-pointer">
+                                                                <div class="relative">
+                                                                    <div class="block bg-gray-700 w-10 h-5 rounded-full"></div>
+                                                                    <div class="dot absolute left-0.5 top-0.5 bg-white w-3 h-3 rounded-full transition" :class="{ 'transform translate-x-5': moonScaleControlsVisible[moon.id] }"></div>
+                                                                </div>
+                                                            </label>
+                                                        </div>
+                                                    </div>
+
+                                                    <!-- Reset Button -->
+                                                    <button @click="resetMoonTransform(moon.id)" 
+                                                            class="w-full mt-2 py-1 px-2 text-xs text-gray-200 bg-blue-500/20 hover:bg-blue-500/30 rounded transition-colors">
+                                                        Reset Transform
+                                                    </button>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
@@ -472,7 +688,13 @@
                             <div class="border border-gray-700 rounded-lg overflow-hidden">
                                 <button @click="menu.open.ringsVisibility = !menu.open.ringsVisibility" 
                                         class="w-full flex justify-between items-center py-2 px-3 text-gray-200 hover:bg-gray-700/30 transition-colors">
-                                    <span class="text-sm font-medium">👁️ Visibility</span>
+                                    <span class="text-sm font-medium flex items-center">
+                                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                                        </svg>
+                                        Visibility
+                                    </span>
                                     <svg class="h-3 w-3 transition-transform duration-200" :class="{ 'rotate-90': menu.open.ringsVisibility }" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                                         <path d="M9 5L16 12L9 19" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
                                     </svg>
@@ -498,7 +720,12 @@
                                 <div class="border border-gray-700 rounded-lg overflow-hidden">
                                     <button @click="menu.open.ringsPresets = !menu.open.ringsPresets" 
                                             class="w-full flex justify-between items-center py-2 px-3 text-gray-200 hover:bg-gray-700/30 transition-colors">
-                                        <span class="text-sm font-medium">🪐 System Presets</span>
+                                        <span class="text-sm font-medium flex items-center">
+                                            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z" />
+                                            </svg>
+                                            System Presets
+                                        </span>
                                         <svg class="h-3 w-3 transition-transform duration-200" :class="{ 'rotate-90': menu.open.ringsPresets }" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                                             <path d="M9 5L16 12L9 19" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
                                         </svg>
@@ -533,7 +760,12 @@
                                 <div v-if="menu.rings.systemType === 'custom'" class="border border-gray-700 rounded-lg overflow-hidden">
                                     <button @click="menu.open.ringsSize = !menu.open.ringsSize" 
                                             class="w-full flex justify-between items-center py-2 px-3 text-gray-200 hover:bg-gray-700/30 transition-colors">
-                                        <span class="text-sm font-medium">📏 Size & Scale</span>
+                                        <span class="text-sm font-medium flex items-center">
+                                            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
+                                            </svg>
+                                            Size & Scale
+                                        </span>
                                         <svg class="h-3 w-3 transition-transform duration-200" :class="{ 'rotate-90': menu.open.ringsSize }" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                                             <path d="M9 5L16 12L9 19" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
                                         </svg>
@@ -541,15 +773,15 @@
                                     <div v-show="menu.open.ringsSize" class="p-3 bg-gray-800/30 space-y-3">
                                         <div>
                                             <label class="block text-xs text-gray-400 mb-1">Inner Radius: {{ menu.rings.innerRadius.toFixed(1) }}</label>
-                                            <vue-slider v-model="menu.rings.innerRadius" :min="0.5" :max="8" :interval="0.1" :tooltip="'none'" @change="updateRingInnerRadius"></vue-slider>
+                                            <vue-slider v-model="menu.rings.innerRadius" :min="0.5" :max="8" :interval="0.1" :tooltip="'none'" @change="updateRingInnerRadius" @drag-end="saveRingState"></vue-slider>
                                         </div>
                                         <div>
                                             <label class="block text-xs text-gray-400 mb-1">Outer Radius: {{ menu.rings.outerRadius.toFixed(1) }}</label>
-                                            <vue-slider v-model="menu.rings.outerRadius" :min="1" :max="12" :interval="0.1" :tooltip="'none'" @change="updateRingOuterRadius"></vue-slider>
+                                            <vue-slider v-model="menu.rings.outerRadius" :min="1" :max="12" :interval="0.1" :tooltip="'none'" @change="updateRingOuterRadius" @drag-end="saveRingState"></vue-slider>
                                         </div>
                                         <div>
                                             <label class="block text-xs text-gray-400 mb-1">Thickness: {{ menu.rings.thickness.toFixed(1) }}</label>
-                                            <vue-slider v-model="menu.rings.thickness" :min="0.2" :max="8" :interval="0.1" :tooltip="'none'" @change="updateRingThickness"></vue-slider>
+                                            <vue-slider v-model="menu.rings.thickness" :min="0.2" :max="8" :interval="0.1" :tooltip="'none'" @change="updateRingThickness" @drag-end="saveRingState"></vue-slider>
                                         </div>
                                     </div>
                                 </div>
@@ -558,7 +790,13 @@
                                 <div class="border border-gray-700 rounded-lg overflow-hidden">
                                     <button @click="menu.open.ringsAppearance = !menu.open.ringsAppearance" 
                                             class="w-full flex justify-between items-center py-2 px-3 text-gray-200 hover:bg-gray-700/30 transition-colors">
-                                        <span class="text-sm font-medium">🎨 Appearance</span>
+                                        <span class="text-sm font-medium flex items-center">
+                                            <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                                <path d="M7 4a3 3 0 016 0v4a3 3 0 11-6 0V4z" />
+                                                <path d="M5.5 9.643a.75.75 0 00-1.5 0V10c0 3.06 2.29 5.585 5.25 5.954V17.5a.75.75 0 001.5 0v-1.546A6.001 6.001 0 0016 10v-.357a.75.75 0 00-1.5 0V10a4.5 4.5 0 01-9 0v-.357z" />
+                                            </svg>
+                                            Appearance
+                                        </span>
                                         <svg class="h-3 w-3 transition-transform duration-200" :class="{ 'rotate-90': menu.open.ringsAppearance }" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                                             <path d="M9 5L16 12L9 19" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
                                         </svg>
@@ -566,11 +804,11 @@
                                     <div v-show="menu.open.ringsAppearance" class="p-3 bg-gray-800/30 space-y-3">
                                         <div>
                                             <label class="block text-xs text-gray-400 mb-1">Opacity: {{ menu.rings.opacity.toFixed(2) }}</label>
-                                            <vue-slider v-model="menu.rings.opacity" :min="0.1" :max="1" :interval="0.01" :tooltip="'none'" @change="updateRingOpacity"></vue-slider>
+                                            <vue-slider v-model="menu.rings.opacity" :min="0.1" :max="1" :interval="0.01" :tooltip="'none'" @change="updateRingOpacity" @drag-end="saveRingState"></vue-slider>
                                         </div>
                                         <div>
                                             <label class="block text-xs text-gray-400 mb-1">Rotation Speed: {{ menu.rings.rotationSpeed.toFixed(1) }}</label>
-                                            <vue-slider v-model="menu.rings.rotationSpeed" :min="0" :max="3" :interval="0.1" :tooltip="'none'" @change="updateRingRotationSpeed"></vue-slider>
+                                            <vue-slider v-model="menu.rings.rotationSpeed" :min="0" :max="3" :interval="0.1" :tooltip="'none'" @change="updateRingRotationSpeed" @drag-end="saveRingState"></vue-slider>
                                         </div>
                                     </div>
                                 </div>
@@ -579,14 +817,19 @@
                                 <div class="border border-gray-700 rounded-lg overflow-hidden">
                                     <button @click="menu.open.ringsTextures = !menu.open.ringsTextures" 
                                             class="w-full flex justify-between items-center py-2 px-3 text-gray-200 hover:bg-gray-700/30 transition-colors">
-                                        <span class="text-sm font-medium">🖼️ Textures</span>
+                                        <span class="text-sm font-medium flex items-center">
+                                            <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                                <path fill-rule="evenodd" d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z" clip-rule="evenodd" />
+                                            </svg>
+                                            Textures
+                                        </span>
                                         <svg class="h-3 w-3 transition-transform duration-200" :class="{ 'rotate-90': menu.open.ringsTextures }" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                                             <path d="M9 5L16 12L9 19" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
                                         </svg>
                                     </button>
                                     <div v-show="menu.open.ringsTextures" class="p-3 bg-gray-800/30 space-y-2">
                                         <div>
-                                            <input type="file" class="hidden" id="ringsSurfaceSelect" @change="setRingsImage">
+                                            <input type="file" class="hidden" id="ringsSurfaceSelect" accept="image/*" @change="setRingsImage">
                                             <label for="ringsSurfaceSelect" class="cursor-pointer py-2 px-3 block text-sm text-gray-200 hover:bg-amber-500/20 hover:text-amber-300 rounded transition-colors">
                                                 <span class="flex items-center">
                                                     <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
@@ -597,7 +840,7 @@
                                             </label>
                                         </div>
                                         <div>
-                                            <input type="file" class="hidden" id="ringsTransparencySelect" @change="setRingsTransparency">
+                                            <input type="file" class="hidden" id="ringsTransparencySelect" accept="image/*" @change="setRingsTransparency">
                                             <label for="ringsTransparencySelect" class="cursor-pointer py-2 px-3 block text-sm text-gray-200 hover:bg-amber-500/20 hover:text-amber-300 rounded transition-colors">
                                                 <span class="flex items-center">
                                                     <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
@@ -610,19 +853,34 @@
                                     </div>
                                 </div>
 
-                                <!-- Ring Debug Tools Subsection -->
+                                <!-- Ring Visual Helpers Subsection -->
                                 <div class="border border-gray-700 rounded-lg overflow-hidden">
-                                    <button @click="menu.open.ringsDebug = !menu.open.ringsDebug" 
+                                    <button @click="menu.open.ringsHelpers = !menu.open.ringsHelpers" 
                                             class="w-full flex justify-between items-center py-2 px-3 text-gray-200 hover:bg-gray-700/30 transition-colors">
-                                        <span class="text-sm font-medium">🔧 Debug Tools</span>
-                                        <svg class="h-3 w-3 transition-transform duration-200" :class="{ 'rotate-90': menu.open.ringsDebug }" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <span class="text-sm font-medium flex items-center">
+                                            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                                            </svg>
+                                            Controls
+                                        </span>
+                                        <svg class="h-3 w-3 transition-transform duration-200" :class="{ 'rotate-90': menu.open.ringsHelpers }" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                                             <path d="M9 5L16 12L9 19" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
                                         </svg>
                                     </button>
-                                    <div v-show="menu.open.ringsDebug" class="p-3 bg-gray-800/30">
-                                        <button type="button" class="cursor-pointer text-left w-full py-2 px-3 text-sm text-gray-200 hover:bg-amber-500/20 hover:text-amber-300 rounded transition-colors" value="rings" @click="toggleControls">
-                                            Toggle Ring Controls
-                                        </button>
+                                    <div v-show="menu.open.ringsHelpers" class="p-3 bg-gray-800/30">
+                                        <div class="flex items-center justify-between">
+                                            <label class="text-sm font-medium text-gray-200">Ring Controls</label>
+                                            <div class="relative">
+                                                <input type="checkbox" class="sr-only" id="ringControlsToggle" @change="toggleControls" value="rings">
+                                                <label for="ringControlsToggle" class="flex items-center cursor-pointer">
+                                                    <div class="relative">
+                                                        <div class="block bg-gray-700 w-12 h-6 rounded-full"></div>
+                                                        <div class="dot absolute left-1 top-1 bg-white w-4 h-4 rounded-full transition" :class="{ 'transform translate-x-6': ringControlsVisible }"></div>
+                                                    </div>
+                                                </label>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -736,7 +994,7 @@
                                      :class="menu.background.type === 'custom' ? 'border-blue-500 bg-blue-500/10' : 'border-gray-700 hover:bg-gray-800/30'"
                                      @click="triggerImageSelect">
                                     <input type="radio" name="bgType" class="sr-only" v-model="menu.background.type" value="custom">
-                                    <input type="file" class="hidden" id="imageBG" @change="setBgImage">
+                                    <input type="file" class="hidden" id="imageBG" accept="image/*" @change="setBgImage">
                                     <div class="flex items-center">
                                         <div class="w-8 h-8 bg-gradient-to-br from-gray-700 to-gray-800 rounded-full mr-3 border border-gray-600 flex items-center justify-center">
                                             <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -947,7 +1205,8 @@ export default defineComponent({
                     planetAppearance: false,
                     planetMotion: false,
                     planetShape: false,
-                    planetDebug: false,
+                    planetClouds: false,
+                    planetHelpers: false,
                     moon: false,
                     moonLegacy: false,
                     moonPresets: false,
@@ -959,7 +1218,7 @@ export default defineComponent({
                     ringsSize: false,
                     ringsAppearance: false,
                     ringsTextures: false,
-                    ringsDebug: false,
+                    ringsHelpers: false,
                     background: false,
                     lights: false
                 },
@@ -972,10 +1231,14 @@ export default defineComponent({
                         scaleZ: 1.0
                     }
                 },
+                clouds: {
+                    opacity: 1.0
+                },
                 moon: {
                     controls: false,
                     scale: 1,
-                    distance: 3
+                    distance: 3,
+                    rotationSpeed: 0.0
                 },
                 light: {
                     sunIntensity: 0.4,
@@ -1003,6 +1266,10 @@ export default defineComponent({
             },
             moonIsVisible: false,
             ringsVisible: false,
+            axisVisible: false,
+            planetControlsVisible: false,
+            cloudControlsVisible: false,
+            ringControlsVisible: false,
             controls: null,
             maptoglobe: {} as MapToGlobe,
             moonSystemInfo: {
@@ -1027,13 +1294,17 @@ export default defineComponent({
             navPanelVisible: true,
             editingMoonName: null as string | null,
             editingMoonNameValue: '',
-            moonControlsVisible: {} as Record<string, boolean>
+            moonControlsVisible: {} as Record<string, boolean>,
+            moonTransformControlsVisible: {} as Record<string, boolean>,
+            moonPositionControlsVisible: {} as Record<string, boolean>,
+            moonRotationControlsVisible: {} as Record<string, boolean>,
+            moonScaleControlsVisible: {} as Record<string, boolean>
         }
     },
     created() {
         this.$watch(
             () => this.$route.params,
-            () => { if (this.$route.params.saveId.length > 0) this.Load(this.$route.params.saveId as string) },
+            () => { if (this.$route.params.saveId.length > 0) this.Load() },
             { immediate: true }
         )
     },
@@ -1049,6 +1320,7 @@ export default defineComponent({
         this.menu.light.ambientIntensity = this.maptoglobe.instance.ambient.intensity;
         this.menu.moon.distance = this.maptoglobe.moon.moon.position.x;
         this.menu.moon.scale = this.maptoglobe.moon.moon.scale.x;
+        this.menu.moon.rotationSpeed = this.maptoglobe.GetMoonRotationSpeed();
         
         // Initialize moon system info
         this.updateMoonSystemInfo();
@@ -1062,47 +1334,143 @@ export default defineComponent({
         this.menu.planet.shape.scaleY = shape.y;
         this.menu.planet.shape.scaleZ = shape.z;
         
+        // Initialize cloud opacity
+        this.menu.clouds.opacity = 1.0;
+        
         // Load stored data and update storage info
         this.loadStoredData();
         this.updateStorageInfo();
+        
+        // Set up ring transform listener for auto-saving
+        this.maptoglobe.SetRingTransformListener(() => {
+            this.saveRingTransform();
+        });
+        
+        // Set up moon transform listener for auto-saving
+        this.maptoglobe.SetMoonTransformListener(() => {
+            this.saveMoonTransform();
+        });
     },
     methods: {
-        setSurfaceImage(event: Event) {
+        validateImageFile(file: File): boolean {
+            if (!file) return false;
+            
+            // Check file type
+            const validTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp', 'image/bmp', 'image/tiff'];
+            if (!validTypes.includes(file.type)) {
+                alert('Please select a valid image file (JPEG, PNG, GIF, WebP, BMP, or TIFF)');
+                return false;
+            }
+            
+            // Check file size (limit to 10MB)
+            const maxSize = 10 * 1024 * 1024; // 10MB in bytes
+            if (file.size > maxSize) {
+                alert('Image file is too large. Please select an image smaller than 10MB.');
+                return false;
+            }
+            
+            return true;
+        },
+        
+        async setSurfaceImage(event: Event) {
             const files = (event.target as HTMLInputElement).files;
-            if (files !== null) {
+            if (files !== null && this.validateImageFile(files[0])) {
                 this.maptoglobe.planet.SetSurfaceImage(files[0]);
                 this.images.surface = true;
+                
+                // Save texture data for persistence
+                try {
+                    const base64 = await StorageManager.fileToBase64(files[0]);
+                    const currentState = StorageManager.loadState();
+                    currentState.textureData.planet.surface = base64;
+                    StorageManager.saveState(currentState);
+                } catch (error) {
+                    console.warn('Failed to save surface texture:', error);
+                }
             }
         },
-        setHeightmapImage(event: Event) {
+        async setHeightmapImage(event: Event) {
             const files = (event.target as HTMLInputElement).files;
-            if (files !== null) {
+            if (files !== null && this.validateImageFile(files[0])) {
                 this.maptoglobe.planet.SetHeightmapImage(files[0]);
+                
+                // Save texture data for persistence
+                try {
+                    const base64 = await StorageManager.fileToBase64(files[0]);
+                    const currentState = StorageManager.loadState();
+                    currentState.textureData.planet.heightmap = base64;
+                    StorageManager.saveState(currentState);
+                } catch (error) {
+                    console.warn('Failed to save heightmap texture:', error);
+                }
             }
         },
-        setSpecularImage(event: Event) {
+        async setSpecularImage(event: Event) {
             const files = (event.target as HTMLInputElement).files;
-            if (files !== null) {
+            if (files !== null && this.validateImageFile(files[0])) {
                 this.maptoglobe.planet.SetSpecularImage(files[0]);
+                
+                // Save texture data for persistence
+                try {
+                    const base64 = await StorageManager.fileToBase64(files[0]);
+                    const currentState = StorageManager.loadState();
+                    currentState.textureData.planet.specular = base64;
+                    StorageManager.saveState(currentState);
+                } catch (error) {
+                    console.warn('Failed to save specular texture:', error);
+                }
             }
         },
         toggleAxis() {
+            this.axisVisible = !this.axisVisible;
             this.maptoglobe.planet.ToggleAxis();
         },
         toggleAtmosphere() {
             //this.maptoglobe.planet.ToggleAtmosphere();
             return;
         },
-        setCloudsImage(event: Event) {
+        async setCloudsImage(event: Event) {
             const files = (event.target as HTMLInputElement).files;
-            if (files !== null) {
+            if (files !== null && this.validateImageFile(files[0])) {
                 this.maptoglobe.planet.SetCloudsImage(files[0]);
                 this.images.clouds = true;
+                
+                // Apply current opacity setting to the newly loaded clouds
+                this.maptoglobe.SetCloudOpacity(this.menu.clouds.opacity);
+                
+                // Save texture data for persistence
+                try {
+                    const base64 = await StorageManager.fileToBase64(files[0]);
+                    const currentState = StorageManager.loadState();
+                    currentState.textureData.planet.clouds = base64;
+                    StorageManager.saveState(currentState);
+                } catch (error) {
+                    console.warn('Failed to save clouds texture:', error);
+                }
             }
         },
         planetShininess(value: number) {
             ((this.maptoglobe.planet.object.material as THREE.Material[])[0] as THREE.MeshPhongMaterial).shininess = value;
             this.saveCurrentState();
+        },
+        
+        // Cloud Opacity Method
+        setCloudOpacity(value: number) {
+            if (this.images.clouds) {
+                this.menu.clouds.opacity = value;
+                this.maptoglobe.SetCloudOpacity(value);
+                this.saveCurrentState();
+            }
+        },
+        
+        getCloudOpacityDescription(opacity: number): string {
+            if (opacity === 0) return 'Transparent';
+            if (opacity < 0.2) return 'Very Light';
+            if (opacity < 0.4) return 'Light';
+            if (opacity < 0.6) return 'Medium';
+            if (opacity < 0.8) return 'Dense';
+            if (opacity < 1) return 'Very Dense';
+            return 'Opaque';
         },
         
         // Planet Rotation Method
@@ -1157,27 +1525,99 @@ export default defineComponent({
             }
             this.saveCurrentState();
         },
-        setMoonImage(event: Event) {
+        async setMoonImage(event: Event) {
             const files = (event.target as HTMLInputElement).files;
-            if (files !== null) {
+            if (files !== null && this.validateImageFile(files[0])) {
                 this.maptoglobe.moon.SetSurfaceImage(files[0]);
+                
+                // Save texture data for persistence
+                try {
+                    const base64 = await StorageManager.fileToBase64(files[0]);
+                    const currentState = StorageManager.loadState();
+                    currentState.textureData.moon.surface = base64;
+                    StorageManager.saveState(currentState);
+                } catch (error) {
+                    console.warn('Failed to save moon texture:', error);
+                }
             }
         },
         toggleRings() {
             this.ringsVisible = !this.ringsVisible;
             this.maptoglobe.ToggleRings();
+            
+            // If rings are being turned on, apply current configuration
+            if (this.ringsVisible) {
+                setTimeout(() => {
+                    this.maptoglobe.LoadRingSystemType(this.menu.rings.systemType);
+                    if (this.menu.rings.systemType === 'custom') {
+                        this.maptoglobe.SetRingInnerRadius(this.menu.rings.innerRadius);
+                        this.maptoglobe.SetRingOuterRadius(this.menu.rings.outerRadius);
+                        this.maptoglobe.SetRingOpacity(this.menu.rings.opacity);
+                        this.maptoglobe.SetRingRotationSpeed(this.menu.rings.rotationSpeed);
+                    } else {
+                        // For preset types, still apply custom opacity and rotation if they were modified
+                        this.maptoglobe.SetRingOpacity(this.menu.rings.opacity);
+                        this.maptoglobe.SetRingRotationSpeed(this.menu.rings.rotationSpeed);
+                    }
+                    
+                    // Try to restore any saved transformation state
+                    if (StorageManager.hasStoredData()) {
+                        const stored = StorageManager.loadState();
+                        if (stored.rings?.transform && this.maptoglobe.rings.object) {
+                            const transform = stored.rings.transform;
+                            this.maptoglobe.rings.object.position.set(
+                                transform.position.x,
+                                transform.position.y,
+                                transform.position.z
+                            );
+                            this.maptoglobe.rings.object.rotation.set(
+                                transform.rotation.x,
+                                transform.rotation.y,
+                                transform.rotation.z
+                            );
+                            this.maptoglobe.rings.object.scale.set(
+                                transform.scale.x,
+                                transform.scale.y,
+                                transform.scale.z
+                            );
+                        }
+                    }
+                }, 100); // Small delay to ensure rings are fully created
+            }
+            
             this.saveCurrentState();
         },
-        setRingsImage(event: Event) {
+        async setRingsImage(event: Event) {
             const files = (event.target as HTMLInputElement).files;
-            if (files !== null) {
+            if (files !== null && this.validateImageFile(files[0])) {
                 this.maptoglobe.rings.SetSurfaceImage(files[0]);
+                
+                // Save texture data for persistence
+                try {
+                    const base64 = await StorageManager.fileToBase64(files[0]);
+                    const currentState = StorageManager.loadState();
+                    currentState.textureData.rings.surface = base64;
+                    StorageManager.saveState(currentState);
+                } catch (error) {
+                    console.warn('Failed to save rings texture:', error);
+                }
             }
         },
-        setRingsTransparency(event: Event) {
+        async setRingsTransparency(event: Event) {
             const files = (event.target as HTMLInputElement).files;
-            if (files !== null)
+            if (files !== null && this.validateImageFile(files[0])) {
                 this.maptoglobe.rings.SetTransparencyImage(files[0]);
+                
+                // Save texture data for persistence
+                try {
+                    const base64 = await StorageManager.fileToBase64(files[0]);
+                    const currentState = StorageManager.loadState();
+                    currentState.textureData.rings.transparency = base64;
+                    StorageManager.saveState(currentState);
+                } catch (error) {
+                    console.warn('Failed to save rings transparency texture:', error);
+                }
+            }
         },
         
         // NEW RING CONTROL METHODS
@@ -1189,16 +1629,19 @@ export default defineComponent({
             }
             
             this.menu.rings.systemType = type;
-            this.maptoglobe.LoadRingSystemType(type);
             
-            // Update UI values based on the selected system type
-            if (type !== 'custom') {
-                const config = this.maptoglobe.GetRingConfig();
-                this.menu.rings.innerRadius = config.innerRadius;
-                this.menu.rings.outerRadius = config.outerRadius;
-                this.menu.rings.thickness = config.outerRadius - config.innerRadius;
-                this.menu.rings.opacity = config.opacity;
-                this.menu.rings.rotationSpeed = config.rotationSpeed;
+            if (this.ringsVisible) {
+                this.maptoglobe.LoadRingSystemType(type);
+                
+                // Update UI values based on the selected system type
+                if (type !== 'custom') {
+                    const config = this.maptoglobe.GetRingConfig();
+                    this.menu.rings.innerRadius = config.innerRadius;
+                    this.menu.rings.outerRadius = config.outerRadius;
+                    this.menu.rings.thickness = config.outerRadius - config.innerRadius;
+                    this.menu.rings.opacity = config.opacity;
+                    this.menu.rings.rotationSpeed = config.rotationSpeed;
+                }
             }
             
             this.saveCurrentState();
@@ -1259,10 +1702,34 @@ export default defineComponent({
                 try {
                     callback();
                 } catch (error) {
+                    // eslint-disable-next-line no-console
                     console.error('Error in ring update:', error);
                 }
                 this.ringUpdateTimeout = null;
             }, 100); // 100ms debounce
+        },
+
+        // Immediate save for ring changes (called on slider input end)
+        saveRingState() {
+            // Cancel any pending debounced update
+            if (this.ringUpdateTimeout) {
+                clearTimeout(this.ringUpdateTimeout);
+                this.ringUpdateTimeout = null;
+            }
+            // Immediately save current state
+            this.saveCurrentState();
+        },
+
+        // Save ring transformation state when visual helper controls are used
+        saveRingTransform() {
+            if (this.ringsVisible && this.maptoglobe.rings.object) {
+                this.saveCurrentState();
+            }
+        },
+
+        // Save moon transformation state when visual helper controls are used
+        saveMoonTransform() {
+            this.saveCurrentState();
         },
         setBgBlack() {
             this.menu.background.type = 'black';
@@ -1290,25 +1757,38 @@ export default defineComponent({
                 fileInput.click();
             }
         },
-        setBgImage(event: Event) {
+        async setBgImage(event: Event) {
             const radioButton = document.querySelector("#imageBGRadio") as HTMLInputElement;
             if (radioButton) {
                 radioButton.checked = true;
             }
             const files = (event.target as HTMLInputElement).files;
-            if (files !== null) {
+            if (files !== null && this.validateImageFile(files[0])) {
                 this.menu.background.type = 'custom';
                 this.maptoglobe.SetBGImage(files[0]);
-                this.saveCurrentState();
+                
+                // Save texture data for persistence
+                try {
+                    const base64 = await StorageManager.fileToBase64(files[0]);
+                    const currentState = StorageManager.loadState();
+                    currentState.textureData.background = base64;
+                    StorageManager.saveState(currentState);
+                } catch (error) {
+                    console.warn('Failed to save background texture:', error);
+                    // Fallback to regular save without texture data
+                    this.saveCurrentState();
+                }
             }
         },
         toggleControls(event: Event) {
-            const target = (event.target as HTMLButtonElement).value;
+            const target = (event.target as HTMLInputElement).value;
             switch (target) {
                 case "planet":
+                    this.planetControlsVisible = !this.planetControlsVisible;
                     this.maptoglobe.ToggleControls(this.maptoglobe.planet.object);
                     break;
                 case "rings":
+                    this.ringControlsVisible = !this.ringControlsVisible;
                     this.maptoglobe.ToggleControls(this.maptoglobe.rings.object);
                     break;
                 case "light":
@@ -1321,7 +1801,9 @@ export default defineComponent({
                     this.maptoglobe.ToggleControls(this.maptoglobe.moon.moon);
                     break;
                 case "clouds":
+                    this.cloudControlsVisible = !this.cloudControlsVisible;
                     this.maptoglobe.ToggleControls(this.maptoglobe.planet.object.getObjectByName("clouds") as THREE.Mesh);
+                    break;
             }
         },
         moonScale(value: number) {
@@ -1331,6 +1813,27 @@ export default defineComponent({
         moonDistance(value: number) {
             this.maptoglobe.moon.Distance(value);
             this.saveCurrentState();
+        },
+        moonRotationSpeed(value: number) {
+            this.menu.moon.rotationSpeed = value;
+            this.maptoglobe.SetMoonRotationSpeed(value);
+            this.saveCurrentState();
+        },
+        async setLegacyMoonImage(event: Event) {
+            const files = (event.target as HTMLInputElement).files;
+            if (files !== null && this.validateImageFile(files[0])) {
+                this.maptoglobe.moon.SetSurfaceImage(files[0]);
+                
+                // Save texture data for persistence
+                try {
+                    const base64 = await StorageManager.fileToBase64(files[0]);
+                    const currentState = StorageManager.loadState();
+                    currentState.textureData.moon.surface = base64;
+                    StorageManager.saveState(currentState);
+                } catch (error) {
+                    console.warn('Failed to save legacy moon texture:', error);
+                }
+            }
         },
         sunIntensity(value: number) {
             this.maptoglobe.instance.SetSunIntensity(value);
@@ -1363,8 +1866,20 @@ export default defineComponent({
             // Initialize moon controls visibility for all moons in the preset
             nextTick(() => {
                 this.moonSystemInfo.moons.forEach(moon => {
-                    if (!this.moonControlsVisible.hasOwnProperty(moon.id)) {
+                    if (!(moon.id in this.moonControlsVisible)) {
                         this.moonControlsVisible[moon.id] = false;
+                    }
+                    if (!(moon.id in this.moonTransformControlsVisible)) {
+                        this.moonTransformControlsVisible[moon.id] = false;
+                    }
+                    if (!(moon.id in this.moonPositionControlsVisible)) {
+                        this.moonPositionControlsVisible[moon.id] = false;
+                    }
+                    if (!(moon.id in this.moonRotationControlsVisible)) {
+                        this.moonRotationControlsVisible[moon.id] = false;
+                    }
+                    if (!(moon.id in this.moonScaleControlsVisible)) {
+                        this.moonScaleControlsVisible[moon.id] = false;
                     }
                 });
             });
@@ -1384,6 +1899,10 @@ export default defineComponent({
             this.maptoglobe.ClearMoonSystem();
             // Clear all moon controls visibility states
             this.moonControlsVisible = {};
+            this.moonTransformControlsVisible = {};
+            this.moonPositionControlsVisible = {};
+            this.moonRotationControlsVisible = {};
+            this.moonScaleControlsVisible = {};
             this.updateMoonSystemInfo();
         },
         
@@ -1392,6 +1911,8 @@ export default defineComponent({
             if (moon) {
                 if (moon.visible) {
                     this.maptoglobe.HideMoon(moonId);
+                    // Detach any active transform controls when hiding a moon
+                    this.detachMoonControls(moonId);
                 } else {
                     this.maptoglobe.ShowMoon(moonId);
                 }
@@ -1400,9 +1921,16 @@ export default defineComponent({
         },
         
         removeMoon(moonId: string) {
+            // Detach any active transform controls before removing the moon
+            this.detachMoonControls(moonId);
+            
             this.maptoglobe.RemoveMoonFromSystem(moonId);
             // Clean up moon controls visibility state
             delete this.moonControlsVisible[moonId];
+            delete this.moonTransformControlsVisible[moonId];
+            delete this.moonPositionControlsVisible[moonId];
+            delete this.moonRotationControlsVisible[moonId];
+            delete this.moonScaleControlsVisible[moonId];
             this.updateMoonSystemInfo();
         },
         
@@ -1426,23 +1954,38 @@ export default defineComponent({
             this.updateMoonSystemInfo();
         },
         
-        updateMoonRetrograde(moonId: string, retrograde: number) {
+        updateMoonOrbitDirection(moonId: string, retrograde: number) {
             this.maptoglobe.UpdateMoonRetrograde(moonId, retrograde);
             this.updateMoonSystemInfo();
         },
         
         getOrbitDirection(retrograde: number): string {
-            if (retrograde === 0) return 'Normal';
-            if (retrograde === 180) return 'Full Retrograde';
-            if (retrograde < 90) return 'Mostly Normal';
-            if (retrograde > 90) return 'Mostly Retrograde';
+            if (retrograde === 0) return 'Clockwise';
+            if (retrograde === 180) return 'Counter-Clockwise';
+            if (retrograde < 90) return 'Mostly Clockwise';
+            if (retrograde > 90) return 'Mostly Counter-Clockwise';
             return 'Perpendicular';
         },
         
-        setMoonTexture(moonId: string, event: Event) {
+        async setMoonTexture(moonId: string, event: Event) {
             const files = (event.target as HTMLInputElement).files;
-            if (files !== null) {
+            if (files !== null && this.validateImageFile(files[0])) {
                 this.maptoglobe.SetMoonTexture(moonId, files[0]);
+                
+                // Save texture data for persistence
+                try {
+                    const base64 = await StorageManager.fileToBase64(files[0]);
+                    const currentState = StorageManager.loadState();
+                    
+                    // Find the moon in the current state and update its texture data
+                    const moonIndex = currentState.moonSystem.moons.findIndex(moon => moon.id === moonId);
+                    if (moonIndex !== -1) {
+                        currentState.moonSystem.moons[moonIndex].textureData = base64;
+                        StorageManager.saveState(currentState);
+                    }
+                } catch (error) {
+                    console.warn('Failed to save moon texture:', error);
+                }
             }
         },
         
@@ -1465,14 +2008,19 @@ export default defineComponent({
             
             // Initialize moon controls as hidden by default
             this.moonControlsVisible[moonId] = false;
+            this.moonTransformControlsVisible[moonId] = false;
+            this.moonPositionControlsVisible[moonId] = false;
+            this.moonRotationControlsVisible[moonId] = false;
+            this.moonScaleControlsVisible[moonId] = false;
             
             this.updateMoonSystemInfo();
         },
         makeGif() {
             this.maptoglobe.Gif(document.getElementById("scene") as CanvasElement);
         },
-        async Load(_item: string) {
+        async Load() {
             // Load functionality removed - no longer supported without Firebase
+            // eslint-disable-next-line no-console
             console.warn('Load functionality is not available without Firebase configuration');
         },
         
@@ -1490,23 +2038,28 @@ export default defineComponent({
                 
                 const state: Partial<StoredAppState> = {
                     moonSystem: {
-                        moons: currentMoonInfo.moons.map(moon => ({
-                            id: moon.id,
-                            name: moon.name,
-                            size: moon.size,
-                            distance: moon.distance,
-                            orbitSpeed: moon.orbitSpeed,
-                            rotationSpeed: moon.rotationSpeed,
-                            retrograde: moon.retrograde,
-                            visible: moon.visible,
-                            color: allMoons.find(m => m.config.id === moon.id)?.config.color
-                        })),
+                        moons: currentMoonInfo.moons.map(moon => {
+                            const moonObj = allMoons.find(m => m.config.id === moon.id);
+                            return {
+                                id: moon.id,
+                                name: moon.name,
+                                size: moon.size,
+                                distance: moon.distance,
+                                orbitSpeed: moon.orbitSpeed,
+                                rotationSpeed: moon.rotationSpeed,
+                                retrograde: moon.retrograde,
+                                visible: moon.visible,
+                                color: moonObj?.config.color,
+                                transform: moonObj?.config.transform
+                            };
+                        }),
                         customMoonCounter: this.customMoonCounter
                     },
                     legacyMoon: {
                         visible: this.moonIsVisible,
                         scale: this.menu.moon.scale,
-                        distance: this.menu.moon.distance
+                        distance: this.menu.moon.distance,
+                        rotationSpeed: this.menu.moon.rotationSpeed
                     },
                     planet: {
                         shininess: this.menu.planet.shininess,
@@ -1517,6 +2070,9 @@ export default defineComponent({
                             scaleZ: this.menu.planet.shape.scaleZ
                         }
                     },
+                    clouds: {
+                        opacity: this.menu.clouds.opacity
+                    },
                     rings: {
                         visible: this.ringsVisible,
                         systemType: this.menu.rings.systemType,
@@ -1524,7 +2080,25 @@ export default defineComponent({
                         outerRadius: this.menu.rings.outerRadius,
                         thickness: this.menu.rings.thickness,
                         opacity: this.menu.rings.opacity,
-                        rotationSpeed: this.menu.rings.rotationSpeed
+                        rotationSpeed: this.menu.rings.rotationSpeed,
+                        // Save 3D transformation state if rings exist
+                        transform: this.ringsVisible && this.maptoglobe.rings.object ? {
+                            position: {
+                                x: this.maptoglobe.rings.object.position.x,
+                                y: this.maptoglobe.rings.object.position.y,
+                                z: this.maptoglobe.rings.object.position.z
+                            },
+                            rotation: {
+                                x: this.maptoglobe.rings.object.rotation.x,
+                                y: this.maptoglobe.rings.object.rotation.y,
+                                z: this.maptoglobe.rings.object.rotation.z
+                            },
+                            scale: {
+                                x: this.maptoglobe.rings.object.scale.x,
+                                y: this.maptoglobe.rings.object.scale.y,
+                                z: this.maptoglobe.rings.object.scale.z
+                            }
+                        } : undefined
                     },
                     lighting: {
                         sunIntensity: this.menu.light.sunIntensity,
@@ -1569,6 +2143,10 @@ export default defineComponent({
                         this.maptoglobe.AddMoonToSystem(moonConfig);
                         // Initialize moon controls as hidden by default
                         this.moonControlsVisible[moonConfig.id] = false;
+                        this.moonTransformControlsVisible[moonConfig.id] = false;
+                        this.moonPositionControlsVisible[moonConfig.id] = false;
+                        this.moonRotationControlsVisible[moonConfig.id] = false;
+                        this.moonScaleControlsVisible[moonConfig.id] = false;
                     });
                 }
                 this.customMoonCounter = stored.moonSystem.customMoonCounter;
@@ -1579,8 +2157,10 @@ export default defineComponent({
                     this.maptoglobe.AddMoon();
                     this.menu.moon.scale = stored.legacyMoon.scale;
                     this.menu.moon.distance = stored.legacyMoon.distance;
+                    this.menu.moon.rotationSpeed = stored.legacyMoon.rotationSpeed || 0.0;
                     this.maptoglobe.moon.Scale(stored.legacyMoon.scale);
                     this.maptoglobe.moon.Distance(stored.legacyMoon.distance);
+                    this.maptoglobe.SetMoonRotationSpeed(stored.legacyMoon.rotationSpeed || 0.0);
                 }
                 
                 // Restore planet settings
@@ -1593,30 +2173,62 @@ export default defineComponent({
                 this.maptoglobe.SetPlanetRotationSpeed(this.menu.planet.rotationSpeed);
                 this.maptoglobe.SetPlanetShape(this.menu.planet.shape.scaleX, this.menu.planet.shape.scaleY, this.menu.planet.shape.scaleZ);
                 
-                // Restore rings
-                if (stored.rings.visible) {
-                    this.ringsVisible = true;
-                    this.maptoglobe.ToggleRings();
+                // Restore cloud settings
+                if (stored.clouds) {
+                    this.menu.clouds.opacity = stored.clouds.opacity || 1.0;
+                    // Note: Cloud opacity restoration will be handled when texture is loaded
                 }
                 
-                // Restore ring settings (regardless of visibility)
-                if (stored.rings.systemType) {
-                    this.menu.rings.systemType = stored.rings.systemType;
+                // Restore ring settings first
+                if (stored.rings) {
+                    this.menu.rings.systemType = stored.rings.systemType || 'saturn';
                     // Validate values against slider constraints
                     this.menu.rings.innerRadius = Math.max(0.5, Math.min(8, stored.rings.innerRadius || 3));
                     this.menu.rings.outerRadius = Math.max(1, Math.min(12, stored.rings.outerRadius || 5));
                     this.menu.rings.thickness = Math.max(0.2, Math.min(8, stored.rings.thickness || 2));
                     this.menu.rings.opacity = Math.max(0.1, Math.min(1, stored.rings.opacity || 0.8));
                     this.menu.rings.rotationSpeed = Math.max(0, Math.min(3, stored.rings.rotationSpeed || 0.5));
+                }
+                
+                // Restore rings visibility and apply configuration
+                if (stored.rings?.visible) {
+                    this.ringsVisible = true;
+                    this.maptoglobe.ToggleRings();
                     
-                    // Apply the ring configuration
-                    this.maptoglobe.LoadRingSystemType(stored.rings.systemType);
-                    if (stored.rings.systemType === 'custom') {
-                        this.maptoglobe.SetRingInnerRadius(stored.rings.innerRadius);
-                        this.maptoglobe.SetRingOuterRadius(stored.rings.outerRadius);
-                        this.maptoglobe.SetRingOpacity(stored.rings.opacity);
-                        this.maptoglobe.SetRingRotationSpeed(stored.rings.rotationSpeed);
-                    }
+                    // Apply the ring configuration after rings are created
+                    setTimeout(() => {
+                        this.maptoglobe.LoadRingSystemType(this.menu.rings.systemType);
+                        if (this.menu.rings.systemType === 'custom') {
+                            this.maptoglobe.SetRingInnerRadius(this.menu.rings.innerRadius);
+                            this.maptoglobe.SetRingOuterRadius(this.menu.rings.outerRadius);
+                            this.maptoglobe.SetRingOpacity(this.menu.rings.opacity);
+                            this.maptoglobe.SetRingRotationSpeed(this.menu.rings.rotationSpeed);
+                        } else {
+                            // For preset types, still apply custom opacity and rotation if they were modified
+                            this.maptoglobe.SetRingOpacity(this.menu.rings.opacity);
+                            this.maptoglobe.SetRingRotationSpeed(this.menu.rings.rotationSpeed);
+                        }
+                        
+                        // Restore 3D transformation if it was saved
+                        if (stored.rings.transform && this.maptoglobe.rings.object) {
+                            const transform = stored.rings.transform;
+                            this.maptoglobe.rings.object.position.set(
+                                transform.position.x,
+                                transform.position.y,
+                                transform.position.z
+                            );
+                            this.maptoglobe.rings.object.rotation.set(
+                                transform.rotation.x,
+                                transform.rotation.y,
+                                transform.rotation.z
+                            );
+                            this.maptoglobe.rings.object.scale.set(
+                                transform.scale.x,
+                                transform.scale.y,
+                                transform.scale.z
+                            );
+                        }
+                    }, 100); // Small delay to ensure rings are fully created
                 }
                 
                 // Restore lighting
@@ -1654,11 +2266,86 @@ export default defineComponent({
                 this.images.surface = stored.images.surface;
                 this.images.clouds = stored.images.clouds;
                 
+                // Restore textures from base64 data
+                if (stored.textureData) {
+                    this.restoreTextures(stored.textureData);
+                }
+                
+                // Restore individual moon textures
+                if (stored.moonSystem && stored.moonSystem.moons) {
+                    this.restoreMoonTextures(stored.moonSystem.moons);
+                }
+                
                 this.updateMoonSystemInfo();
             } catch (error) {
                 // Error loading stored data - ignore
             } finally {
                 this.isLoadingStoredData = false; // Re-enable auto-save
+            }
+        },
+        
+        async restoreTextures(textureData: any) {
+            try {
+                // Restore planet textures
+                if (textureData.planet) {
+                    if (textureData.planet.surface) {
+                        const file = StorageManager.base64ToFile(textureData.planet.surface, 'surface.jpg');
+                        this.maptoglobe.planet.SetSurfaceImage(file);
+                    }
+                    if (textureData.planet.heightmap) {
+                        const file = StorageManager.base64ToFile(textureData.planet.heightmap, 'heightmap.jpg');
+                        this.maptoglobe.planet.SetHeightmapImage(file);
+                    }
+                    if (textureData.planet.specular) {
+                        const file = StorageManager.base64ToFile(textureData.planet.specular, 'specular.jpg');
+                        this.maptoglobe.planet.SetSpecularImage(file);
+                    }
+                    if (textureData.planet.clouds) {
+                        const file = StorageManager.base64ToFile(textureData.planet.clouds, 'clouds.jpg');
+                        this.maptoglobe.planet.SetCloudsImage(file);
+                        // Apply stored cloud opacity after loading the texture
+                        this.maptoglobe.SetCloudOpacity(this.menu.clouds.opacity);
+                    }
+                }
+                
+                // Restore moon textures
+                if (textureData.moon && textureData.moon.surface) {
+                    const file = StorageManager.base64ToFile(textureData.moon.surface, 'moon.jpg');
+                    this.maptoglobe.moon.SetSurfaceImage(file);
+                }
+                
+                // Restore rings textures
+                if (textureData.rings) {
+                    if (textureData.rings.surface) {
+                        const file = StorageManager.base64ToFile(textureData.rings.surface, 'rings.jpg');
+                        this.maptoglobe.rings.SetSurfaceImage(file);
+                    }
+                    if (textureData.rings.transparency) {
+                        const file = StorageManager.base64ToFile(textureData.rings.transparency, 'rings_transparency.jpg');
+                        this.maptoglobe.rings.SetTransparencyImage(file);
+                    }
+                }
+                
+                // Restore background texture
+                if (textureData.background) {
+                    const file = StorageManager.base64ToFile(textureData.background, 'background.jpg');
+                    this.maptoglobe.SetBGImage(file);
+                }
+            } catch (error) {
+                console.warn('Failed to restore some textures:', error);
+            }
+        },
+        
+        async restoreMoonTextures(moons: any[]) {
+            try {
+                for (const moon of moons) {
+                    if (moon.textureData) {
+                        const file = StorageManager.base64ToFile(moon.textureData, `moon_${moon.id}.jpg`);
+                        this.maptoglobe.SetMoonTexture(moon.id, file);
+                    }
+                }
+            } catch (error) {
+                console.warn('Failed to restore moon textures:', error);
             }
         },
         
@@ -1676,6 +2363,10 @@ export default defineComponent({
                 this.ringsVisible = false;
                 this.customMoonCounter = 1;
                 this.moonControlsVisible = {};
+                this.moonTransformControlsVisible = {};
+                this.moonPositionControlsVisible = {};
+                this.moonRotationControlsVisible = {};
+                this.moonScaleControlsVisible = {};
                 
                 // Reset menu values to defaults
                 this.menu.planet.shininess = 60;
@@ -1685,6 +2376,7 @@ export default defineComponent({
                 this.menu.planet.shape.scaleZ = 1.0;
                 this.menu.moon.scale = 1;
                 this.menu.moon.distance = 3;
+                this.menu.moon.rotationSpeed = 0.0;
                 this.menu.light.sunIntensity = 0.4;
                 this.menu.light.ambientIntensity = 0.6;
                 
@@ -1700,6 +2392,9 @@ export default defineComponent({
                 this.menu.background.type = 'black';
                 this.menu.background.color = '#000000';
                 
+                // Reset cloud settings
+                this.menu.clouds.opacity = 1.0;
+                
                 // Reset image flags
                 this.images.surface = false;
                 this.images.clouds = false;
@@ -1713,6 +2408,9 @@ export default defineComponent({
                 // Reset planet rotation and shape
                 this.maptoglobe.SetPlanetRotationSpeed(0.0);
                 this.maptoglobe.SetPlanetShape(1.0, 1.0, 1.0);
+                
+                // Reset legacy moon rotation
+                this.maptoglobe.SetMoonRotationSpeed(0.0);
                 
                 // Reset background
                 this.maptoglobe.SetBGBlack();
@@ -1756,8 +2454,64 @@ export default defineComponent({
             this.editingMoonNameValue = '';
         },
         
-        toggleMoonControls(moonId: string) {
+        toggleMoonControlsVisibility(moonId: string) {
             this.moonControlsVisible[moonId] = !this.moonControlsVisible[moonId];
+        },
+        
+        toggleMoonTransformControls(moonId: string) {
+            this.moonTransformControlsVisible[moonId] = !this.moonTransformControlsVisible[moonId];
+        },
+        
+        resetMoonTransform(moonId: string) {
+            this.maptoglobe.UpdateMoonPosition(moonId, 0, 0, 0);
+            this.maptoglobe.UpdateMoonRotation(moonId, 0, 0, 0);
+            this.maptoglobe.UpdateMoonScale(moonId, 1, 1, 1);
+            this.updateMoonSystemInfo();
+        },
+        toggleMoonControls(event: Event, moonId: string, control: 'position' | 'rotation' | 'scale') {
+            const property = `moon${control.charAt(0).toUpperCase() + control.slice(1)}ControlsVisible` as 'moonPositionControlsVisible' | 'moonRotationControlsVisible' | 'moonScaleControlsVisible';
+            this[property][moonId] = !this[property][moonId];
+            
+            // Toggle the visual transform controls
+            const moon = this.maptoglobe.GetMoonById(moonId);
+            
+            // Validate that moon exists and is visible before attaching controls
+            const moonInfo = this.moonSystemInfo.moons.find(m => m.id === moonId);
+            const isMoonVisible = moonInfo?.visible === true;
+            
+            if (moon && moon.object && isMoonVisible) {
+                if (this[property][moonId]) {
+                    // Set the transform control mode and attach to moon
+                    this.maptoglobe.SetTransformMode(control);
+                    this.maptoglobe.ToggleControls(moon.object);
+                } else {
+                    // Detach transform controls
+                    this.maptoglobe.ToggleControls(moon.object);
+                }
+            } else {
+                // If moon is not visible or doesn't exist, ensure controls are detached
+                // and reset the UI state
+                this[property][moonId] = false;
+                this.maptoglobe.ToggleControls(null as any); // This will trigger detach in ToggleControls
+            }
+        },
+        
+        // Helper method to detach all transform controls for a specific moon
+        detachMoonControls(moonId: string) {
+            // Reset all control visibility states for this moon
+            this.moonPositionControlsVisible[moonId] = false;
+            this.moonRotationControlsVisible[moonId] = false;
+            this.moonScaleControlsVisible[moonId] = false;
+            
+            // Get the moon object and detach controls if they're currently attached
+            const moon = this.maptoglobe.GetMoonById(moonId);
+            if (moon && moon.object) {
+                // Check if this moon's object is currently being controlled
+                const isCurrentlyControlled = this.maptoglobe.instance.controls.object === moon.object;
+                if (isCurrentlyControlled) {
+                    this.maptoglobe.ToggleControls(moon.object); // This will detach
+                }
+            }
         }
     }
 })

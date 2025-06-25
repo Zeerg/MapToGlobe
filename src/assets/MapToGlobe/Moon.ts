@@ -4,6 +4,7 @@ export default class Moon {
     private parentObject: THREE.Object3D;
     moon: THREE.Mesh;
     object: THREE.Object3D;
+    rotationSpeed = 0;
 
     constructor(parentObject: THREE.Object3D, json?: THREE.Mesh) {
         this.parentObject = parentObject;
@@ -55,5 +56,22 @@ export default class Moon {
 
     Distance(num: number) {
         this.moon.position.set(num, 0, 0);
+    }
+
+    /**
+     * ROTATION METHODS
+     */
+    SetRotationSpeed(speed: number) {
+        this.rotationSpeed = speed;
+    }
+
+    GetRotationSpeed(): number {
+        return this.rotationSpeed;
+    }
+
+    UpdateRotation() {
+        if (this.rotationSpeed > 0) {
+            this.moon.rotation.y += this.rotationSpeed * 0.01;
+        }
     }
 }

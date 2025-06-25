@@ -11,6 +11,12 @@ export interface StoredMoonConfig {
     visible: boolean;
     color?: number;
     textureData?: string; // Base64 encoded texture data
+    // 3D Transform properties
+    transform?: {
+        position: { x: number; y: number; z: number };
+        rotation: { x: number; y: number; z: number };
+        scale: { x: number; y: number; z: number };
+    };
 }
 
 export interface StoredAppState {
@@ -28,6 +34,7 @@ export interface StoredAppState {
         visible: boolean;
         scale: number;
         distance: number;
+        rotationSpeed: number;
     };
     
     // Planet settings
@@ -41,6 +48,11 @@ export interface StoredAppState {
         };
     };
     
+    // Cloud settings
+    clouds: {
+        opacity: number;
+    };
+    
     // Rings
     rings: {
         visible: boolean;
@@ -50,6 +62,12 @@ export interface StoredAppState {
         thickness: number;
         opacity: number;
         rotationSpeed: number;
+        // 3D transformation state for visual helper controls
+        transform?: {
+            position: { x: number; y: number; z: number };
+            rotation: { x: number; y: number; z: number };
+            scale: { x: number; y: number; z: number };
+        };
     };
     
     // Lighting
@@ -69,10 +87,28 @@ export interface StoredAppState {
         enabled: boolean;
     };
     
-    // Images flags
+    // Images flags and texture data
     images: {
         surface: boolean;
         clouds: boolean;
+    };
+    
+    // Texture data (base64 encoded)
+    textureData: {
+        planet: {
+            surface?: string;
+            heightmap?: string;
+            specular?: string;
+            clouds?: string;
+        };
+        moon: {
+            surface?: string;
+        };
+        rings: {
+            surface?: string;
+            transparency?: string;
+        };
+        background?: string;
     };
 }
 
@@ -143,7 +179,8 @@ export class StorageManager {
             legacyMoon: {
                 visible: false,
                 scale: 1,
-                distance: 3
+                distance: 3,
+                rotationSpeed: 0.0
             },
             
             planet: {
@@ -154,6 +191,10 @@ export class StorageManager {
                     scaleY: 1.0,
                     scaleZ: 1.0
                 }
+            },
+            
+            clouds: {
+                opacity: 1.0
             },
             
             rings: {
@@ -183,6 +224,12 @@ export class StorageManager {
             images: {
                 surface: false,
                 clouds: false
+            },
+            
+            textureData: {
+                planet: {},
+                moon: {},
+                rings: {}
             }
         };
     }

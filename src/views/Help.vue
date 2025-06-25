@@ -485,10 +485,11 @@
                     <div class="bg-gray-800 border border-gray-700 rounded-lg p-6">
                         <h3 class="text-xl font-semibold text-green-400 mb-4">Ring Textures</h3>
                         <ul class="space-y-2 text-gray-300">
-                            <li>• <strong>Format:</strong> Rectangular (any ratio)</li>
-                            <li>• <strong>Orientation:</strong> Vertical bands</li>
-                            <li>• <strong>Layout:</strong> Inner ring (left) → Outer ring (right)</li>
-                            <li>• <strong>Transparency:</strong> Use alpha maps for gaps</li>
+                            <li>• <strong>Format:</strong> Radial density maps (any rectangular ratio)</li>
+                            <li>• <strong>Sampling:</strong> Left/top = inner radius, right/bottom = outer radius</li>
+                            <li>• <strong>Usage:</strong> Represents cross-section from center to edge</li>
+                            <li>• <strong>Perfect for:</strong> Saturn-style ring gaps and density variations</li>
+                            <li>• <strong>Transparency:</strong> Use alpha maps for realistic ring structure</li>
                         </ul>
                     </div>
                 </div>

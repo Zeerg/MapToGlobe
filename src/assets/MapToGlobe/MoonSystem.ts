@@ -7,10 +7,16 @@ export interface MoonConfig {
     distance: number;      // Distance from planet (3 - 50)
     orbitSpeed: number;    // Orbital speed multiplier (0.0 - 5.0, 0.0 = paused)
     rotationSpeed: number; // Rotation speed multiplier (0.0 - 5.0, 0.0 = paused)
-    retrograde: number;    // Retrograde percentage (0 = normal, 180 = full retrograde)
+    retrograde: number;    // Orbit direction (0 = clockwise, 180 = counter-clockwise)
     texture?: string;      // Path to texture or null for default
     visible: boolean;      // Whether moon is currently visible
     color?: number;        // Default color if no texture (hex)
+    // 3D Transform properties
+    transform?: {
+        position: { x: number; y: number; z: number };
+        rotation: { x: number; y: number; z: number };
+        scale: { x: number; y: number; z: number };
+    };
 }
 
 export class Moon {
@@ -41,6 +47,25 @@ export class Moon {
         this.mesh.scale.set(config.size, config.size, config.size);
         this.mesh.position.set(config.distance, 0, 0);
 
+        // Apply 3D transform if provided
+        if (config.transform) {
+            this.mesh.position.add(new THREE.Vector3(
+                config.transform.position.x,
+                config.transform.position.y,
+                config.transform.position.z
+            ));
+            this.mesh.rotation.set(
+                config.transform.rotation.x,
+                config.transform.rotation.y,
+                config.transform.rotation.z
+            );
+            this.mesh.scale.set(
+                config.transform.scale.x,
+                config.transform.scale.y,
+                config.transform.scale.z
+            );
+        }
+
         // Create pivot point for orbital motion
         this.object = new THREE.Object3D();
         this.object.name = `${config.name}_orbit`;
@@ -67,8 +92,8 @@ export class Moon {
         if (this.config.visible) {
             // Update orbital position (only if orbit speed > 0)
             if (this.config.orbitSpeed > 0) {
-                // Calculate orbit direction based on retrograde percentage
-                // 0% = normal (positive), 180% = full retrograde (negative)
+                // Calculate orbit direction based on retrograde value
+                // 0 = clockwise (positive), 180 = counter-clockwise (negative)
                 const retrogradeMultiplier = 1 - (this.config.retrograde / 90); // Convert 0-180 to 1 to -1
                 
                 this.orbitAngle += deltaTime * this.config.orbitSpeed * 0.001 * retrogradeMultiplier;
@@ -112,6 +137,53 @@ export class Moon {
 
     public setRetrograde(retrograde: number): void {
         this.config.retrograde = retrograde;
+    }
+
+    // 3D Transform methods
+    public setPosition(x: number, y: number, z: number): void {
+        if (!this.config.transform) {
+            this.config.transform = {
+                position: { x: 0, y: 0, z: 0 },
+                rotation: { x: 0, y: 0, z: 0 },
+                scale: { x: 1, y: 1, z: 1 }
+            };
+        }
+        this.config.transform.position = { x, y, z };
+        // Apply position relative to base orbital position
+        this.mesh.position.set(this.config.distance + x, y, z);
+    }
+
+    public setMeshRotation(x: number, y: number, z: number): void {
+        if (!this.config.transform) {
+            this.config.transform = {
+                position: { x: 0, y: 0, z: 0 },
+                rotation: { x: 0, y: 0, z: 0 },
+                scale: { x: 1, y: 1, z: 1 }
+            };
+        }
+        this.config.transform.rotation = { x, y, z };
+        // Note: We preserve the spinning rotation and add the manual rotation
+        this.mesh.rotation.set(x, this.mesh.rotation.y + z, z);
+    }
+
+    public setMeshScale(x: number, y: number, z: number): void {
+        if (!this.config.transform) {
+            this.config.transform = {
+                position: { x: 0, y: 0, z: 0 },
+                rotation: { x: 0, y: 0, z: 0 },
+                scale: { x: 1, y: 1, z: 1 }
+            };
+        }
+        this.config.transform.scale = { x, y, z };
+        this.mesh.scale.set(x, y, z);
+    }
+
+    public getTransform(): { position: { x: number; y: number; z: number }; rotation: { x: number; y: number; z: number }; scale: { x: number; y: number; z: number } } {
+        return this.config.transform || {
+            position: { x: 0, y: 0, z: 0 },
+            rotation: { x: 0, y: 0, z: 0 },
+            scale: { x: 1, y: 1, z: 1 }
+        };
     }
 }
 
@@ -295,7 +367,7 @@ export default class MoonSystem {
                 distance: 35,
                 orbitSpeed: 0.3,
                 rotationSpeed: 0.3,
-                retrograde: 180, // Make Iapetus retrograde as an example
+                retrograde: 180, // Counter-clockwise orbit as an example
                 visible: true,
                 color: 0x666666
             }
@@ -322,7 +394,7 @@ export default class MoonSystem {
                 distance: 12,
                 orbitSpeed: 1.0,
                 rotationSpeed: 0.0, // Paused rotation example
-                retrograde: 90, // Partial retrograde
+                retrograde: 90, // Mixed orbit direction
                 visible: true,
                 color: 0xccffcc
             },
@@ -333,7 +405,7 @@ export default class MoonSystem {
                 distance: 20,
                 orbitSpeed: 0.0, // Paused orbit example
                 rotationSpeed: 2.0,
-                retrograde: 180, // Full retrograde
+                retrograde: 180, // Counter-clockwise orbit
                 visible: true,
                 color: 0xccccff
             }

@@ -148,10 +148,9 @@ export default class Rings {
         rings.name = "rings";
         rings.receiveShadow = true;
 
-        // Configure UV mapping for textures
-        // https://discourse.threejs.org/t/applying-a-texture-to-a-ringgeometry/9990
+        // Configure UV mapping for RADIAL DENSITY SAMPLING
+        // Texture represents cross-section from inner to outer radius
         try {
-            // Check if geometry attributes are now available after computation
             const bufferGeometry = geometry as unknown as THREE.BufferGeometry;
             if (bufferGeometry.attributes && bufferGeometry.attributes.position && bufferGeometry.attributes.uv) {
                 const pos = bufferGeometry.attributes.position;
@@ -162,16 +161,19 @@ export default class Rings {
                 for (let i = 0; i < pos.count; i++){
                     v3.fromBufferAttribute(pos, i);
                     const distance = v3.length();
-                    // Map distance to UV coordinates (0 = inner edge, 1 = outer edge)
-                    const u = (distance - minRadius) / (maxRadius - minRadius);
-                    bufferGeometry.attributes.uv.setXY(i, u, 1);
+                    
+                    // RADIAL SAMPLING: Map distance to texture coordinate
+                    // 0 = inner radius (left/top of texture)
+                    // 1 = outer radius (right/bottom of texture)
+                    const radialPosition = (distance - minRadius) / (maxRadius - minRadius);
+                    
+                    // Use radial position for BOTH U and V to sample texture consistently
+                    // This treats the texture as a 1D gradient from inner to outer
+                    bufferGeometry.attributes.uv.setXY(i, radialPosition, 0.5);
                 }
                 
                 // Mark UV attribute as needing update
                 bufferGeometry.attributes.uv.needsUpdate = true;
-            } else {
-                // If attributes are still not available, skip UV mapping
-                // This is not critical for basic ring functionality
             }
         } catch (error) {
             // Skip UV mapping if there's an error - not critical for functionality
@@ -194,6 +196,19 @@ export default class Rings {
         const loader = new THREE.TextureLoader();
         const fileURL = URL.createObjectURL(file);
         loader.load(fileURL, (res) => {
+            // For ring textures, we use them as RADIAL DENSITY MAPS
+            // The texture represents the cross-section from inner to outer radius
+            res.wrapS = THREE.ClampToEdgeWrapping;
+            res.wrapT = THREE.ClampToEdgeWrapping;
+            
+            // No repeating - we sample the texture radially
+            res.repeat.set(1, 1);
+            
+            // High quality filtering for smooth gradients
+            res.generateMipmaps = true;
+            res.minFilter = THREE.LinearMipmapLinearFilter;
+            res.magFilter = THREE.LinearFilter;
+            
             const material = this.object.material as THREE.MeshLambertMaterial;
             material.map = res;
             material.needsUpdate = true;
@@ -204,6 +219,15 @@ export default class Rings {
         const loader = new THREE.TextureLoader();
         const fileURL = URL.createObjectURL(file);
         loader.load(fileURL, (res) => {
+            // Transparency map also used as radial density map
+            res.wrapS = THREE.ClampToEdgeWrapping;
+            res.wrapT = THREE.ClampToEdgeWrapping;
+            res.repeat.set(1, 1);
+            
+            res.generateMipmaps = true;
+            res.minFilter = THREE.LinearMipmapLinearFilter;
+            res.magFilter = THREE.LinearFilter;
+            
             const material = this.object.material as THREE.MeshLambertMaterial;
             material.alphaMap = res;
             material.needsUpdate = true;
@@ -384,6 +408,16 @@ export default class Rings {
         try {
             const wasVisible = this.parentObject.children.some(child => child.name === "rings");
             
+            // Store current textures before recreating geometry
+            let surfaceTexture: THREE.Texture | null = null;
+            let alphaTexture: THREE.Texture | null = null;
+            
+            if (this.object && this.object.material) {
+                const material = this.object.material as THREE.MeshLambertMaterial;
+                surfaceTexture = material.map;
+                alphaTexture = material.alphaMap;
+            }
+            
             // Remove existing ring if visible
             if (wasVisible) {
                 const existingRing = this.parentObject.children.find(child => child.name === "rings");
@@ -399,6 +433,14 @@ export default class Rings {
             
             this.createRingMesh();
             
+            // Reapply textures with updated settings
+            if (surfaceTexture) {
+                this.reapplyTextureSettings(surfaceTexture, 'surface');
+            }
+            if (alphaTexture) {
+                this.reapplyTextureSettings(alphaTexture, 'alpha');
+            }
+            
             // Restore visibility if it was visible before
             if (wasVisible && this.object) {
                 this.parentObject.add(this.object);
@@ -412,6 +454,26 @@ export default class Rings {
                 // Failed to recover ring geometry - skip
             }
         }
+    }
+
+    private reapplyTextureSettings(texture: THREE.Texture, type: 'surface' | 'alpha') {
+        // Configure texture as radial density map
+        texture.wrapS = THREE.ClampToEdgeWrapping;
+        texture.wrapT = THREE.ClampToEdgeWrapping;
+        texture.repeat.set(1, 1);
+        
+        // High quality filtering for smooth gradients
+        texture.generateMipmaps = true;
+        texture.minFilter = THREE.LinearMipmapLinearFilter;
+        texture.magFilter = THREE.LinearFilter;
+        
+        const material = this.object.material as THREE.MeshLambertMaterial;
+        if (type === 'surface') {
+            material.map = texture;
+        } else {
+            material.alphaMap = texture;
+        }
+        material.needsUpdate = true;
     }
 
     /**

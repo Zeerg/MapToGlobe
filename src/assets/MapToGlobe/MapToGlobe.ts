@@ -62,8 +62,17 @@ export default class MapToGlobe {
 
         update(); // Update tween
 
+        // Validate transform controls object before rendering
+        if (this.instance.controls.object && !this.isObjectInScene(this.instance.controls.object)) {
+            // Detach controls if the object is no longer in the scene
+            this.instance.controls.detach();
+        }
+
         // SCIENCE FEATURE: Update planetary rotation
         this.planet.UpdateRotation();
+        
+        // Update legacy moon rotation
+        this.moon.UpdateRotation();
         
         // Update multi-moon system
         this.moonSystem.update();
@@ -84,6 +93,17 @@ export default class MapToGlobe {
 
     RemoveMoon() {
         this.moon.Remove();
+    }
+
+    /**
+     * LEGACY MOON ROTATION METHODS
+     */
+    SetMoonRotationSpeed(speed: number) {
+        this.moon.SetRotationSpeed(speed);
+    }
+
+    GetMoonRotationSpeed(): number {
+        return this.moon.GetRotationSpeed();
     }
 
     ToggleRings() {
@@ -160,6 +180,15 @@ export default class MapToGlobe {
     }
 
     ToggleControls(object: THREE.Mesh) {
+        // Validate that the object exists and is part of the scene graph
+        if (!object || !this.isObjectInScene(object)) {
+            // If object is invalid, just detach any existing controls
+            if (this.instance.controls.object) {
+                this.instance.controls.detach();
+            }
+            return;
+        }
+
         if (object === this.instance.controls.object) {
             this.instance.controls.detach();
         } else if (object !== this.instance.controls.object && this.instance.controls.visible) {
@@ -169,6 +198,42 @@ export default class MapToGlobe {
             this.instance.controls.attach(object);
         }
     }
+
+    // Helper method to check if an object is part of the scene graph
+    private isObjectInScene(object: THREE.Object3D): boolean {
+        let current = object;
+        while (current.parent) {
+            if (current.parent === this.instance.scene) {
+                return true;
+            }
+            current = current.parent;
+        }
+        return false;
+    }
+
+    // Set up event listener for ring transform changes
+    SetRingTransformListener(callback: () => void) {
+        // Remove any existing listeners first
+        if (this.ringTransformCallback) {
+            this.instance.controls.removeEventListener('objectChange', this.ringTransformCallback);
+        }
+        
+        // Create the event handler that we can reference for removal
+        const eventHandler = (event: any) => {
+            // Only trigger callback if the ring object is being controlled
+            if (this.instance.controls.object === this.rings.object) {
+                callback();
+            }
+        };
+        
+        // Store the callback for removal later
+        this.ringTransformCallback = eventHandler;
+        
+        // Add new listener
+        this.instance.controls.addEventListener('objectChange', eventHandler);
+    }
+
+    private ringTransformCallback: ((event: any) => void) | null = null;
 
     Gif(canvas: CanvasElement) {
         const video = new CanvasVideo(canvas, 4000000);
@@ -223,6 +288,17 @@ export default class MapToGlobe {
 
     GetPlanetShape(): { x: number; y: number; z: number } {
         return this.planet.GetShape();
+    }
+
+    /**
+     * CLOUD CONTROL
+     */
+    SetCloudOpacity(opacity: number) {
+        if (this.planet.cloudObject) {
+            const material = this.planet.cloudObject.material as THREE.MeshPhongMaterial;
+            material.opacity = Math.max(0, Math.min(1, opacity));
+            material.needsUpdate = true;
+        }
     }
 
     /**
@@ -339,6 +415,89 @@ export default class MapToGlobe {
             moon.setTexture(file);
         }
     }
+
+    // Moon 3D Transform methods
+    UpdateMoonPosition(moonId: string, x: number, y: number, z: number): void {
+        const moon = this.moonSystem.getMoon(moonId);
+        if (moon) {
+            moon.setPosition(x, y, z);
+        }
+    }
+
+    UpdateMoonRotation(moonId: string, x: number, y: number, z: number): void {
+        const moon = this.moonSystem.getMoon(moonId);
+        if (moon) {
+            moon.setMeshRotation(x, y, z);
+        }
+    }
+
+    UpdateMoonScale(moonId: string, x: number, y: number, z: number): void {
+        const moon = this.moonSystem.getMoon(moonId);
+        if (moon) {
+            moon.setMeshScale(x, y, z);
+        }
+    }
+
+    GetMoonTransform(moonId: string): { position: { x: number; y: number; z: number }; rotation: { x: number; y: number; z: number }; scale: { x: number; y: number; z: number } } | null {
+        const moon = this.moonSystem.getMoon(moonId);
+        if (moon) {
+            return moon.getTransform();
+        }
+        return null;
+    }
+
+    // Get moon object by ID for visual transform controls
+    GetMoonById(moonId: string): { object: THREE.Mesh } | null {
+        const moon = this.moonSystem.getMoon(moonId);
+        if (moon && moon.mesh) {
+            return { object: moon.mesh };
+        }
+        return null;
+    }
+
+    // Set transform control mode
+    SetTransformMode(mode: 'position' | 'rotation' | 'scale'): void {
+        switch (mode) {
+            case 'position':
+                this.instance.controls.setMode('translate');
+                break;
+            case 'rotation':
+                this.instance.controls.setMode('rotate');
+                break;
+            case 'scale':
+                this.instance.controls.setMode('scale');
+                break;
+        }
+    }
+
+    // Set up event listener for moon transform changes  
+    SetMoonTransformListener(callback: () => void) {
+        // Remove any existing listeners first
+        if (this.moonTransformCallback) {
+            this.instance.controls.removeEventListener('objectChange', this.moonTransformCallback);
+        }
+        
+        // Create the event handler that we can reference for removal
+        const eventHandler = (event: any) => {
+            // Only trigger callback if a moon object is being controlled
+            const allMoons = this.moonSystem.getAllMoons();
+            const isControllingMoon = allMoons.some(moon => 
+                moon.config.visible && this.instance.controls.object === moon.mesh
+            );
+            
+            if (isControllingMoon) {
+                callback();
+            }
+        };
+        
+        // Store the callback for removal later
+        this.moonTransformCallback = eventHandler;
+        
+        // Add new listener
+        this.instance.controls.addEventListener('objectChange', eventHandler);
+    }
+
+    private moonTransformCallback: ((event: any) => void) | null = null;
 
     // Get moon system statistics
     GetMoonSystemInfo() {

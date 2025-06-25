@@ -1,5 +1,16 @@
 <template>
-    <div class="h-screen bg-gradient-to-b from-gray-900 via-black to-gray-900 overflow-y-auto shadow-2xl border-r border-gray-800 relative z-30 nav-container">
+    <div v-bind="$attrs">
+        <!-- Toggle button for the navigation panel -->
+        <button @click="toggleNavPanel" 
+                class="fixed top-4 left-4 z-40 p-2 bg-gray-800/90 hover:bg-gray-700/90 text-white rounded-lg shadow-lg transition-all duration-200 backdrop-blur"
+                :class="{ 'left-80': navPanelVisible, 'left-4': !navPanelVisible }">
+            <svg class="w-5 h-5 transition-transform duration-200" :class="{ 'rotate-180': navPanelVisible }" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M15 18L9 12L15 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+            </svg>
+        </button>
+
+        <div class="h-screen bg-gradient-to-b from-gray-900 via-black to-gray-900 overflow-y-auto shadow-2xl border-r border-gray-800 relative z-30 nav-container"
+             :class="{ 'transform -translate-x-full': !navPanelVisible }">
         <Loader v-if="loading" class="absolute w-full h-full inset-0" :message="loader.message" />
         
         <!-- Header -->
@@ -218,11 +229,35 @@
                             <!-- Individual Moon Controls -->
                             <div v-if="moonSystemInfo.totalMoons > 0" class="space-y-3">
                                 <h4 class="text-sm font-medium text-gray-200 border-t border-gray-700 pt-3">Individual Moons</h4>
+                                <p class="text-xs text-gray-400 italic">Double-click moon names to rename or use the Rename button</p>
                                 <div v-for="moon in moonSystemInfo.moons" :key="moon.id" 
                                      class="bg-gray-800/50 rounded-lg p-3 space-y-2">
                                     <div class="flex items-center justify-between">
-                                        <span class="text-sm font-medium text-gray-200">{{ moon.name }}</span>
+                                        <div class="flex items-center flex-1 mr-2">
+                                            <input v-if="editingMoonName === moon.id"
+                                                   v-model="editingMoonNameValue"
+                                                   @keyup.enter="saveMoonName(moon.id)"
+                                                   @keyup.escape="cancelEditMoonName"
+                                                   @blur="saveMoonName(moon.id)"
+                                                   class="text-sm font-medium bg-gray-700 text-gray-200 px-2 py-1 rounded border border-gray-600 focus:border-purple-400 focus:outline-none"
+                                                   :ref="`moonNameInput_${moon.id}`">
+                                            <span v-else 
+                                                  @dblclick="startEditMoonName(moon.id, moon.name)"
+                                                  class="text-sm font-medium text-gray-200 cursor-pointer hover:text-purple-300 transition-colors">
+                                                {{ moon.name }}
+                                            </span>
+                                        </div>
                                         <div class="flex items-center gap-2">
+                                            <button v-if="editingMoonName !== moon.id"
+                                                    @click="startEditMoonName(moon.id, moon.name)" 
+                                                    class="px-2 py-1 text-xs bg-purple-500/20 text-purple-300 hover:bg-purple-500/30 rounded transition-colors">
+                                                Rename
+                                            </button>
+                                            <button v-if="moon.visible"
+                                                    @click="toggleMoonControls(moon.id)" 
+                                                    class="px-2 py-1 text-xs bg-blue-500/20 text-blue-300 hover:bg-blue-500/30 rounded transition-colors">
+                                                {{ moonControlsVisible[moon.id] ? 'Hide Controls' : 'Show Controls' }}
+                                            </button>
                                             <button @click="toggleMoonVisibility(moon.id)" 
                                                     class="px-2 py-1 text-xs rounded transition-colors"
                                                     :class="moon.visible ? 'bg-green-500/20 text-green-300' : 'bg-gray-500/20 text-gray-400'">
@@ -235,7 +270,7 @@
                                         </div>
                                     </div>
 
-                                    <div v-if="moon.visible" class="space-y-2 pl-2 border-l-2 border-purple-500/30">
+                                    <div v-if="moon.visible && moonControlsVisible[moon.id]" class="space-y-2 pl-2 border-l-2 border-purple-500/30 mt-2">
                                         <div>
                                             <label class="block text-xs text-gray-400 mb-1">Size: {{ moon.size.toFixed(2) }}</label>
                                             <vue-slider v-model="moon.size" :min="0.1" :max="2" :interval="0.05" :tooltip="'none'" 
@@ -255,6 +290,11 @@
                                             <label class="block text-xs text-gray-400 mb-1">Rotation Speed: {{ moon.rotationSpeed.toFixed(1) }}</label>
                                             <vue-slider v-model="moon.rotationSpeed" :min="0.0" :max="5" :interval="0.1" :tooltip="'none'" 
                                                       @change="(value) => updateMoonRotationSpeed(moon.id, value)"></vue-slider>
+                                        </div>
+                                        <div>
+                                            <label class="block text-xs text-gray-400 mb-1">Retrograde: {{ moon.retrograde.toFixed(0) }}° ({{ getOrbitDirection(moon.retrograde) }})</label>
+                                            <vue-slider v-model="moon.retrograde" :min="0" :max="180" :interval="5" :tooltip="'none'" 
+                                                      @change="(value) => updateMoonRetrograde(moon.id, value)"></vue-slider>
                                         </div>
                                         <div>
                                             <input type="file" class="hidden" :id="`moonTexture_${moon.id}`" @change="(event) => setMoonTexture(moon.id, event)">
@@ -621,17 +661,19 @@
                 </router-link>
             </div>
         </nav>
+        </div>
     </div>
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { defineComponent, nextTick } from 'vue';
 import VueSlider from 'vue-slider-component';
 import Loader from '@/components/Loader.vue';
 import 'vue-slider-component/theme/antd.css';
 import MapToGlobe from '../assets/MapToGlobe/MapToGlobe';
 import * as THREE from 'three';
-import { StorageManager, StoredAppState, StoredMoonConfig } from '../utils/storage';
+import { StorageManager, StoredAppState } from '../utils/storage';
+import type { StoredMoonConfig } from '../utils/storage';
 
 interface CanvasElement extends HTMLCanvasElement {
     captureStream(frameRate?: number): MediaStream;
@@ -642,6 +684,8 @@ export default defineComponent({
         VueSlider,
         Loader
     },
+    emits: ['nav-toggle'],
+    inheritAttrs: false,
     data() {
         return {
             loading: false,
@@ -703,13 +747,18 @@ export default defineComponent({
                     distance: number;
                     orbitSpeed: number;
                     rotationSpeed: number;
+                    retrograde: number;
                 }>
             },
             customMoonCounter: 1,
             hasStoredData: false,
-            storageInfo: { size: 0, timestamp: undefined as number | undefined },
+            storageInfo: { size: 0, timestamp: undefined as number | undefined } as { size: number; timestamp?: number },
             isLoadingStoredData: false,
-            ringUpdateTimeout: null as number | null
+            ringUpdateTimeout: null as number | null,
+            navPanelVisible: true,
+            editingMoonName: null as string | null,
+            editingMoonNameValue: '',
+            moonControlsVisible: {} as Record<string, boolean>
         }
     },
     created() {
@@ -964,7 +1013,7 @@ export default defineComponent({
             // Auto-save after moon system changes (with small delay to ensure state is updated)
             // But don't save while we're loading stored data to prevent recursion
             if (!this.isLoadingStoredData) {
-                this.$nextTick(() => {
+                nextTick(() => {
                     this.saveCurrentState();
                 });
             }
@@ -973,6 +1022,15 @@ export default defineComponent({
         loadMoonPreset(presetName: 'earth' | 'jupiter' | 'saturn' | 'custom') {
             this.maptoglobe.LoadMoonPreset(presetName);
             this.updateMoonSystemInfo();
+            
+            // Initialize moon controls visibility for all moons in the preset
+            nextTick(() => {
+                this.moonSystemInfo.moons.forEach(moon => {
+                    if (!this.moonControlsVisible.hasOwnProperty(moon.id)) {
+                        this.moonControlsVisible[moon.id] = false;
+                    }
+                });
+            });
         },
         
         showAllMoons() {
@@ -987,6 +1045,8 @@ export default defineComponent({
         
         clearMoonSystem() {
             this.maptoglobe.ClearMoonSystem();
+            // Clear all moon controls visibility states
+            this.moonControlsVisible = {};
             this.updateMoonSystemInfo();
         },
         
@@ -1004,6 +1064,8 @@ export default defineComponent({
         
         removeMoon(moonId: string) {
             this.maptoglobe.RemoveMoonFromSystem(moonId);
+            // Clean up moon controls visibility state
+            delete this.moonControlsVisible[moonId];
             this.updateMoonSystemInfo();
         },
         
@@ -1027,6 +1089,19 @@ export default defineComponent({
             this.updateMoonSystemInfo();
         },
         
+        updateMoonRetrograde(moonId: string, retrograde: number) {
+            this.maptoglobe.UpdateMoonRetrograde(moonId, retrograde);
+            this.updateMoonSystemInfo();
+        },
+        
+        getOrbitDirection(retrograde: number): string {
+            if (retrograde === 0) return 'Normal';
+            if (retrograde === 180) return 'Full Retrograde';
+            if (retrograde < 90) return 'Mostly Normal';
+            if (retrograde > 90) return 'Mostly Retrograde';
+            return 'Perpendicular';
+        },
+        
         setMoonTexture(moonId: string, event: Event) {
             const files = (event.target as HTMLInputElement).files;
             if (files !== null) {
@@ -1035,25 +1110,31 @@ export default defineComponent({
         },
         
         addCustomMoon() {
+            const moonId = `custom_${this.customMoonCounter}`;
             const moonConfig = {
-                id: `custom_${this.customMoonCounter}`,
+                id: moonId,
                 name: `Custom Moon ${this.customMoonCounter}`,
                 size: 0.3,
                 distance: 8 + (this.customMoonCounter * 3),
                 orbitSpeed: 1.0,
                 rotationSpeed: 1.0,
+                retrograde: 0,
                 visible: true,
                 color: Math.floor(Math.random() * 0xffffff)
             };
             
             this.maptoglobe.AddMoonToSystem(moonConfig);
             this.customMoonCounter++;
+            
+            // Initialize moon controls as hidden by default
+            this.moonControlsVisible[moonId] = false;
+            
             this.updateMoonSystemInfo();
         },
         makeGif() {
             this.maptoglobe.Gif(document.getElementById("scene") as CanvasElement);
         },
-        async Load(item: string) {
+        async Load(_item: string) {
             // Load functionality removed - no longer supported without Firebase
             console.warn('Load functionality is not available without Firebase configuration');
         },
@@ -1079,6 +1160,7 @@ export default defineComponent({
                             distance: moon.distance,
                             orbitSpeed: moon.orbitSpeed,
                             rotationSpeed: moon.rotationSpeed,
+                            retrograde: moon.retrograde,
                             visible: moon.visible,
                             color: allMoons.find(m => m.config.id === moon.id)?.config.color
                         })),
@@ -1136,8 +1218,10 @@ export default defineComponent({
                 // Restore moon system
                 if (stored.moonSystem.moons.length > 0) {
                     this.maptoglobe.ClearMoonSystem();
-                    stored.moonSystem.moons.forEach(moonConfig => {
+                    stored.moonSystem.moons.forEach((moonConfig: StoredMoonConfig) => {
                         this.maptoglobe.AddMoonToSystem(moonConfig);
+                        // Initialize moon controls as hidden by default
+                        this.moonControlsVisible[moonConfig.id] = false;
                     });
                 }
                 this.customMoonCounter = stored.moonSystem.customMoonCounter;
@@ -1214,6 +1298,7 @@ export default defineComponent({
                 this.moonIsVisible = false;
                 this.ringsVisible = false;
                 this.customMoonCounter = 1;
+                this.moonControlsVisible = {};
                 
                 // Reset menu values to defaults
                 this.menu.planet.shininess = 60;
@@ -1247,6 +1332,40 @@ export default defineComponent({
             } catch (error) {
                 // Error clearing canvas - ignore
             }
+        },
+        toggleNavPanel() {
+            this.navPanelVisible = !this.navPanelVisible;
+            this.$emit('nav-toggle', this.navPanelVisible);
+        },
+        
+        startEditMoonName(moonId: string, currentName: string) {
+            this.editingMoonName = moonId;
+            this.editingMoonNameValue = currentName;
+            nextTick(() => {
+                const input = this.$refs[`moonNameInput_${moonId}`] as HTMLInputElement[];
+                if (input && input[0]) {
+                    input[0].focus();
+                    input[0].select();
+                }
+            });
+        },
+        
+        saveMoonName(moonId: string) {
+            if (this.editingMoonNameValue.trim() && this.editingMoonNameValue.trim() !== '') {
+                this.maptoglobe.RenameMoon(moonId, this.editingMoonNameValue.trim());
+                this.updateMoonSystemInfo();
+                this.saveCurrentState();
+            }
+            this.cancelEditMoonName();
+        },
+        
+        cancelEditMoonName() {
+            this.editingMoonName = null;
+            this.editingMoonNameValue = '';
+        },
+        
+        toggleMoonControls(moonId: string) {
+            this.moonControlsVisible[moonId] = !this.moonControlsVisible[moonId];
         }
     }
 })
@@ -1285,11 +1404,40 @@ export default defineComponent({
     [v-show] {
         transition: all 0.3s ease-in-out;
     }
+    
+    /* Smooth transitions for moon controls */
+    .space-y-2 {
+        transition: all 0.3s ease-in-out;
+    }
 
     /* Ensure nav background is always solid */
     .nav-container {
         background: linear-gradient(to bottom, #111827, #000000, #111827) !important;
         backdrop-filter: blur(10px);
+        width: 320px;
+        position: fixed;
+        left: 0;
+        top: 0;
+        z-index: 30;
+    }
+    
+    /* Smooth transition for navigation panel */
+    .nav-container {
+        transition: transform 0.3s ease-in-out;
+    }
+    
+    /* Toggle button positioning */
+    .nav-toggle {
+        transition: left 0.3s ease-in-out;
+    }
+    
+    /* Improved input styling for moon name editing */
+    input[class*="focus:border-purple-400"] {
+        transition: border-color 0.2s ease-in-out;
+    }
+    
+    input[class*="focus:border-purple-400"]:focus {
+        box-shadow: 0 0 0 1px rgba(147, 51, 234, 0.3);
     }
 
     /* Custom scrollbar for the navigation */

@@ -7,6 +7,7 @@ export interface MoonConfig {
     distance: number;      // Distance from planet (3 - 50)
     orbitSpeed: number;    // Orbital speed multiplier (0.0 - 5.0, 0.0 = paused)
     rotationSpeed: number; // Rotation speed multiplier (0.0 - 5.0, 0.0 = paused)
+    retrograde: number;    // Retrograde percentage (0 = normal, 180 = full retrograde)
     texture?: string;      // Path to texture or null for default
     visible: boolean;      // Whether moon is currently visible
     color?: number;        // Default color if no texture (hex)
@@ -64,7 +65,11 @@ export class Moon {
         if (this.config.visible) {
             // Update orbital position (only if orbit speed > 0)
             if (this.config.orbitSpeed > 0) {
-                this.orbitAngle += deltaTime * this.config.orbitSpeed * 0.001;
+                // Calculate orbit direction based on retrograde percentage
+                // 0% = normal (positive), 180% = full retrograde (negative)
+                const retrogradeMultiplier = 1 - (this.config.retrograde / 90); // Convert 0-180 to 1 to -1
+                
+                this.orbitAngle += deltaTime * this.config.orbitSpeed * 0.001 * retrogradeMultiplier;
                 this.object.rotation.y = this.orbitAngle;
             }
             
@@ -101,6 +106,10 @@ export class Moon {
 
     public setRotationSpeed(speed: number): void {
         this.config.rotationSpeed = speed;
+    }
+
+    public setRetrograde(retrograde: number): void {
+        this.config.retrograde = retrograde;
     }
 }
 
@@ -195,6 +204,7 @@ export default class MoonSystem {
                 distance: 8,
                 orbitSpeed: 1.0,
                 rotationSpeed: 1.0,
+                retrograde: 0,
                 visible: true,
                 color: 0xcccccc
             }
@@ -210,6 +220,7 @@ export default class MoonSystem {
                 distance: 6,
                 orbitSpeed: 2.5,
                 rotationSpeed: 2.5,
+                retrograde: 0,
                 visible: true,
                 color: 0xffff99
             },
@@ -220,6 +231,7 @@ export default class MoonSystem {
                 distance: 8,
                 orbitSpeed: 1.8,
                 rotationSpeed: 1.8,
+                retrograde: 0,
                 visible: true,
                 color: 0xaaccff
             },
@@ -230,6 +242,7 @@ export default class MoonSystem {
                 distance: 12,
                 orbitSpeed: 1.2,
                 rotationSpeed: 1.2,
+                retrograde: 0,
                 visible: true,
                 color: 0x888888
             },
@@ -240,6 +253,7 @@ export default class MoonSystem {
                 distance: 18,
                 orbitSpeed: 0.8,
                 rotationSpeed: 0.8,
+                retrograde: 0,
                 visible: true,
                 color: 0x444444
             }
@@ -255,6 +269,7 @@ export default class MoonSystem {
                 distance: 5,
                 orbitSpeed: 3.0,
                 rotationSpeed: 3.0,
+                retrograde: 0,
                 visible: true,
                 color: 0xcccccc
             },
@@ -265,6 +280,7 @@ export default class MoonSystem {
                 distance: 25,
                 orbitSpeed: 0.6,
                 rotationSpeed: 0.6,
+                retrograde: 0,
                 visible: true,
                 color: 0xffaa66
             },
@@ -275,6 +291,7 @@ export default class MoonSystem {
                 distance: 35,
                 orbitSpeed: 0.3,
                 rotationSpeed: 0.3,
+                retrograde: 180, // Make Iapetus retrograde as an example
                 visible: true,
                 color: 0x666666
             }
@@ -290,6 +307,7 @@ export default class MoonSystem {
                 distance: 7,
                 orbitSpeed: 1.5,
                 rotationSpeed: 1.5,
+                retrograde: 0,
                 visible: true,
                 color: 0xffcccc
             },
@@ -300,6 +318,7 @@ export default class MoonSystem {
                 distance: 12,
                 orbitSpeed: 1.0,
                 rotationSpeed: 0.0, // Paused rotation example
+                retrograde: 90, // Partial retrograde
                 visible: true,
                 color: 0xccffcc
             },
@@ -310,6 +329,7 @@ export default class MoonSystem {
                 distance: 20,
                 orbitSpeed: 0.0, // Paused orbit example
                 rotationSpeed: 2.0,
+                retrograde: 180, // Full retrograde
                 visible: true,
                 color: 0xccccff
             }

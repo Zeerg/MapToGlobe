@@ -35,7 +35,7 @@ export default class MapToGlobe {
 
         let oldDistance = this.instance.camera.getWorldPosition(new THREE.Vector3(0,0,0)).distanceTo(this.planet.object.getWorldPosition(new THREE.Vector3(0,0,0)));
 
-        this.instance.orbitControls.addEventListener("change", (event: THREE.Event) => {
+        this.instance.orbitControls.addEventListener("change", () => {
             const newDistance = this.instance.camera.getWorldPosition(new THREE.Vector3(0,0,0)).distanceTo(this.planet.object.getWorldPosition(new THREE.Vector3(0,0,0)));
             
             if (oldDistance < 15 && newDistance > 15) {
@@ -313,6 +313,24 @@ export default class MapToGlobe {
         }
     }
 
+    UpdateMoonRetrograde(moonId: string, retrograde: number): void {
+        const moon = this.moonSystem.getMoon(moonId);
+        if (moon) {
+            moon.setRetrograde(retrograde);
+        }
+    }
+
+    /**
+     * Rename a moon in the system
+     */
+    RenameMoon(moonId: string, newName: string): void {
+        const moon = this.moonSystem.getMoon(moonId);
+        if (moon) {
+            moon.config.name = newName;
+            moon.mesh.name = newName;
+        }
+    }
+
     // Set moon texture
     SetMoonTexture(moonId: string, file: File): void {
         const moon = this.moonSystem.getMoon(moonId);
@@ -333,7 +351,8 @@ export default class MapToGlobe {
                 size: moon.config.size,
                 distance: moon.config.distance,
                 orbitSpeed: moon.config.orbitSpeed,
-                rotationSpeed: moon.config.rotationSpeed
+                rotationSpeed: moon.config.rotationSpeed,
+                retrograde: moon.config.retrograde
             }))
         };
     }

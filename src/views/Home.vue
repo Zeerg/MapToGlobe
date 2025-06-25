@@ -1,7 +1,9 @@
 <template>
   <div class="h-screen w-full relative overflow-hidden bg-transparent" id="container" style="position: fixed; top: 0; left: 0;">
-    <Nav class="hidden md:block fixed left-0 top-0 w-64 z-20" />
-    <div class="relative md:ml-64 z-0 h-full w-full" style="position: absolute; top: 0; bottom: 0; right: 0;">
+    <Nav class="hidden md:block" @nav-toggle="handleNavToggle" />
+    <div class="relative z-0 h-full w-full transition-all duration-300" 
+         :class="{ 'md:ml-80': navVisible, 'md:ml-0': !navVisible }"
+         style="position: absolute; top: 0; bottom: 0; right: 0;">
       <Scene />
     </div>
   </div>
@@ -14,6 +16,16 @@ import { defineComponent } from 'vue';
 
 export default defineComponent({
   components: { Scene, Nav },
+  data() {
+    return {
+      navVisible: true
+    }
+  },
+  methods: {
+    handleNavToggle(visible: boolean) {
+      this.navVisible = visible;
+    }
+  },
   mounted() {
     // Prevent any document-level layout shifts when canvas becomes transparent
     document.body.style.overflow = 'hidden';

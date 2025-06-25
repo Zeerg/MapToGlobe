@@ -14,14 +14,16 @@ export interface MoonConfig {
 }
 
 export class Moon {
-    private planet: THREE.Mesh;
+    private parentObject: THREE.Object3D;
+    private planetReference: THREE.Mesh;
     public mesh: THREE.Mesh;
     public object: THREE.Object3D; // Pivot for orbital motion
     public config: MoonConfig;
     private orbitAngle = 0;
 
-    constructor(planet: THREE.Mesh, config: MoonConfig) {
-        this.planet = planet;
+    constructor(parentObject: THREE.Object3D, config: MoonConfig, planetReference?: THREE.Mesh) {
+        this.parentObject = parentObject;
+        this.planetReference = planetReference || (parentObject as THREE.Mesh);
         this.config = config;
 
         // Create moon geometry and material
@@ -50,14 +52,14 @@ export class Moon {
     }
 
     public show(): void {
-        if (!this.planet.getObjectById(this.object.id)) {
-            this.planet.add(this.object);
+        if (!this.parentObject.getObjectById(this.object.id)) {
+            this.parentObject.add(this.object);
         }
         this.config.visible = true;
     }
 
     public hide(): void {
-        this.planet.remove(this.object);
+        this.parentObject.remove(this.object);
         this.config.visible = false;
     }
 
@@ -114,17 +116,19 @@ export class Moon {
 }
 
 export default class MoonSystem {
-    private planet: THREE.Mesh;
+    private parentObject: THREE.Object3D;
+    private planetReference: THREE.Mesh;
     private moons: Map<string, Moon> = new Map();
     private lastUpdateTime = 0;
 
-    constructor(planet: THREE.Mesh) {
-        this.planet = planet;
+    constructor(parentObject: THREE.Object3D, planetReference?: THREE.Mesh) {
+        this.parentObject = parentObject;
+        this.planetReference = planetReference || (parentObject as THREE.Mesh);
         this.lastUpdateTime = performance.now();
     }
 
     public addMoon(config: MoonConfig): Moon {
-        const moon = new Moon(this.planet, config);
+        const moon = new Moon(this.parentObject, config, this.planetReference);
         this.moons.set(config.id, moon);
         
         if (config.visible) {

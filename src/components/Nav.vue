@@ -147,6 +147,59 @@
                                     <vue-slider v-model="menu.planet.shininess" :min="0" :max="100" :interval="0.1" :tooltip="'none'" @change="planetShininess"></vue-slider>
                                 </div>
                             </div>
+                            
+                            <!-- Planet Rotation Controls -->
+                            <div class="mt-4 pt-3 border-t border-gray-700">
+                                <h5 class="text-gray-400 px-2 py-2 text-xs font-medium">Planet Rotation</h5>
+                                
+                                <!-- Enable/Disable Rotation -->
+                                <div class="flex items-center justify-between mb-3 px-2">
+                                    <label class="text-sm text-gray-200">Enable Rotation</label>
+                                    <div class="relative">
+                                        <input type="checkbox" class="sr-only" id="rotationToggle" v-model="menu.planet.rotation.enabled" @change="togglePlanetRotation">
+                                        <label for="rotationToggle" class="flex items-center cursor-pointer">
+                                            <div class="relative">
+                                                <div class="block bg-gray-700 w-12 h-6 rounded-full"></div>
+                                                <div class="dot absolute left-1 top-1 bg-white w-4 h-4 rounded-full transition" :class="{ 'transform translate-x-6': menu.planet.rotation.enabled }"></div>
+                                            </div>
+                                        </label>
+                                    </div>
+                                </div>
+                                
+                                <!-- Planet Type Selection -->
+                                <div class="mb-3 px-2">
+                                    <label class="block text-xs text-gray-400 mb-2">Planet Type</label>
+                                    <select v-model="menu.planet.rotation.planetType" @change="setPlanetType" 
+                                            class="w-full px-3 py-2 text-sm bg-gray-700 text-gray-200 border border-gray-600 rounded focus:border-blue-400 focus:outline-none">
+                                        <option v-for="planet in availablePlanets" :key="planet.key" :value="planet.key">
+                                            {{ planet.name }}
+                                        </option>
+                                    </select>
+                                </div>
+                                
+                                <!-- Time Scale -->
+                                <div class="mb-3 px-2">
+                                    <label class="block text-xs text-gray-400 mb-2">
+                                        Time Scale: {{ menu.planet.rotation.timeScale.toFixed(1) }}x
+                                        <span class="text-gray-500">({{ getTimeScaleDescription(menu.planet.rotation.timeScale) }})</span>
+                                    </label>
+                                    <vue-slider v-model="menu.planet.rotation.timeScale" :min="0.1" :max="10" :interval="0.1" :tooltip="'none'" @change="setTimeScale"></vue-slider>
+                                </div>
+                                
+                                <!-- Rotation Status -->
+                                <div class="px-2 py-2 bg-gray-800/50 rounded text-xs text-gray-400">
+                                    <div class="flex justify-between">
+                                        <span>Status:</span>
+                                        <span :class="menu.planet.rotation.enabled ? 'text-green-400' : 'text-red-400'">
+                                            {{ menu.planet.rotation.enabled ? 'Rotating' : 'Stopped' }}
+                                        </span>
+                                    </div>
+                                    <div class="flex justify-between mt-1">
+                                        <span>Period:</span>
+                                        <span>{{ getPlanetRotationPeriod() }}</span>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -705,7 +758,12 @@ export default defineComponent({
                     lights: false
                 },
                 planet: {
-                    shininess: 60
+                    shininess: 60,
+                    rotation: {
+                        enabled: false,
+                        planetType: 'earth',
+                        timeScale: 1.0
+                    }
                 },
                 moon: {
                     controls: false,
@@ -758,7 +816,8 @@ export default defineComponent({
             navPanelVisible: true,
             editingMoonName: null as string | null,
             editingMoonNameValue: '',
-            moonControlsVisible: {} as Record<string, boolean>
+            moonControlsVisible: {} as Record<string, boolean>,
+            availablePlanets: [] as Array<{ name: string; key: string }>
         }
     },
     created() {
@@ -783,6 +842,13 @@ export default defineComponent({
         
         // Initialize moon system info
         this.updateMoonSystemInfo();
+        
+        // Initialize available planets and rotation state
+        this.availablePlanets = this.maptoglobe.GetAvailablePlanets();
+        const planetInfo = this.maptoglobe.GetPlanetInfo();
+        this.menu.planet.rotation.enabled = planetInfo.realTimeRotation;
+        this.menu.planet.rotation.planetType = planetInfo.type;
+        this.menu.planet.rotation.timeScale = planetInfo.timeScale;
         
         // Load stored data and update storage info
         this.loadStoredData();
@@ -825,6 +891,54 @@ export default defineComponent({
         planetShininess(value: number) {
             ((this.maptoglobe.planet.object.material as THREE.Material[])[0] as THREE.MeshPhongMaterial).shininess = value;
             this.saveCurrentState();
+        },
+        
+        // Planet Rotation Methods
+        togglePlanetRotation() {
+            this.maptoglobe.EnableRealTimeRotation(this.menu.planet.rotation.enabled);
+            this.saveCurrentState();
+        },
+        
+        setPlanetType() {
+            this.maptoglobe.SetPlanetType(this.menu.planet.rotation.planetType);
+            this.saveCurrentState();
+        },
+        
+        setTimeScale(value: number) {
+            this.menu.planet.rotation.timeScale = value;
+            this.maptoglobe.SetTimeScale(value);
+            this.saveCurrentState();
+        },
+        
+        getTimeScaleDescription(scale: number): string {
+            if (scale < 0.5) return 'Very Slow';
+            if (scale < 1) return 'Slow';
+            if (scale === 1) return 'Real Time';
+            if (scale < 3) return 'Fast';
+            if (scale < 6) return 'Very Fast';
+            return 'Ultra Fast';
+        },
+        
+        getPlanetRotationPeriod(): string {
+            const planetPeriods: Record<string, string> = {
+                earth: '24 hours',
+                mars: '24.6 hours',
+                jupiter: '9.9 hours',
+                venus: '243 days',
+                mercury: '59 days',
+                saturn: '10.7 hours'
+            };
+            
+            const basePeriod = planetPeriods[this.menu.planet.rotation.planetType] || '24 hours';
+            const adjustedScale = this.menu.planet.rotation.timeScale;
+            
+            if (adjustedScale === 1) {
+                return basePeriod;
+            } else if (adjustedScale > 1) {
+                return `${basePeriod} @ ${adjustedScale.toFixed(1)}x speed`;
+            } else {
+                return `${basePeriod} @ ${adjustedScale.toFixed(1)}x speed`;
+            }
         },
         toggleMoon() {
             this.moonIsVisible = !this.moonIsVisible;
@@ -1302,6 +1416,9 @@ export default defineComponent({
                 
                 // Reset menu values to defaults
                 this.menu.planet.shininess = 60;
+                this.menu.planet.rotation.enabled = false;
+                this.menu.planet.rotation.planetType = 'earth';
+                this.menu.planet.rotation.timeScale = 1.0;
                 this.menu.moon.scale = 1;
                 this.menu.moon.distance = 3;
                 this.menu.light.sunIntensity = 0.4;
@@ -1324,6 +1441,11 @@ export default defineComponent({
                 ((this.maptoglobe.planet.object.material as THREE.Material[])[0] as THREE.MeshPhongMaterial).shininess = 60;
                 this.maptoglobe.instance.SetSunIntensity(0.4);
                 this.maptoglobe.instance.SetAmbientIntensity(0.6);
+                
+                // Reset planet rotation
+                this.maptoglobe.EnableRealTimeRotation(false);
+                this.maptoglobe.SetPlanetType('earth');
+                this.maptoglobe.SetTimeScale(1.0);
                 
                 // Clear local storage
                 StorageManager.clearState();

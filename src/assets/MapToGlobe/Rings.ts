@@ -13,9 +13,9 @@ export interface RingConfig {
 
 export default class Rings {
     private planet: THREE.Mesh;
-    object: THREE.Mesh;
+    object!: THREE.Mesh; // Definite assignment assertion - initialized in constructor
     private currentConfig: RingConfig;
-    private rotationSpeed: number = 0;
+    private rotationSpeed = 0;
 
     constructor(planet: THREE.Mesh, json?: THREE.Mesh) {
         this.planet = planet;
@@ -68,23 +68,23 @@ export default class Rings {
                     try {
                         this.object.geometry.dispose();
                     } catch (geometryError) {
-                        console.warn('Error disposing geometry:', geometryError);
-                        // Try manual cleanup of geometry attributes
-                        if (this.object.geometry.attributes) {
-                            Object.keys(this.object.geometry.attributes).forEach(key => {
+                        // Try manual cleanup of geometry attributes for BufferGeometry
+                        const bufferGeometry = this.object.geometry as THREE.BufferGeometry;
+                        if (bufferGeometry.attributes) {
+                            Object.keys(bufferGeometry.attributes).forEach(key => {
                                 try {
-                                    const attribute = this.object.geometry.attributes[key];
+                                    const attribute = bufferGeometry.attributes[key];
                                     if (attribute && attribute.array) {
-                                        delete this.object.geometry.attributes[key];
+                                        delete bufferGeometry.attributes[key];
                                     }
                                 } catch (attrError) {
                                     // Ignore individual attribute cleanup errors
                                 }
                             });
                         }
-                        if (this.object.geometry.index) {
+                        if (bufferGeometry.index) {
                             try {
-                                this.object.geometry.index = null;
+                                bufferGeometry.index = null;
                             } catch (indexError) {
                                 // Ignore index cleanup error
                             }
@@ -100,7 +100,7 @@ export default class Rings {
                                 try {
                                     material.dispose();
                                 } catch (matError) {
-                                    console.warn('Error disposing material:', matError);
+                                    // Ignore material disposal errors
                                 }
                             }
                         });
@@ -109,19 +109,18 @@ export default class Rings {
                             try {
                                 this.object.material.dispose();
                             } catch (matError) {
-                                console.warn('Error disposing material:', matError);
+                                // Ignore material disposal errors
                             }
                         }
                     }
                 }
                 
                 // Clear the object reference
-                this.object = null as any;
+                this.object = null as unknown as THREE.Mesh;
                 
             } catch (error) {
-                console.warn('Error disposing ring resources:', error);
                 // Force clear the object even if disposal failed
-                this.object = null as any;
+                this.object = null as unknown as THREE.Mesh;
             }
         }
 
@@ -153,8 +152,9 @@ export default class Rings {
         // https://discourse.threejs.org/t/applying-a-texture-to-a-ringgeometry/9990
         try {
             // Check if geometry attributes are now available after computation
-            if (geometry.attributes && geometry.attributes.position && geometry.attributes.uv) {
-                const pos = geometry.attributes.position;
+            const bufferGeometry = geometry as unknown as THREE.BufferGeometry;
+            if (bufferGeometry.attributes && bufferGeometry.attributes.position && bufferGeometry.attributes.uv) {
+                const pos = bufferGeometry.attributes.position;
                 const v3 = new THREE.Vector3();
                 const minRadius = this.currentConfig.innerRadius;
                 const maxRadius = this.currentConfig.outerRadius;
@@ -164,17 +164,17 @@ export default class Rings {
                     const distance = v3.length();
                     // Map distance to UV coordinates (0 = inner edge, 1 = outer edge)
                     const u = (distance - minRadius) / (maxRadius - minRadius);
-                    geometry.attributes.uv.setXY(i, u, 1);
+                    bufferGeometry.attributes.uv.setXY(i, u, 1);
                 }
                 
                 // Mark UV attribute as needing update
-                geometry.attributes.uv.needsUpdate = true;
+                bufferGeometry.attributes.uv.needsUpdate = true;
             } else {
                 // If attributes are still not available, skip UV mapping
                 // This is not critical for basic ring functionality
             }
         } catch (error) {
-            console.warn('Error configuring ring UV mapping:', error);
+            // Skip UV mapping if there's an error - not critical for functionality
         }
 
         this.object = rings;
@@ -265,7 +265,7 @@ export default class Rings {
                 this.updateGeometry();
             }
         } catch (error) {
-            console.error('Error setting ring thickness:', error);
+            // Ignore error setting ring thickness
         }
     }
 
@@ -392,7 +392,7 @@ export default class Rings {
                     
                     // If the existing ring is the same as our current object, clear the reference
                     if (existingRing === this.object) {
-                        this.object = null as any;
+                        this.object = null as unknown as THREE.Mesh;
                     }
                 }
             }
@@ -404,13 +404,12 @@ export default class Rings {
                 this.planet.add(this.object);
             }
         } catch (error) {
-            console.error('Error updating ring geometry:', error);
             // Try to create a fresh ring mesh if update failed
             try {
-                this.object = null as any;
+                this.object = null as unknown as THREE.Mesh;
                 this.createRingMesh();
             } catch (recoveryError) {
-                console.error('Failed to recover ring geometry:', recoveryError);
+                // Failed to recover ring geometry - skip
             }
         }
     }
@@ -418,7 +417,7 @@ export default class Rings {
     /**
      * Get available ring system presets
      */
-    static GetAvailableRingTypes(): Array<{name: string, key: RingSystemType}> {
+    static GetAvailableRingTypes(): Array<{name: string; key: RingSystemType}> {
         return [
             { name: 'Saturn-like', key: 'saturn' },
             { name: 'Uranus-like', key: 'uranus' },

@@ -89,7 +89,6 @@ export class StorageManager {
             localStorage.setItem(STORAGE_KEY, JSON.stringify(newState));
             return true;
         } catch (error) {
-            console.error('Failed to save state to localStorage:', error);
             return false;
         }
     }
@@ -105,7 +104,6 @@ export class StorageManager {
             
             // Version check - if version mismatch, return default state
             if (parsed.version !== STORAGE_VERSION) {
-                console.log('Storage version mismatch, using default state');
                 return this.getDefaultState();
             }
             
@@ -114,7 +112,6 @@ export class StorageManager {
                 ...parsed
             };
         } catch (error) {
-            console.error('Failed to load state from localStorage:', error);
             return this.getDefaultState();
         }
     }
@@ -122,10 +119,8 @@ export class StorageManager {
     static clearState(): boolean {
         try {
             localStorage.removeItem(STORAGE_KEY);
-            console.log('State cleared from localStorage');
             return true;
         } catch (error) {
-            console.error('Failed to clear state from localStorage:', error);
             return false;
         }
     }

@@ -1061,7 +1061,7 @@ export default defineComponent({
         // Storage Management Methods
         updateStorageInfo() {
             this.hasStoredData = StorageManager.hasStoredData();
-            this.storageInfo = StorageManager.getStorageInfo();
+            this.storageInfo = StorageManager.getStorageInfo() as { size: number; timestamp: number | undefined };
         },
         
         saveCurrentState() {
@@ -1117,12 +1117,9 @@ export default defineComponent({
                 const success = StorageManager.saveState(state);
                 if (success) {
                     this.updateStorageInfo();
-                } else {
-                    console.error('Failed to save state');
                 }
                 return success;
             } catch (error) {
-                console.error('Error saving state:', error);
                 return false;
             }
         },
@@ -1198,7 +1195,7 @@ export default defineComponent({
                 
                 this.updateMoonSystemInfo();
             } catch (error) {
-                console.error('Error loading stored data:', error);
+                // Error loading stored data - ignore
             } finally {
                 this.isLoadingStoredData = false; // Re-enable auto-save
             }
@@ -1248,7 +1245,7 @@ export default defineComponent({
                 this.updateStorageInfo();
                 this.updateMoonSystemInfo();
             } catch (error) {
-                console.error('Error clearing canvas:', error);
+                // Error clearing canvas - ignore
             }
         }
     }

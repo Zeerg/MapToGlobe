@@ -12,13 +12,13 @@ export interface RingConfig {
 }
 
 export default class Rings {
-    private planet: THREE.Mesh;
+    private parentObject: THREE.Object3D;
     object!: THREE.Mesh; // Definite assignment assertion - initialized in constructor
     private currentConfig: RingConfig;
     private rotationSpeed = 0;
 
-    constructor(planet: THREE.Mesh, json?: THREE.Mesh) {
-        this.planet = planet;
+    constructor(parentObject: THREE.Object3D, json?: THREE.Mesh) {
+        this.parentObject = parentObject;
         
         if (json) {
             this.object = json;
@@ -54,10 +54,10 @@ export default class Rings {
     }
 
     private createRingMesh() {
-        // Remove any existing ring from the planet first
-        const existingRing = this.planet.children.find(child => child.name === "rings");
+        // Remove any existing ring from the parent object first
+        const existingRing = this.parentObject.children.find(child => child.name === "rings");
         if (existingRing && existingRing !== this.object) {
-            this.planet.remove(existingRing);
+            this.parentObject.remove(existingRing);
         }
         
         // Dispose of existing ring if it exists
@@ -182,11 +182,11 @@ export default class Rings {
     }
 
     Toggle() {
-        const existingRing = this.planet.children.find(child => child.name === "rings");
+        const existingRing = this.parentObject.children.find(child => child.name === "rings");
         if (!existingRing) {
-            this.planet.add(this.object);
+            this.parentObject.add(this.object);
         } else {
-            this.planet.remove(existingRing);
+            this.parentObject.remove(existingRing);
         }
     }
 
@@ -348,12 +348,12 @@ export default class Rings {
         }
         
         // Store visibility state before creating new mesh
-        const wasVisible = this.planet.children.some(child => child.name === "rings");
+        const wasVisible = this.parentObject.children.some(child => child.name === "rings");
         
         // Remove existing ring if it exists
-        const existingRing = this.planet.children.find(child => child.name === "rings");
+        const existingRing = this.parentObject.children.find(child => child.name === "rings");
         if (existingRing) {
-            this.planet.remove(existingRing);
+            this.parentObject.remove(existingRing);
         }
         
         // Always recreate the ring mesh with new configuration
@@ -361,7 +361,7 @@ export default class Rings {
         
         // If ring was visible, make sure the new ring is also visible
         if (wasVisible) {
-            this.planet.add(this.object);
+            this.parentObject.add(this.object);
         }
     }
 
@@ -382,13 +382,13 @@ export default class Rings {
 
     private updateGeometry() {
         try {
-            const wasVisible = this.planet.children.some(child => child.name === "rings");
+            const wasVisible = this.parentObject.children.some(child => child.name === "rings");
             
             // Remove existing ring if visible
             if (wasVisible) {
-                const existingRing = this.planet.children.find(child => child.name === "rings");
+                const existingRing = this.parentObject.children.find(child => child.name === "rings");
                 if (existingRing) {
-                    this.planet.remove(existingRing);
+                    this.parentObject.remove(existingRing);
                     
                     // If the existing ring is the same as our current object, clear the reference
                     if (existingRing === this.object) {
@@ -401,7 +401,7 @@ export default class Rings {
             
             // Restore visibility if it was visible before
             if (wasVisible && this.object) {
-                this.planet.add(this.object);
+                this.parentObject.add(this.object);
             }
         } catch (error) {
             // Try to create a fresh ring mesh if update failed

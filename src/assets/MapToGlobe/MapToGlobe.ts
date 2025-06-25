@@ -31,7 +31,7 @@ export default class MapToGlobe {
 
         this.moon = new Moon(this.instance.pivotObject); // Keep for backward compatibility - attach to pivot, not planet
         this.moonSystem = new MoonSystem(this.instance.pivotObject, this.planet.object); // New multi-moon system - attach to pivot, not planet
-        this.rings = new Rings(this.planet.object); // Rings should rotate with planet
+        this.rings = new Rings(this.instance.pivotObject); // Rings should rotate independently like moons
 
         let oldDistance = this.instance.camera.getWorldPosition(new THREE.Vector3(0,0,0)).distanceTo(this.planet.object.getWorldPosition(new THREE.Vector3(0,0,0)));
 

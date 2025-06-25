@@ -7,6 +7,7 @@ export interface StoredMoonConfig {
     distance: number;
     orbitSpeed: number;
     rotationSpeed: number;
+    retrograde: number;
     visible: boolean;
     color?: number;
     textureData?: string; // Base64 encoded texture data

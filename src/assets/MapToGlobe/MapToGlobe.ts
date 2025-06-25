@@ -313,6 +313,13 @@ export default class MapToGlobe {
         }
     }
 
+    UpdateMoonRetrograde(moonId: string, retrograde: number): void {
+        const moon = this.moonSystem.getMoon(moonId);
+        if (moon) {
+            moon.setRetrograde(retrograde);
+        }
+    }
+
     // Set moon texture
     SetMoonTexture(moonId: string, file: File): void {
         const moon = this.moonSystem.getMoon(moonId);
@@ -333,7 +340,8 @@ export default class MapToGlobe {
                 size: moon.config.size,
                 distance: moon.config.distance,
                 orbitSpeed: moon.config.orbitSpeed,
-                rotationSpeed: moon.config.rotationSpeed
+                rotationSpeed: moon.config.rotationSpeed,
+                retrograde: moon.config.retrograde
             }))
         };
     }

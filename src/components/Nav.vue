@@ -257,6 +257,11 @@
                                                       @change="(value) => updateMoonRotationSpeed(moon.id, value)"></vue-slider>
                                         </div>
                                         <div>
+                                            <label class="block text-xs text-gray-400 mb-1">Retrograde: {{ moon.retrograde.toFixed(0) }}° ({{ getOrbitDirection(moon.retrograde) }})</label>
+                                            <vue-slider v-model="moon.retrograde" :min="0" :max="180" :interval="5" :tooltip="'none'" 
+                                                      @change="(value) => updateMoonRetrograde(moon.id, value)"></vue-slider>
+                                        </div>
+                                        <div>
                                             <input type="file" class="hidden" :id="`moonTexture_${moon.id}`" @change="(event) => setMoonTexture(moon.id, event)">
                                             <label :for="`moonTexture_${moon.id}`" class="cursor-pointer py-1 px-2 block text-xs text-gray-200 hover:bg-purple-500/20 hover:text-purple-300 rounded transition-colors">
                                                 <span class="flex items-center">
@@ -703,11 +708,12 @@ export default defineComponent({
                     distance: number;
                     orbitSpeed: number;
                     rotationSpeed: number;
+                    retrograde: number;
                 }>
             },
             customMoonCounter: 1,
             hasStoredData: false,
-            storageInfo: { size: 0, timestamp: undefined as number | undefined },
+            storageInfo: { size: 0, timestamp: undefined as number | undefined } as { size: number; timestamp?: number },
             isLoadingStoredData: false,
             ringUpdateTimeout: null as number | null
         }
@@ -1027,6 +1033,19 @@ export default defineComponent({
             this.updateMoonSystemInfo();
         },
         
+        updateMoonRetrograde(moonId: string, retrograde: number) {
+            this.maptoglobe.UpdateMoonRetrograde(moonId, retrograde);
+            this.updateMoonSystemInfo();
+        },
+        
+        getOrbitDirection(retrograde: number): string {
+            if (retrograde === 0) return 'Normal';
+            if (retrograde === 180) return 'Full Retrograde';
+            if (retrograde < 90) return 'Mostly Normal';
+            if (retrograde > 90) return 'Mostly Retrograde';
+            return 'Perpendicular';
+        },
+        
         setMoonTexture(moonId: string, event: Event) {
             const files = (event.target as HTMLInputElement).files;
             if (files !== null) {
@@ -1042,6 +1061,7 @@ export default defineComponent({
                 distance: 8 + (this.customMoonCounter * 3),
                 orbitSpeed: 1.0,
                 rotationSpeed: 1.0,
+                retrograde: 0,
                 visible: true,
                 color: Math.floor(Math.random() * 0xffffff)
             };
@@ -1079,6 +1099,7 @@ export default defineComponent({
                             distance: moon.distance,
                             orbitSpeed: moon.orbitSpeed,
                             rotationSpeed: moon.rotationSpeed,
+                            retrograde: moon.retrograde,
                             visible: moon.visible,
                             color: allMoons.find(m => m.config.id === moon.id)?.config.color
                         })),

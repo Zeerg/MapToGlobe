@@ -214,6 +214,18 @@ export default class MapToGlobe {
     }
 
     /**
+     * PLANET SHAPE CONTROL
+     */
+
+    SetPlanetShape(scaleX: number, scaleY: number, scaleZ: number) {
+        this.planet.SetShape(scaleX, scaleY, scaleZ);
+    }
+
+    GetPlanetShape(): { x: number; y: number; z: number } {
+        return this.planet.GetShape();
+    }
+
+    /**
      * MULTI-MOON SYSTEM METHODS
      */
 

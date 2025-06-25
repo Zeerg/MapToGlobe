@@ -78,84 +78,160 @@
                     </button>
 
                     <div v-show="menu.open.planet" class="bg-gray-900/50 rounded-lg mt-2 overflow-hidden">
-                        <h4 class="text-gray-400 px-4 py-3 text-sm font-medium border-b border-gray-800">Textures</h4>
-                        
-                        <div class="p-2 space-y-2">
-                            <div>
-                                <input type="file" class="hidden" id="surfaceFileSelect" @change="setSurfaceImage">
-                                <label for="surfaceFileSelect" class="cursor-pointer py-2 px-4 block text-sm text-gray-200 hover:bg-blue-500/20 hover:text-blue-300 rounded transition-colors">
-                                    <span class="flex items-center">
-                                        <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
-                                            <path fill-rule="evenodd" d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z" clip-rule="evenodd" />
-                                        </svg>
-                                        Surface Texture
-                                    </span>
-                                </label>
-                            </div>
-                            <div>
-                                <input type="file" class="hidden" id="heightmapFileSelect" @change="setHeightmapImage" :disabled="!images.surface">
-                                <label for="heightmapFileSelect" class="cursor-pointer py-2 px-4 block text-sm text-gray-200 hover:bg-blue-500/20 hover:text-blue-300 rounded transition-colors">
-                                    <span class="flex items-center">
-                                        <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
-                                            <path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd" />
-                                        </svg>
-                                        Height Map
-                                    </span>
-                                </label>
-                            </div>
-                            <div>
-                                <input type="file" class="hidden" id="specularFileSelect" @change="setSpecularImage" :disabled="!images.surface">
-                                <label for="specularFileSelect" class="cursor-pointer py-2 px-4 block text-sm text-gray-200 hover:bg-blue-500/20 hover:text-blue-300 rounded transition-colors">
-                                    <span class="flex items-center">
-                                        <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
-                                            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                                        </svg>
-                                        Specular Map
-                                    </span>
-                                </label>
-                            </div>
-                            <div>
-                                <input type="file" class="hidden" id="cloudsFileSelect" @change="setCloudsImage" :disabled="!images.surface">
-                                <label for="cloudsFileSelect" class="cursor-pointer py-2 px-4 block text-sm text-gray-200 hover:bg-blue-500/20 hover:text-blue-300 rounded transition-colors">
-                                    <span class="flex items-center">
-                                        <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
-                                            <path d="M5.5 16a3.5 3.5 0 01-.369-6.98 4 4 0 117.753-1.977A4.5 4.5 0 1113.5 16h-8z" />
-                                        </svg>
-                                        Cloud Layer
-                                    </span>
-                                </label>
-                            </div>
-                        </div>
-
-                        <div class="border-t border-gray-800 p-2">
-                            <h5 class="text-gray-400 px-2 py-2 text-xs font-medium">Controls</h5>
-                            <div class="space-y-2">
-                                <button type="button" class="cursor-pointer text-left w-full py-2 px-4 text-sm text-gray-200 hover:bg-blue-500/20 hover:text-blue-300 rounded transition-colors" @click="toggleAxis">
-                                    Toggle Axis
-                                </button>
-                                <button type="button" class="cursor-pointer text-left w-full py-2 px-4 text-sm text-gray-200 hover:bg-blue-500/20 hover:text-blue-300 rounded transition-colors" value="planet" @click="toggleControls">
-                                    Toggle Planet Controls
-                                </button>
-                                <button type="button" class="cursor-pointer text-left w-full py-2 px-4 text-sm text-gray-200 hover:bg-blue-500/20 hover:text-blue-300 rounded transition-colors" value="clouds" @click="toggleControls" :disabled="!images.clouds">
-                                    Toggle Cloud Controls
-                                </button>
-                            </div>
+                        <!-- Planet Subsections -->
+                        <div class="space-y-3 p-3">
                             
-                            <div class="mt-4">
-                                <label class="block text-xs text-gray-400 mb-2">Shininess</label>
-                                <div class="px-2">
-                                    <vue-slider v-model="menu.planet.shininess" :min="0" :max="100" :interval="0.1" :tooltip="'none'" @change="planetShininess"></vue-slider>
+                            <!-- Textures Subsection -->
+                            <div class="border border-gray-700 rounded-lg overflow-hidden">
+                                <button @click="menu.open.planetTextures = !menu.open.planetTextures" 
+                                        class="w-full flex justify-between items-center py-2 px-3 text-gray-200 hover:bg-gray-700/30 transition-colors">
+                                    <span class="text-sm font-medium">🖼️ Textures</span>
+                                    <svg class="h-3 w-3 transition-transform duration-200" :class="{ 'rotate-90': menu.open.planetTextures }" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M9 5L16 12L9 19" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                                    </svg>
+                                </button>
+                                <div v-show="menu.open.planetTextures" class="p-3 bg-gray-800/30 space-y-2">
+                                    <div>
+                                        <input type="file" class="hidden" id="surfaceFileSelect" @change="setSurfaceImage">
+                                        <label for="surfaceFileSelect" class="cursor-pointer py-2 px-3 block text-sm text-gray-200 hover:bg-blue-500/20 hover:text-blue-300 rounded transition-colors">
+                                            <span class="flex items-center">
+                                                <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                                    <path fill-rule="evenodd" d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z" clip-rule="evenodd" />
+                                                </svg>
+                                                Surface Texture
+                                            </span>
+                                        </label>
+                                    </div>
+                                    <div>
+                                        <input type="file" class="hidden" id="heightmapFileSelect" @change="setHeightmapImage" :disabled="!images.surface">
+                                        <label for="heightmapFileSelect" class="cursor-pointer py-2 px-3 block text-sm text-gray-200 hover:bg-blue-500/20 hover:text-blue-300 rounded transition-colors" :class="{ 'opacity-50 cursor-not-allowed': !images.surface }">
+                                            <span class="flex items-center">
+                                                <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                                    <path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd" />
+                                                </svg>
+                                                Height Map
+                                            </span>
+                                        </label>
+                                    </div>
+                                    <div>
+                                        <input type="file" class="hidden" id="specularFileSelect" @change="setSpecularImage" :disabled="!images.surface">
+                                        <label for="specularFileSelect" class="cursor-pointer py-2 px-3 block text-sm text-gray-200 hover:bg-blue-500/20 hover:text-blue-300 rounded transition-colors" :class="{ 'opacity-50 cursor-not-allowed': !images.surface }">
+                                            <span class="flex items-center">
+                                                <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                                                </svg>
+                                                Specular Map
+                                            </span>
+                                        </label>
+                                    </div>
+                                    <div>
+                                        <input type="file" class="hidden" id="cloudsFileSelect" @change="setCloudsImage" :disabled="!images.surface">
+                                        <label for="cloudsFileSelect" class="cursor-pointer py-2 px-3 block text-sm text-gray-200 hover:bg-blue-500/20 hover:text-blue-300 rounded transition-colors" :class="{ 'opacity-50 cursor-not-allowed': !images.surface }">
+                                            <span class="flex items-center">
+                                                <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                                    <path d="M5.5 16a3.5 3.5 0 01-.369-6.98 4 4 0 117.753-1.977A4.5 4.5 0 1113.5 16h-8z" />
+                                                </svg>
+                                                Cloud Layer
+                                            </span>
+                                        </label>
+                                    </div>
                                 </div>
                             </div>
                             
-                            <!-- Planet Rotation Speed -->
-                            <div class="mt-4 pt-3 border-t border-gray-700">
-                                <div class="px-2">
-                                    <label class="block text-xs text-gray-400 mb-2">
-                                        Rotation Speed: {{ menu.planet.rotationSpeed.toFixed(1) }}
-                                        <span class="text-gray-500">({{ getRotationSpeedDescription(menu.planet.rotationSpeed) }})</span>
-                                    </label>
-                                    <vue-slider v-model="menu.planet.rotationSpeed" :min="0" :max="5" :interval="0.1" :tooltip="'none'" @change="setPlanetRotationSpeed"></vue-slider>
+                            <!-- Appearance Subsection -->
+                            <div class="border border-gray-700 rounded-lg overflow-hidden">
+                                <button @click="menu.open.planetAppearance = !menu.open.planetAppearance" 
+                                        class="w-full flex justify-between items-center py-2 px-3 text-gray-200 hover:bg-gray-700/30 transition-colors">
+                                    <span class="text-sm font-medium">🎨 Appearance</span>
+                                    <svg class="h-3 w-3 transition-transform duration-200" :class="{ 'rotate-90': menu.open.planetAppearance }" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M9 5L16 12L9 19" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                                    </svg>
+                                </button>
+                                <div v-show="menu.open.planetAppearance" class="p-3 bg-gray-800/30 space-y-3">
+                                    <div>
+                                        <label class="block text-xs text-gray-400 mb-2">Shininess: {{ menu.planet.shininess.toFixed(0) }}</label>
+                                        <vue-slider v-model="menu.planet.shininess" :min="0" :max="100" :interval="0.1" :tooltip="'none'" @change="planetShininess"></vue-slider>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Motion Subsection -->
+                            <div class="border border-gray-700 rounded-lg overflow-hidden">
+                                <button @click="menu.open.planetMotion = !menu.open.planetMotion" 
+                                        class="w-full flex justify-between items-center py-2 px-3 text-gray-200 hover:bg-gray-700/30 transition-colors">
+                                    <span class="text-sm font-medium">🔄 Motion</span>
+                                    <svg class="h-3 w-3 transition-transform duration-200" :class="{ 'rotate-90': menu.open.planetMotion }" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M9 5L16 12L9 19" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                                    </svg>
+                                </button>
+                                <div v-show="menu.open.planetMotion" class="p-3 bg-gray-800/30 space-y-3">
+                                    <div>
+                                        <label class="block text-xs text-gray-400 mb-2">
+                                            Rotation Speed: {{ menu.planet.rotationSpeed.toFixed(1) }}
+                                            <span class="text-gray-500">({{ getRotationSpeedDescription(menu.planet.rotationSpeed) }})</span>
+                                        </label>
+                                        <vue-slider v-model="menu.planet.rotationSpeed" :min="0" :max="5" :interval="0.1" :tooltip="'none'" @change="setPlanetRotationSpeed"></vue-slider>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Shape Subsection -->
+                            <div class="border border-gray-700 rounded-lg overflow-hidden">
+                                <button @click="menu.open.planetShape = !menu.open.planetShape" 
+                                        class="w-full flex justify-between items-center py-2 px-3 text-gray-200 hover:bg-gray-700/30 transition-colors">
+                                    <span class="text-sm font-medium">📐 Shape</span>
+                                    <svg class="h-3 w-3 transition-transform duration-200" :class="{ 'rotate-90': menu.open.planetShape }" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M9 5L16 12L9 19" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                                    </svg>
+                                </button>
+                                <div v-show="menu.open.planetShape" class="p-3 bg-gray-800/30 space-y-3">
+                                    <div>
+                                        <label class="block text-xs text-gray-400 mb-2">
+                                            Width: {{ menu.planet.shape.scaleX.toFixed(2) }}
+                                            <span class="text-gray-500">({{ getShapeDescription('width', menu.planet.shape.scaleX) }})</span>
+                                        </label>
+                                        <vue-slider v-model="menu.planet.shape.scaleX" :min="0.3" :max="2.0" :interval="0.05" :tooltip="'none'" @change="updatePlanetShape"></vue-slider>
+                                    </div>
+                                    <div>
+                                        <label class="block text-xs text-gray-400 mb-2">
+                                            Height: {{ menu.planet.shape.scaleY.toFixed(2) }}
+                                            <span class="text-gray-500">({{ getShapeDescription('height', menu.planet.shape.scaleY) }})</span>
+                                        </label>
+                                        <vue-slider v-model="menu.planet.shape.scaleY" :min="0.3" :max="2.0" :interval="0.05" :tooltip="'none'" @change="updatePlanetShape"></vue-slider>
+                                    </div>
+                                    <div>
+                                        <label class="block text-xs text-gray-400 mb-2">
+                                            Depth: {{ menu.planet.shape.scaleZ.toFixed(2) }}
+                                            <span class="text-gray-500">({{ getShapeDescription('depth', menu.planet.shape.scaleZ) }})</span>
+                                        </label>
+                                        <vue-slider v-model="menu.planet.shape.scaleZ" :min="0.3" :max="2.0" :interval="0.05" :tooltip="'none'" @change="updatePlanetShape"></vue-slider>
+                                    </div>
+                                    <button @click="resetPlanetShape" 
+                                            class="w-full py-2 px-3 text-xs text-gray-200 bg-blue-500/20 hover:bg-blue-500/30 rounded transition-colors">
+                                        Reset to Sphere
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Debug Tools Subsection -->
+                            <div class="border border-gray-700 rounded-lg overflow-hidden">
+                                <button @click="menu.open.planetDebug = !menu.open.planetDebug" 
+                                        class="w-full flex justify-between items-center py-2 px-3 text-gray-200 hover:bg-gray-700/30 transition-colors">
+                                    <span class="text-sm font-medium">🔧 Debug Tools</span>
+                                    <svg class="h-3 w-3 transition-transform duration-200" :class="{ 'rotate-90': menu.open.planetDebug }" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M9 5L16 12L9 19" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                                    </svg>
+                                </button>
+                                <div v-show="menu.open.planetDebug" class="p-3 bg-gray-800/30 space-y-2">
+                                    <button type="button" class="cursor-pointer text-left w-full py-2 px-3 text-sm text-gray-200 hover:bg-blue-500/20 hover:text-blue-300 rounded transition-colors" @click="toggleAxis">
+                                        Toggle Axis
+                                    </button>
+                                    <button type="button" class="cursor-pointer text-left w-full py-2 px-3 text-sm text-gray-200 hover:bg-blue-500/20 hover:text-blue-300 rounded transition-colors" value="planet" @click="toggleControls">
+                                        Toggle Planet Controls
+                                    </button>
+                                    <button type="button" class="cursor-pointer text-left w-full py-2 px-3 text-sm text-gray-200 hover:bg-blue-500/20 hover:text-blue-300 rounded transition-colors" value="clouds" @click="toggleControls" :disabled="!images.clouds">
+                                        Toggle Cloud Controls
+                                    </button>
                                 </div>
                             </div>
                         </div>
@@ -183,154 +259,189 @@
                     </button>
 
                     <div v-show="menu.open.moon" class="bg-gray-900/50 rounded-lg mt-2 overflow-hidden">
-                        <div class="p-4">
-                            <!-- Legacy Single Moon Toggle -->
-                            <div class="flex items-center justify-between mb-4 pb-3 border-b border-gray-700">
-                                <label class="text-sm font-medium text-gray-200">Legacy Moon</label>
-                                <div class="relative">
-                                    <input type="checkbox" class="sr-only" id="moonToggle" @change="toggleMoon">
-                                    <label for="moonToggle" class="flex items-center cursor-pointer">
-                                        <div class="relative">
-                                            <div class="block bg-gray-700 w-12 h-6 rounded-full"></div>
-                                            <div class="dot absolute left-1 top-1 bg-white w-4 h-4 rounded-full transition" :class="{ 'transform translate-x-6': moonIsVisible }"></div>
-                                        </div>
-                                    </label>
-                                </div>
-                            </div>
-
-                            <!-- Moon System Presets -->
-                            <div class="mb-4">
-                                <label class="block text-sm font-medium text-gray-200 mb-3">Moon System Presets</label>
-                                <div class="grid grid-cols-2 gap-2">
-                                    <button @click="loadMoonPreset('earth')" 
-                                            class="py-2 px-3 text-xs text-gray-200 bg-blue-500/20 hover:bg-blue-500/30 rounded transition-colors">
-                                        🌍 Earth
-                                    </button>
-                                    <button @click="loadMoonPreset('jupiter')" 
-                                            class="py-2 px-3 text-xs text-gray-200 bg-orange-500/20 hover:bg-orange-500/30 rounded transition-colors">
-                                        🪐 Jupiter
-                                    </button>
-                                    <button @click="loadMoonPreset('saturn')" 
-                                            class="py-2 px-3 text-xs text-gray-200 bg-yellow-500/20 hover:bg-yellow-500/30 rounded transition-colors">
-                                        🪐 Saturn
-                                    </button>
-                                    <button @click="loadMoonPreset('custom')" 
-                                            class="py-2 px-3 text-xs text-gray-200 bg-purple-500/20 hover:bg-purple-500/30 rounded transition-colors">
-                                        ✨ Custom
-                                    </button>
-                                </div>
-                            </div>
-
-                            <!-- System Controls -->
-                            <div class="mb-4 flex gap-2">
-                                <button @click="showAllMoons" 
-                                        class="flex-1 py-2 px-3 text-xs text-gray-200 bg-green-500/20 hover:bg-green-500/30 rounded transition-colors">
-                                    Show All
+                        <!-- Moon Subsections -->
+                        <div class="space-y-3 p-3">
+                            
+                            <!-- Legacy Moon Subsection -->
+                            <div class="border border-gray-700 rounded-lg overflow-hidden">
+                                <button @click="menu.open.moonLegacy = !menu.open.moonLegacy" 
+                                        class="w-full flex justify-between items-center py-2 px-3 text-gray-200 hover:bg-gray-700/30 transition-colors">
+                                    <span class="text-sm font-medium">🌙 Legacy Moon</span>
+                                    <svg class="h-3 w-3 transition-transform duration-200" :class="{ 'rotate-90': menu.open.moonLegacy }" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M9 5L16 12L9 19" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                                    </svg>
                                 </button>
-                                <button @click="hideAllMoons" 
-                                        class="flex-1 py-2 px-3 text-xs text-gray-200 bg-red-500/20 hover:bg-red-500/30 rounded transition-colors">
-                                    Hide All
-                                </button>
-                                <button @click="clearMoonSystem" 
-                                        class="flex-1 py-2 px-3 text-xs text-gray-200 bg-gray-500/20 hover:bg-gray-500/30 rounded transition-colors">
-                                    Clear
-                                </button>
-                            </div>
-
-                            <!-- Individual Moon Controls -->
-                            <div v-if="moonSystemInfo.totalMoons > 0" class="space-y-3">
-                                <h4 class="text-sm font-medium text-gray-200 border-t border-gray-700 pt-3">Individual Moons</h4>
-                                <p class="text-xs text-gray-400 italic">Double-click moon names to rename or use the Rename button</p>
-                                <div v-for="moon in moonSystemInfo.moons" :key="moon.id" 
-                                     class="bg-gray-800/50 rounded-lg p-3 space-y-2">
+                                <div v-show="menu.open.moonLegacy" class="p-3 bg-gray-800/30">
                                     <div class="flex items-center justify-between">
-                                        <div class="flex items-center flex-1 mr-2">
-                                            <input v-if="editingMoonName === moon.id"
-                                                   v-model="editingMoonNameValue"
-                                                   @keyup.enter="saveMoonName(moon.id)"
-                                                   @keyup.escape="cancelEditMoonName"
-                                                   @blur="saveMoonName(moon.id)"
-                                                   class="text-sm font-medium bg-gray-700 text-gray-200 px-2 py-1 rounded border border-gray-600 focus:border-purple-400 focus:outline-none"
-                                                   :ref="`moonNameInput_${moon.id}`">
-                                            <span v-else 
-                                                  @dblclick="startEditMoonName(moon.id, moon.name)"
-                                                  class="text-sm font-medium text-gray-200 cursor-pointer hover:text-purple-300 transition-colors">
-                                                {{ moon.name }}
-                                            </span>
-                                        </div>
-                                        <div class="flex items-center gap-2">
-                                            <button v-if="editingMoonName !== moon.id"
-                                                    @click="startEditMoonName(moon.id, moon.name)" 
-                                                    class="px-2 py-1 text-xs bg-purple-500/20 text-purple-300 hover:bg-purple-500/30 rounded transition-colors">
-                                                Rename
-                                            </button>
-                                            <button v-if="moon.visible"
-                                                    @click="toggleMoonControls(moon.id)" 
-                                                    class="px-2 py-1 text-xs bg-blue-500/20 text-blue-300 hover:bg-blue-500/30 rounded transition-colors">
-                                                {{ moonControlsVisible[moon.id] ? 'Hide Controls' : 'Show Controls' }}
-                                            </button>
-                                            <button @click="toggleMoonVisibility(moon.id)" 
-                                                    class="px-2 py-1 text-xs rounded transition-colors"
-                                                    :class="moon.visible ? 'bg-green-500/20 text-green-300' : 'bg-gray-500/20 text-gray-400'">
-                                                {{ moon.visible ? 'Visible' : 'Hidden' }}
-                                            </button>
-                                            <button @click="removeMoon(moon.id)" 
-                                                    class="px-2 py-1 text-xs bg-red-500/20 text-red-300 hover:bg-red-500/30 rounded transition-colors">
-                                                Remove
-                                            </button>
-                                        </div>
-                                    </div>
-
-                                    <div v-if="moon.visible && moonControlsVisible[moon.id]" class="space-y-2 pl-2 border-l-2 border-purple-500/30 mt-2">
-                                        <div>
-                                            <label class="block text-xs text-gray-400 mb-1">Size: {{ moon.size.toFixed(2) }}</label>
-                                            <vue-slider v-model="moon.size" :min="0.1" :max="2" :interval="0.05" :tooltip="'none'" 
-                                                      @change="(value) => updateMoonSize(moon.id, value)"></vue-slider>
-                                        </div>
-                                        <div>
-                                            <label class="block text-xs text-gray-400 mb-1">Distance: {{ moon.distance.toFixed(1) }}</label>
-                                            <vue-slider v-model="moon.distance" :min="3" :max="50" :interval="0.5" :tooltip="'none'" 
-                                                      @change="(value) => updateMoonDistance(moon.id, value)"></vue-slider>
-                                        </div>
-                                        <div>
-                                            <label class="block text-xs text-gray-400 mb-1">Orbit Speed: {{ moon.orbitSpeed.toFixed(1) }}</label>
-                                            <vue-slider v-model="moon.orbitSpeed" :min="0.0" :max="5" :interval="0.1" :tooltip="'none'" 
-                                                      @change="(value) => updateMoonOrbitSpeed(moon.id, value)"></vue-slider>
-                                        </div>
-                                        <div>
-                                            <label class="block text-xs text-gray-400 mb-1">Rotation Speed: {{ moon.rotationSpeed.toFixed(1) }}</label>
-                                            <vue-slider v-model="moon.rotationSpeed" :min="0.0" :max="5" :interval="0.1" :tooltip="'none'" 
-                                                      @change="(value) => updateMoonRotationSpeed(moon.id, value)"></vue-slider>
-                                        </div>
-                                        <div>
-                                            <label class="block text-xs text-gray-400 mb-1">Retrograde: {{ moon.retrograde.toFixed(0) }}° ({{ getOrbitDirection(moon.retrograde) }})</label>
-                                            <vue-slider v-model="moon.retrograde" :min="0" :max="180" :interval="5" :tooltip="'none'" 
-                                                      @change="(value) => updateMoonRetrograde(moon.id, value)"></vue-slider>
-                                        </div>
-                                        <div>
-                                            <input type="file" class="hidden" :id="`moonTexture_${moon.id}`" @change="(event) => setMoonTexture(moon.id, event)">
-                                            <label :for="`moonTexture_${moon.id}`" class="cursor-pointer py-1 px-2 block text-xs text-gray-200 hover:bg-purple-500/20 hover:text-purple-300 rounded transition-colors">
-                                                <span class="flex items-center">
-                                                    <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
-                                                        <path fill-rule="evenodd" d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z" clip-rule="evenodd" />
-                                                    </svg>
-                                                    Custom Texture
-                                                </span>
+                                        <label class="text-sm font-medium text-gray-200">Show Legacy Moon</label>
+                                        <div class="relative">
+                                            <input type="checkbox" class="sr-only" id="moonToggle" @change="toggleMoon">
+                                            <label for="moonToggle" class="flex items-center cursor-pointer">
+                                                <div class="relative">
+                                                    <div class="block bg-gray-700 w-12 h-6 rounded-full"></div>
+                                                    <div class="dot absolute left-1 top-1 bg-white w-4 h-4 rounded-full transition" :class="{ 'transform translate-x-6': moonIsVisible }"></div>
+                                                </div>
                                             </label>
                                         </div>
                                     </div>
                                 </div>
                             </div>
 
-                            <!-- Add Custom Moon -->
-                            <div class="mt-4 pt-3 border-t border-gray-700">
-                                <button @click="addCustomMoon" 
-                                        class="w-full py-2 px-4 text-sm text-gray-200 bg-purple-500/20 hover:bg-purple-500/30 rounded transition-colors flex items-center justify-center">
-                                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                            <!-- Presets Subsection -->
+                            <div class="border border-gray-700 rounded-lg overflow-hidden">
+                                <button @click="menu.open.moonPresets = !menu.open.moonPresets" 
+                                        class="w-full flex justify-between items-center py-2 px-3 text-gray-200 hover:bg-gray-700/30 transition-colors">
+                                    <span class="text-sm font-medium">🪐 System Presets</span>
+                                    <svg class="h-3 w-3 transition-transform duration-200" :class="{ 'rotate-90': menu.open.moonPresets }" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M9 5L16 12L9 19" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
                                     </svg>
-                                    Add Custom Moon
                                 </button>
+                                <div v-show="menu.open.moonPresets" class="p-3 bg-gray-800/30">
+                                    <div class="grid grid-cols-2 gap-2">
+                                        <button @click="loadMoonPreset('earth')" 
+                                                class="py-2 px-3 text-xs text-gray-200 bg-blue-500/20 hover:bg-blue-500/30 rounded transition-colors">
+                                            🌍 Earth
+                                        </button>
+                                        <button @click="loadMoonPreset('jupiter')" 
+                                                class="py-2 px-3 text-xs text-gray-200 bg-orange-500/20 hover:bg-orange-500/30 rounded transition-colors">
+                                            🪐 Jupiter
+                                        </button>
+                                        <button @click="loadMoonPreset('saturn')" 
+                                                class="py-2 px-3 text-xs text-gray-200 bg-yellow-500/20 hover:bg-yellow-500/30 rounded transition-colors">
+                                            🪐 Saturn
+                                        </button>
+                                        <button @click="loadMoonPreset('custom')" 
+                                                class="py-2 px-3 text-xs text-gray-200 bg-purple-500/20 hover:bg-purple-500/30 rounded transition-colors">
+                                            ✨ Custom
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- System Management Subsection -->
+                            <div class="border border-gray-700 rounded-lg overflow-hidden">
+                                <button @click="menu.open.moonManagement = !menu.open.moonManagement" 
+                                        class="w-full flex justify-between items-center py-2 px-3 text-gray-200 hover:bg-gray-700/30 transition-colors">
+                                    <span class="text-sm font-medium">⚙️ System Management</span>
+                                    <svg class="h-3 w-3 transition-transform duration-200" :class="{ 'rotate-90': menu.open.moonManagement }" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M9 5L16 12L9 19" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                                    </svg>
+                                </button>
+                                <div v-show="menu.open.moonManagement" class="p-3 bg-gray-800/30 space-y-3">
+                                    <div class="flex gap-2">
+                                        <button @click="showAllMoons" 
+                                                class="flex-1 py-2 px-3 text-xs text-gray-200 bg-green-500/20 hover:bg-green-500/30 rounded transition-colors">
+                                            Show All
+                                        </button>
+                                        <button @click="hideAllMoons" 
+                                                class="flex-1 py-2 px-3 text-xs text-gray-200 bg-red-500/20 hover:bg-red-500/30 rounded transition-colors">
+                                            Hide All
+                                        </button>
+                                    </div>
+                                    <div class="flex gap-2">
+                                        <button @click="clearMoonSystem" 
+                                                class="flex-1 py-2 px-3 text-xs text-gray-200 bg-gray-500/20 hover:bg-gray-500/30 rounded transition-colors">
+                                            Clear System
+                                        </button>
+                                        <button @click="addCustomMoon" 
+                                                class="flex-1 py-2 px-3 text-xs text-gray-200 bg-purple-500/20 hover:bg-purple-500/30 rounded transition-colors">
+                                            Add Moon
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Individual Moons Subsection -->
+                            <div v-if="moonSystemInfo.totalMoons > 0" class="border border-gray-700 rounded-lg overflow-hidden">
+                                <button @click="menu.open.moonIndividual = !menu.open.moonIndividual" 
+                                        class="w-full flex justify-between items-center py-2 px-3 text-gray-200 hover:bg-gray-700/30 transition-colors">
+                                    <span class="text-sm font-medium">🌕 Individual Moons ({{ moonSystemInfo.visibleMoons }}/{{ moonSystemInfo.totalMoons }})</span>
+                                    <svg class="h-3 w-3 transition-transform duration-200" :class="{ 'rotate-90': menu.open.moonIndividual }" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M9 5L16 12L9 19" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                                    </svg>
+                                </button>
+                                <div v-show="menu.open.moonIndividual" class="p-3 bg-gray-800/30 space-y-3">
+                                    <p class="text-xs text-gray-400 italic">Double-click moon names to rename or use the Rename button</p>
+                                    <div v-for="moon in moonSystemInfo.moons" :key="moon.id" 
+                                         class="bg-gray-700/50 rounded-lg p-3 space-y-2">
+                                        <div class="flex items-center justify-between">
+                                            <div class="flex items-center flex-1 mr-2">
+                                                <input v-if="editingMoonName === moon.id"
+                                                       v-model="editingMoonNameValue"
+                                                       @keyup.enter="saveMoonName(moon.id)"
+                                                       @keyup.escape="cancelEditMoonName"
+                                                       @blur="saveMoonName(moon.id)"
+                                                       class="text-sm font-medium bg-gray-600 text-gray-200 px-2 py-1 rounded border border-gray-500 focus:border-purple-400 focus:outline-none"
+                                                       :ref="`moonNameInput_${moon.id}`">
+                                                <span v-else 
+                                                      @dblclick="startEditMoonName(moon.id, moon.name)"
+                                                      class="text-sm font-medium text-gray-200 cursor-pointer hover:text-purple-300 transition-colors">
+                                                    {{ moon.name }}
+                                                </span>
+                                            </div>
+                                            <div class="flex items-center gap-1">
+                                                <button v-if="editingMoonName !== moon.id"
+                                                        @click="startEditMoonName(moon.id, moon.name)" 
+                                                        class="px-2 py-1 text-xs bg-purple-500/20 text-purple-300 hover:bg-purple-500/30 rounded transition-colors">
+                                                    Rename
+                                                </button>
+                                                <button v-if="moon.visible"
+                                                        @click="toggleMoonControls(moon.id)" 
+                                                        class="px-2 py-1 text-xs bg-blue-500/20 text-blue-300 hover:bg-blue-500/30 rounded transition-colors">
+                                                    {{ moonControlsVisible[moon.id] ? 'Hide' : 'Controls' }}
+                                                </button>
+                                                <button @click="toggleMoonVisibility(moon.id)" 
+                                                        class="px-2 py-1 text-xs rounded transition-colors"
+                                                        :class="moon.visible ? 'bg-green-500/20 text-green-300' : 'bg-gray-500/20 text-gray-400'">
+                                                    {{ moon.visible ? 'On' : 'Off' }}
+                                                </button>
+                                                <button @click="removeMoon(moon.id)" 
+                                                        class="px-2 py-1 text-xs bg-red-500/20 text-red-300 hover:bg-red-500/30 rounded transition-colors">
+                                                    ×
+                                                </button>
+                                            </div>
+                                        </div>
+
+                                        <div v-if="moon.visible && moonControlsVisible[moon.id]" class="space-y-2 pl-2 border-l-2 border-purple-500/30 mt-2">
+                                            <div>
+                                                <label class="block text-xs text-gray-400 mb-1">Size: {{ moon.size.toFixed(2) }}</label>
+                                                <vue-slider v-model="moon.size" :min="0.1" :max="2" :interval="0.05" :tooltip="'none'" 
+                                                          @change="(value) => updateMoonSize(moon.id, value)"></vue-slider>
+                                            </div>
+                                            <div>
+                                                <label class="block text-xs text-gray-400 mb-1">Distance: {{ moon.distance.toFixed(1) }}</label>
+                                                <vue-slider v-model="moon.distance" :min="3" :max="50" :interval="0.5" :tooltip="'none'" 
+                                                          @change="(value) => updateMoonDistance(moon.id, value)"></vue-slider>
+                                            </div>
+                                            <div>
+                                                <label class="block text-xs text-gray-400 mb-1">Orbit Speed: {{ moon.orbitSpeed.toFixed(1) }}</label>
+                                                <vue-slider v-model="moon.orbitSpeed" :min="0.0" :max="5" :interval="0.1" :tooltip="'none'" 
+                                                          @change="(value) => updateMoonOrbitSpeed(moon.id, value)"></vue-slider>
+                                            </div>
+                                            <div>
+                                                <label class="block text-xs text-gray-400 mb-1">Rotation Speed: {{ moon.rotationSpeed.toFixed(1) }}</label>
+                                                <vue-slider v-model="moon.rotationSpeed" :min="0.0" :max="5" :interval="0.1" :tooltip="'none'" 
+                                                          @change="(value) => updateMoonRotationSpeed(moon.id, value)"></vue-slider>
+                                            </div>
+                                            <div>
+                                                <label class="block text-xs text-gray-400 mb-1">Retrograde: {{ moon.retrograde.toFixed(0) }}° ({{ getOrbitDirection(moon.retrograde) }})</label>
+                                                <vue-slider v-model="moon.retrograde" :min="0" :max="180" :interval="5" :tooltip="'none'" 
+                                                          @change="(value) => updateMoonRetrograde(moon.id, value)"></vue-slider>
+                                            </div>
+                                            <div>
+                                                <input type="file" class="hidden" :id="`moonTexture_${moon.id}`" @change="(event) => setMoonTexture(moon.id, event)">
+                                                <label :for="`moonTexture_${moon.id}`" class="cursor-pointer py-1 px-2 block text-xs text-gray-200 hover:bg-purple-500/20 hover:text-purple-300 rounded transition-colors">
+                                                    <span class="flex items-center">
+                                                        <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                                            <path fill-rule="evenodd" d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z" clip-rule="evenodd" />
+                                                        </svg>
+                                                        Custom Texture
+                                                    </span>
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -354,52 +465,80 @@
                     </button>
 
                     <div v-show="menu.open.rings" class="bg-gray-900/50 rounded-lg mt-2 overflow-hidden">
-                        <div class="p-4">
-                            <div class="flex items-center justify-between mb-4">
-                                <label class="text-sm font-medium text-gray-200">Show Rings</label>
-                                <div class="relative">
-                                    <input type="checkbox" class="sr-only" id="ringsToggle" @change="toggleRings">
-                                    <label for="ringsToggle" class="flex items-center cursor-pointer">
+                        <!-- Rings Subsections -->
+                        <div class="space-y-3 p-3">
+                            
+                            <!-- Ring Visibility Subsection -->
+                            <div class="border border-gray-700 rounded-lg overflow-hidden">
+                                <button @click="menu.open.ringsVisibility = !menu.open.ringsVisibility" 
+                                        class="w-full flex justify-between items-center py-2 px-3 text-gray-200 hover:bg-gray-700/30 transition-colors">
+                                    <span class="text-sm font-medium">👁️ Visibility</span>
+                                    <svg class="h-3 w-3 transition-transform duration-200" :class="{ 'rotate-90': menu.open.ringsVisibility }" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M9 5L16 12L9 19" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                                    </svg>
+                                </button>
+                                <div v-show="menu.open.ringsVisibility" class="p-3 bg-gray-800/30">
+                                    <div class="flex items-center justify-between">
+                                        <label class="text-sm font-medium text-gray-200">Show Rings</label>
                                         <div class="relative">
-                                            <div class="block bg-gray-700 w-12 h-6 rounded-full"></div>
-                                            <div class="dot absolute left-1 top-1 bg-white w-4 h-4 rounded-full transition" :class="{ 'transform translate-x-6': ringsVisible }"></div>
+                                            <input type="checkbox" class="sr-only" id="ringsToggle" @change="toggleRings">
+                                            <label for="ringsToggle" class="flex items-center cursor-pointer">
+                                                <div class="relative">
+                                                    <div class="block bg-gray-700 w-12 h-6 rounded-full"></div>
+                                                    <div class="dot absolute left-1 top-1 bg-white w-4 h-4 rounded-full transition" :class="{ 'transform translate-x-6': ringsVisible }"></div>
+                                                </div>
+                                            </label>
                                         </div>
-                                    </label>
+                                    </div>
                                 </div>
                             </div>
 
-                            <div v-if="ringsVisible" class="space-y-4">
-                                <!-- Ring System Type Presets -->
-                                <div>
-                                    <h4 class="text-gray-400 text-xs font-medium mb-2 uppercase tracking-wider">Ring System Type</h4>
-                                    <div class="grid grid-cols-2 gap-2">
-                                        <button @click="setRingSystemType('saturn')" 
-                                                class="px-3 py-2 text-xs text-gray-200 border border-gray-700 rounded hover:bg-amber-500/20 hover:border-amber-500/50 transition-colors"
-                                                :class="{ 'bg-amber-500/30 border-amber-500': menu.rings.systemType === 'saturn' }">
-                                            Saturn
-                                        </button>
-                                        <button @click="setRingSystemType('uranus')" 
-                                                class="px-3 py-2 text-xs text-gray-200 border border-gray-700 rounded hover:bg-amber-500/20 hover:border-amber-500/50 transition-colors"
-                                                :class="{ 'bg-amber-500/30 border-amber-500': menu.rings.systemType === 'uranus' }">
-                                            Uranus
-                                        </button>
-                                        <button @click="setRingSystemType('jupiter')" 
-                                                class="px-3 py-2 text-xs text-gray-200 border border-gray-700 rounded hover:bg-amber-500/20 hover:border-amber-500/50 transition-colors"
-                                                :class="{ 'bg-amber-500/30 border-amber-500': menu.rings.systemType === 'jupiter' }">
-                                            Jupiter
-                                        </button>
-                                        <button @click="setRingSystemType('custom')" 
-                                                class="px-3 py-2 text-xs text-gray-200 border border-gray-700 rounded hover:bg-amber-500/20 hover:border-amber-500/50 transition-colors"
-                                                :class="{ 'bg-amber-500/30 border-amber-500': menu.rings.systemType === 'custom' }">
-                                            Custom
-                                        </button>
+                            <div v-if="ringsVisible" class="space-y-3">
+                                <!-- Ring System Presets Subsection -->
+                                <div class="border border-gray-700 rounded-lg overflow-hidden">
+                                    <button @click="menu.open.ringsPresets = !menu.open.ringsPresets" 
+                                            class="w-full flex justify-between items-center py-2 px-3 text-gray-200 hover:bg-gray-700/30 transition-colors">
+                                        <span class="text-sm font-medium">🪐 System Presets</span>
+                                        <svg class="h-3 w-3 transition-transform duration-200" :class="{ 'rotate-90': menu.open.ringsPresets }" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                            <path d="M9 5L16 12L9 19" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                                        </svg>
+                                    </button>
+                                    <div v-show="menu.open.ringsPresets" class="p-3 bg-gray-800/30">
+                                        <div class="grid grid-cols-2 gap-2">
+                                            <button @click="setRingSystemType('saturn')" 
+                                                    class="px-3 py-2 text-xs text-gray-200 border border-gray-700 rounded hover:bg-amber-500/20 hover:border-amber-500/50 transition-colors"
+                                                    :class="{ 'bg-amber-500/30 border-amber-500': menu.rings.systemType === 'saturn' }">
+                                                Saturn
+                                            </button>
+                                            <button @click="setRingSystemType('uranus')" 
+                                                    class="px-3 py-2 text-xs text-gray-200 border border-gray-700 rounded hover:bg-amber-500/20 hover:border-amber-500/50 transition-colors"
+                                                    :class="{ 'bg-amber-500/30 border-amber-500': menu.rings.systemType === 'uranus' }">
+                                                Uranus
+                                            </button>
+                                            <button @click="setRingSystemType('jupiter')" 
+                                                    class="px-3 py-2 text-xs text-gray-200 border border-gray-700 rounded hover:bg-amber-500/20 hover:border-amber-500/50 transition-colors"
+                                                    :class="{ 'bg-amber-500/30 border-amber-500': menu.rings.systemType === 'jupiter' }">
+                                                Jupiter
+                                            </button>
+                                            <button @click="setRingSystemType('custom')" 
+                                                    class="px-3 py-2 text-xs text-gray-200 border border-gray-700 rounded hover:bg-amber-500/20 hover:border-amber-500/50 transition-colors"
+                                                    :class="{ 'bg-amber-500/30 border-amber-500': menu.rings.systemType === 'custom' }">
+                                                Custom
+                                            </button>
+                                        </div>
                                     </div>
                                 </div>
 
-                                <!-- Ring Size Controls -->
-                                <div v-if="menu.rings.systemType === 'custom'">
-                                    <h4 class="text-gray-400 text-xs font-medium mb-2 uppercase tracking-wider">Size & Scale</h4>
-                                    <div class="space-y-3">
+                                <!-- Ring Size Controls Subsection -->
+                                <div v-if="menu.rings.systemType === 'custom'" class="border border-gray-700 rounded-lg overflow-hidden">
+                                    <button @click="menu.open.ringsSize = !menu.open.ringsSize" 
+                                            class="w-full flex justify-between items-center py-2 px-3 text-gray-200 hover:bg-gray-700/30 transition-colors">
+                                        <span class="text-sm font-medium">📏 Size & Scale</span>
+                                        <svg class="h-3 w-3 transition-transform duration-200" :class="{ 'rotate-90': menu.open.ringsSize }" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                            <path d="M9 5L16 12L9 19" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                                        </svg>
+                                    </button>
+                                    <div v-show="menu.open.ringsSize" class="p-3 bg-gray-800/30 space-y-3">
                                         <div>
                                             <label class="block text-xs text-gray-400 mb-1">Inner Radius: {{ menu.rings.innerRadius.toFixed(1) }}</label>
                                             <vue-slider v-model="menu.rings.innerRadius" :min="0.5" :max="8" :interval="0.1" :tooltip="'none'" @change="updateRingInnerRadius"></vue-slider>
@@ -415,10 +554,16 @@
                                     </div>
                                 </div>
 
-                                <!-- Ring Appearance Controls -->
-                                <div>
-                                    <h4 class="text-gray-400 text-xs font-medium mb-2 uppercase tracking-wider">Appearance</h4>
-                                    <div class="space-y-3">
+                                <!-- Ring Appearance Subsection -->
+                                <div class="border border-gray-700 rounded-lg overflow-hidden">
+                                    <button @click="menu.open.ringsAppearance = !menu.open.ringsAppearance" 
+                                            class="w-full flex justify-between items-center py-2 px-3 text-gray-200 hover:bg-gray-700/30 transition-colors">
+                                        <span class="text-sm font-medium">🎨 Appearance</span>
+                                        <svg class="h-3 w-3 transition-transform duration-200" :class="{ 'rotate-90': menu.open.ringsAppearance }" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                            <path d="M9 5L16 12L9 19" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                                        </svg>
+                                    </button>
+                                    <div v-show="menu.open.ringsAppearance" class="p-3 bg-gray-800/30 space-y-3">
                                         <div>
                                             <label class="block text-xs text-gray-400 mb-1">Opacity: {{ menu.rings.opacity.toFixed(2) }}</label>
                                             <vue-slider v-model="menu.rings.opacity" :min="0.1" :max="1" :interval="0.01" :tooltip="'none'" @change="updateRingOpacity"></vue-slider>
@@ -430,13 +575,19 @@
                                     </div>
                                 </div>
 
-                                <!-- Texture Controls -->
-                                <div>
-                                    <h4 class="text-gray-400 text-xs font-medium mb-2 uppercase tracking-wider">Textures</h4>
-                                    <div class="space-y-2">
+                                <!-- Ring Textures Subsection -->
+                                <div class="border border-gray-700 rounded-lg overflow-hidden">
+                                    <button @click="menu.open.ringsTextures = !menu.open.ringsTextures" 
+                                            class="w-full flex justify-between items-center py-2 px-3 text-gray-200 hover:bg-gray-700/30 transition-colors">
+                                        <span class="text-sm font-medium">🖼️ Textures</span>
+                                        <svg class="h-3 w-3 transition-transform duration-200" :class="{ 'rotate-90': menu.open.ringsTextures }" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                            <path d="M9 5L16 12L9 19" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                                        </svg>
+                                    </button>
+                                    <div v-show="menu.open.ringsTextures" class="p-3 bg-gray-800/30 space-y-2">
                                         <div>
                                             <input type="file" class="hidden" id="ringsSurfaceSelect" @change="setRingsImage">
-                                            <label for="ringsSurfaceSelect" class="cursor-pointer py-2 px-4 block text-sm text-gray-200 hover:bg-amber-500/20 hover:text-amber-300 rounded transition-colors">
+                                            <label for="ringsSurfaceSelect" class="cursor-pointer py-2 px-3 block text-sm text-gray-200 hover:bg-amber-500/20 hover:text-amber-300 rounded transition-colors">
                                                 <span class="flex items-center">
                                                     <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
                                                         <path fill-rule="evenodd" d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z" clip-rule="evenodd" />
@@ -447,7 +598,7 @@
                                         </div>
                                         <div>
                                             <input type="file" class="hidden" id="ringsTransparencySelect" @change="setRingsTransparency">
-                                            <label for="ringsTransparencySelect" class="cursor-pointer py-2 px-4 block text-sm text-gray-200 hover:bg-amber-500/20 hover:text-amber-300 rounded transition-colors">
+                                            <label for="ringsTransparencySelect" class="cursor-pointer py-2 px-3 block text-sm text-gray-200 hover:bg-amber-500/20 hover:text-amber-300 rounded transition-colors">
                                                 <span class="flex items-center">
                                                     <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
                                                         <path d="M5.5 16a3.5 3.5 0 01-.369-6.98 4 4 0 117.753-1.977A4.5 4.5 0 1113.5 16h-8z" />
@@ -459,11 +610,20 @@
                                     </div>
                                 </div>
 
-                                <!-- Controls Toggle -->
-                                <div>
-                                    <button type="button" class="cursor-pointer text-left w-full py-2 px-4 text-sm text-gray-200 hover:bg-amber-500/20 hover:text-amber-300 rounded transition-colors" value="rings" @click="toggleControls">
-                                        Toggle Ring Controls
+                                <!-- Ring Debug Tools Subsection -->
+                                <div class="border border-gray-700 rounded-lg overflow-hidden">
+                                    <button @click="menu.open.ringsDebug = !menu.open.ringsDebug" 
+                                            class="w-full flex justify-between items-center py-2 px-3 text-gray-200 hover:bg-gray-700/30 transition-colors">
+                                        <span class="text-sm font-medium">🔧 Debug Tools</span>
+                                        <svg class="h-3 w-3 transition-transform duration-200" :class="{ 'rotate-90': menu.open.ringsDebug }" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                            <path d="M9 5L16 12L9 19" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                                        </svg>
                                     </button>
+                                    <div v-show="menu.open.ringsDebug" class="p-3 bg-gray-800/30">
+                                        <button type="button" class="cursor-pointer text-left w-full py-2 px-3 text-sm text-gray-200 hover:bg-amber-500/20 hover:text-amber-300 rounded transition-colors" value="rings" @click="toggleControls">
+                                            Toggle Ring Controls
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -783,14 +943,34 @@ export default defineComponent({
                     export: false,
                     storage: false,
                     planet: false,
+                    planetTextures: false,
+                    planetAppearance: false,
+                    planetMotion: false,
+                    planetShape: false,
+                    planetDebug: false,
                     moon: false,
+                    moonLegacy: false,
+                    moonPresets: false,
+                    moonManagement: false,
+                    moonIndividual: false,
                     rings: false,
+                    ringsVisibility: false,
+                    ringsPresets: false,
+                    ringsSize: false,
+                    ringsAppearance: false,
+                    ringsTextures: false,
+                    ringsDebug: false,
                     background: false,
                     lights: false
                 },
                 planet: {
                     shininess: 60,
-                    rotationSpeed: 0.0
+                    rotationSpeed: 0.0,
+                    shape: {
+                        scaleX: 1.0,
+                        scaleY: 1.0,
+                        scaleZ: 1.0
+                    }
                 },
                 moon: {
                     controls: false,
@@ -876,6 +1056,12 @@ export default defineComponent({
         // Initialize planet rotation speed
         this.menu.planet.rotationSpeed = this.maptoglobe.GetPlanetRotationSpeed();
         
+        // Initialize planet shape
+        const shape = this.maptoglobe.GetPlanetShape();
+        this.menu.planet.shape.scaleX = shape.x;
+        this.menu.planet.shape.scaleY = shape.y;
+        this.menu.planet.shape.scaleZ = shape.z;
+        
         // Load stored data and update storage info
         this.loadStoredData();
         this.updateStorageInfo();
@@ -933,6 +1119,33 @@ export default defineComponent({
             if (speed < 3) return 'Fast';
             if (speed < 4) return 'Very Fast';
             return 'Ultra Fast';
+        },
+        
+        // Planet Shape Methods
+        updatePlanetShape() {
+            this.maptoglobe.SetPlanetShape(
+                this.menu.planet.shape.scaleX,
+                this.menu.planet.shape.scaleY,
+                this.menu.planet.shape.scaleZ
+            );
+            this.saveCurrentState();
+        },
+        
+        resetPlanetShape() {
+            this.menu.planet.shape.scaleX = 1.0;
+            this.menu.planet.shape.scaleY = 1.0;
+            this.menu.planet.shape.scaleZ = 1.0;
+            this.updatePlanetShape();
+        },
+        
+        getShapeDescription(axis: string, value: number): string {
+            if (value < 0.6) return 'Very Compressed';
+            if (value < 0.8) return 'Compressed';
+            if (value < 0.95) return 'Slightly Compressed';
+            if (value <= 1.05) return 'Normal';
+            if (value < 1.2) return 'Slightly Stretched';
+            if (value < 1.5) return 'Stretched';
+            return 'Very Stretched';
         },
         toggleMoon() {
             this.moonIsVisible = !this.moonIsVisible;
@@ -1297,7 +1510,12 @@ export default defineComponent({
                     },
                     planet: {
                         shininess: this.menu.planet.shininess,
-                        rotationSpeed: this.menu.planet.rotationSpeed
+                        rotationSpeed: this.menu.planet.rotationSpeed,
+                        shape: {
+                            scaleX: this.menu.planet.shape.scaleX,
+                            scaleY: this.menu.planet.shape.scaleY,
+                            scaleZ: this.menu.planet.shape.scaleZ
+                        }
                     },
                     rings: {
                         visible: this.ringsVisible,
@@ -1368,8 +1586,12 @@ export default defineComponent({
                 // Restore planet settings
                 this.menu.planet.shininess = stored.planet.shininess;
                 this.menu.planet.rotationSpeed = stored.planet.rotationSpeed || 0.0;
+                this.menu.planet.shape.scaleX = stored.planet.shape?.scaleX || 1.0;
+                this.menu.planet.shape.scaleY = stored.planet.shape?.scaleY || 1.0;
+                this.menu.planet.shape.scaleZ = stored.planet.shape?.scaleZ || 1.0;
                 ((this.maptoglobe.planet.object.material as THREE.Material[])[0] as THREE.MeshPhongMaterial).shininess = stored.planet.shininess;
                 this.maptoglobe.SetPlanetRotationSpeed(this.menu.planet.rotationSpeed);
+                this.maptoglobe.SetPlanetShape(this.menu.planet.shape.scaleX, this.menu.planet.shape.scaleY, this.menu.planet.shape.scaleZ);
                 
                 // Restore rings
                 if (stored.rings.visible) {
@@ -1458,6 +1680,9 @@ export default defineComponent({
                 // Reset menu values to defaults
                 this.menu.planet.shininess = 60;
                 this.menu.planet.rotationSpeed = 0.0;
+                this.menu.planet.shape.scaleX = 1.0;
+                this.menu.planet.shape.scaleY = 1.0;
+                this.menu.planet.shape.scaleZ = 1.0;
                 this.menu.moon.scale = 1;
                 this.menu.moon.distance = 3;
                 this.menu.light.sunIntensity = 0.4;
@@ -1485,8 +1710,9 @@ export default defineComponent({
                 this.maptoglobe.instance.SetSunIntensity(0.4);
                 this.maptoglobe.instance.SetAmbientIntensity(0.6);
                 
-                // Reset planet rotation
+                // Reset planet rotation and shape
                 this.maptoglobe.SetPlanetRotationSpeed(0.0);
+                this.maptoglobe.SetPlanetShape(1.0, 1.0, 1.0);
                 
                 // Reset background
                 this.maptoglobe.SetBGBlack();

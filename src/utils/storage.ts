@@ -34,6 +34,11 @@ export interface StoredAppState {
     planet: {
         shininess: number;
         rotationSpeed: number;
+        shape: {
+            scaleX: number;
+            scaleY: number;
+            scaleZ: number;
+        };
     };
     
     // Rings
@@ -143,7 +148,12 @@ export class StorageManager {
             
             planet: {
                 shininess: 60,
-                rotationSpeed: 0.0
+                rotationSpeed: 0.0,
+                shape: {
+                    scaleX: 1.0,
+                    scaleY: 1.0,
+                    scaleZ: 1.0
+                }
             },
             
             rings: {

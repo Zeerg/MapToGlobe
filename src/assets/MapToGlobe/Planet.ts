@@ -181,4 +181,25 @@ export default class Planet {
             }
         }
     }
+
+    /**
+     * PLANET SHAPE CONTROL
+     */
+    
+    SetShape(scaleX: number, scaleY: number, scaleZ: number) {
+        this.object.scale.set(scaleX, scaleY, scaleZ);
+        
+        // Also scale the clouds to match
+        if (this.cloudObject) {
+            this.cloudObject.scale.set(scaleX, scaleY, scaleZ);
+        }
+    }
+
+    GetShape(): { x: number; y: number; z: number } {
+        return {
+            x: this.object.scale.x,
+            y: this.object.scale.y,
+            z: this.object.scale.z
+        };
+    }
 }

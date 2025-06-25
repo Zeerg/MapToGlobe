@@ -148,56 +148,14 @@
                                 </div>
                             </div>
                             
-                            <!-- Planet Rotation Controls -->
+                            <!-- Planet Rotation Speed -->
                             <div class="mt-4 pt-3 border-t border-gray-700">
-                                <h5 class="text-gray-400 px-2 py-2 text-xs font-medium">Planet Rotation</h5>
-                                
-                                <!-- Enable/Disable Rotation -->
-                                <div class="flex items-center justify-between mb-3 px-2">
-                                    <label class="text-sm text-gray-200">Enable Rotation</label>
-                                    <div class="relative">
-                                        <input type="checkbox" class="sr-only" id="rotationToggle" v-model="menu.planet.rotation.enabled" @change="togglePlanetRotation">
-                                        <label for="rotationToggle" class="flex items-center cursor-pointer">
-                                            <div class="relative">
-                                                <div class="block bg-gray-700 w-12 h-6 rounded-full"></div>
-                                                <div class="dot absolute left-1 top-1 bg-white w-4 h-4 rounded-full transition" :class="{ 'transform translate-x-6': menu.planet.rotation.enabled }"></div>
-                                            </div>
-                                        </label>
-                                    </div>
-                                </div>
-                                
-                                <!-- Planet Type Selection -->
-                                <div class="mb-3 px-2">
-                                    <label class="block text-xs text-gray-400 mb-2">Planet Type</label>
-                                    <select v-model="menu.planet.rotation.planetType" @change="setPlanetType" 
-                                            class="w-full px-3 py-2 text-sm bg-gray-700 text-gray-200 border border-gray-600 rounded focus:border-blue-400 focus:outline-none">
-                                        <option v-for="planet in availablePlanets" :key="planet.key" :value="planet.key">
-                                            {{ planet.name }}
-                                        </option>
-                                    </select>
-                                </div>
-                                
-                                <!-- Time Scale -->
-                                <div class="mb-3 px-2">
+                                <div class="px-2">
                                     <label class="block text-xs text-gray-400 mb-2">
-                                        Time Scale: {{ menu.planet.rotation.timeScale.toFixed(1) }}x
-                                        <span class="text-gray-500">({{ getTimeScaleDescription(menu.planet.rotation.timeScale) }})</span>
+                                        Rotation Speed: {{ menu.planet.rotationSpeed.toFixed(1) }}
+                                        <span class="text-gray-500">({{ getRotationSpeedDescription(menu.planet.rotationSpeed) }})</span>
                                     </label>
-                                    <vue-slider v-model="menu.planet.rotation.timeScale" :min="0.1" :max="10" :interval="0.1" :tooltip="'none'" @change="setTimeScale"></vue-slider>
-                                </div>
-                                
-                                <!-- Rotation Status -->
-                                <div class="px-2 py-2 bg-gray-800/50 rounded text-xs text-gray-400">
-                                    <div class="flex justify-between">
-                                        <span>Status:</span>
-                                        <span :class="menu.planet.rotation.enabled ? 'text-green-400' : 'text-red-400'">
-                                            {{ menu.planet.rotation.enabled ? 'Rotating' : 'Stopped' }}
-                                        </span>
-                                    </div>
-                                    <div class="flex justify-between mt-1">
-                                        <span>Period:</span>
-                                        <span>{{ getPlanetRotationPeriod() }}</span>
-                                    </div>
+                                    <vue-slider v-model="menu.planet.rotationSpeed" :min="0" :max="5" :interval="0.1" :tooltip="'none'" @change="setPlanetRotationSpeed"></vue-slider>
                                 </div>
                             </div>
                         </div>
@@ -531,33 +489,106 @@
 
                     <div v-show="menu.open.background" class="bg-gray-900/50 rounded-lg mt-2 overflow-hidden">
                         <div class="p-4">
-                            <h4 class="text-gray-400 text-sm font-medium mb-3">Background Type</h4>
+                            <h4 class="text-gray-400 text-sm font-medium mb-4">Choose Background</h4>
                             
-                            <div class="space-y-3">
-                                <label class="flex items-center cursor-pointer p-3 rounded-lg hover:bg-gray-800/50 transition-colors">
-                                    <input type="radio" name="bgType" class="sr-only" id="blackBG" @change="setBgBlack" checked>
-                                    <div class="w-4 h-4 border-2 border-gray-700 rounded-full mr-3 relative">
-                                        <div class="w-2 h-2 bg-blue-400 rounded-full absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 opacity-0 radio-dot"></div>
+                            <!-- Basic Backgrounds -->
+                            <div class="mb-4">
+                                <h5 class="text-gray-500 text-xs font-medium mb-2 uppercase tracking-wide">Basic</h5>
+                                <div class="grid grid-cols-2 gap-2">
+                                    <!-- Solid Black -->
+                                    <div class="bg-card cursor-pointer rounded-lg p-3 border-2 transition-all duration-200 hover:border-gray-600" 
+                                         :class="menu.background.type === 'black' ? 'border-blue-500 bg-blue-500/10' : 'border-gray-700 hover:bg-gray-800/30'"
+                                         @click="setBgBlack">
+                                        <input type="radio" name="bgType" class="sr-only" v-model="menu.background.type" value="black">
+                                        <div class="flex flex-col items-center text-center">
+                                            <div class="w-8 h-8 bg-black rounded-full border border-gray-600 mb-2"></div>
+                                            <span class="text-xs text-gray-200 font-medium">Black</span>
+                                            <span class="text-xs text-gray-400">Classic space</span>
+                                        </div>
                                     </div>
-                                    <span class="text-sm text-gray-200">Solid Black</span>
-                                </label>
-                                
-                                <label class="flex items-center cursor-pointer p-3 rounded-lg hover:bg-gray-800/50 transition-colors">
-                                    <input type="radio" name="bgType" class="sr-only" id="transparentBG" @change="setBgTransparent">
-                                    <div class="w-4 h-4 border-2 border-gray-700 rounded-full mr-3 relative">
-                                        <div class="w-2 h-2 bg-blue-400 rounded-full absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 opacity-0 radio-dot"></div>
+                                    
+                                    <!-- Transparent -->
+                                    <div class="bg-card cursor-pointer rounded-lg p-3 border-2 transition-all duration-200 hover:border-gray-600" 
+                                         :class="menu.background.type === 'transparent' ? 'border-blue-500 bg-blue-500/10' : 'border-gray-700 hover:bg-gray-800/30'"
+                                         @click="setBgTransparent">
+                                        <input type="radio" name="bgType" class="sr-only" v-model="menu.background.type" value="transparent">
+                                        <div class="flex flex-col items-center text-center">
+                                            <div class="w-8 h-8 rounded-full border-2 border-dashed border-gray-500 mb-2 bg-gradient-to-br from-gray-800 to-transparent"></div>
+                                            <span class="text-xs text-gray-200 font-medium">Transparent</span>
+                                            <span class="text-xs text-gray-400">For overlays</span>
+                                        </div>
                                     </div>
-                                    <span class="text-sm text-gray-200">Transparent</span>
-                                </label>
-                                
-                                <label class="flex items-center cursor-pointer p-3 rounded-lg hover:bg-gray-800/50 transition-colors">
-                                    <input type="radio" name="bgType" class="sr-only" id="imageBGRadio" @change="triggerImageSelect">
-                                    <div class="w-4 h-4 border-2 border-gray-700 rounded-full mr-3 relative">
-                                        <div class="w-2 h-2 bg-blue-400 rounded-full absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 opacity-0 radio-dot"></div>
+                                </div>
+                            </div>
+                            
+                            <!-- Color Picker -->
+                            <div class="mb-4">
+                                <h5 class="text-gray-500 text-xs font-medium mb-2 uppercase tracking-wide">Custom Color</h5>
+                                <div class="bg-card cursor-pointer rounded-lg p-3 border-2 transition-all duration-200 hover:border-gray-600" 
+                                     :class="menu.background.type === 'color' ? 'border-blue-500 bg-blue-500/10' : 'border-gray-700 hover:bg-gray-800/30'"
+                                     @click="menu.background.type = 'color'">
+                                    <input type="radio" name="bgType" class="sr-only" v-model="menu.background.type" value="color">
+                                    <div class="flex items-center justify-between">
+                                        <div class="flex items-center">
+                                            <div class="w-8 h-8 rounded-full border border-gray-600 mr-3" :style="{ backgroundColor: menu.background.color }"></div>
+                                            <div>
+                                                <span class="text-sm text-gray-200 font-medium">Color Picker</span>
+                                                <div class="text-xs text-gray-400">Choose any color</div>
+                                            </div>
+                                        </div>
+                                        <div class="flex items-center space-x-2">
+                                            <input type="color" v-model="menu.background.color" @change="setBgColor" 
+                                                   class="w-8 h-8 rounded cursor-pointer border border-gray-600">
+                                            <span class="text-xs text-gray-400 font-mono">{{ menu.background.color }}</span>
+                                        </div>
                                     </div>
-                                    <span class="text-sm text-gray-200">Custom Image</span>
+                                </div>
+                            </div>
+                            
+                                                         <!-- Starfield Background -->
+                             <div class="mb-4">
+                                 <h5 class="text-gray-500 text-xs font-medium mb-2 uppercase tracking-wide">Starfield</h5>
+                                 <div class="bg-card cursor-pointer rounded-lg p-3 border-2 transition-all duration-200 hover:border-gray-600" 
+                                      :class="menu.background.type === 'starfield' ? 'border-teal-500 bg-teal-500/10' : 'border-gray-700 hover:bg-gray-800/30'"
+                                      @click="setBgStarfield()">
+                                     <div class="flex items-center">
+                                         <div class="w-8 h-8 bg-gradient-to-br from-gray-900 to-black rounded-full mr-3 border border-gray-600 relative overflow-hidden">
+                                             <div class="absolute inset-0">
+                                                 <div class="absolute top-1 left-2 w-0.5 h-0.5 bg-white rounded-full"></div>
+                                                 <div class="absolute top-3 left-1 w-0.5 h-0.5 bg-blue-200 rounded-full"></div>
+                                                 <div class="absolute top-2 right-1 w-0.5 h-0.5 bg-white rounded-full"></div>
+                                                 <div class="absolute bottom-2 left-3 w-0.5 h-0.5 bg-yellow-200 rounded-full"></div>
+                                                 <div class="absolute bottom-1 right-2 w-0.5 h-0.5 bg-white rounded-full"></div>
+                                             </div>
+                                         </div>
+                                         <div>
+                                             <span class="text-sm text-gray-200 font-medium">✨ Starfield</span>
+                                             <div class="text-xs text-gray-400">Realistic night sky</div>
+                                         </div>
+                                     </div>
+                                 </div>
+                             </div>
+                            
+                            <!-- Custom Image -->
+                            <div>
+                                <h5 class="text-gray-500 text-xs font-medium mb-2 uppercase tracking-wide">Custom</h5>
+                                <div class="bg-card cursor-pointer rounded-lg p-3 border-2 transition-all duration-200 hover:border-gray-600" 
+                                     :class="menu.background.type === 'custom' ? 'border-blue-500 bg-blue-500/10' : 'border-gray-700 hover:bg-gray-800/30'"
+                                     @click="triggerImageSelect">
+                                    <input type="radio" name="bgType" class="sr-only" v-model="menu.background.type" value="custom">
                                     <input type="file" class="hidden" id="imageBG" @change="setBgImage">
-                                </label>
+                                    <div class="flex items-center">
+                                        <div class="w-8 h-8 bg-gradient-to-br from-gray-700 to-gray-800 rounded-full mr-3 border border-gray-600 flex items-center justify-center">
+                                            <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                                            </svg>
+                                        </div>
+                                        <div>
+                                            <span class="text-sm text-gray-200 font-medium">📁 Custom Image</span>
+                                            <div class="text-xs text-gray-400">Upload your own background</div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -759,11 +790,7 @@ export default defineComponent({
                 },
                 planet: {
                     shininess: 60,
-                    rotation: {
-                        enabled: false,
-                        planetType: 'earth',
-                        timeScale: 1.0
-                    }
+                    rotationSpeed: 0.0
                 },
                 moon: {
                     controls: false,
@@ -781,6 +808,10 @@ export default defineComponent({
                     thickness: 2.0,    // Ensure within slider bounds (0.2-8)
                     opacity: 0.8,      // Already within bounds (0.1-1)
                     rotationSpeed: 0.5 // Already within bounds (0-3)
+                },
+                background: {
+                    type: 'black' as 'black' | 'transparent' | 'color' | 'starfield' | 'custom',
+                    color: '#000000'
                 }
             },
             images: {
@@ -816,8 +847,7 @@ export default defineComponent({
             navPanelVisible: true,
             editingMoonName: null as string | null,
             editingMoonNameValue: '',
-            moonControlsVisible: {} as Record<string, boolean>,
-            availablePlanets: [] as Array<{ name: string; key: string }>
+            moonControlsVisible: {} as Record<string, boolean>
         }
     },
     created() {
@@ -843,12 +873,8 @@ export default defineComponent({
         // Initialize moon system info
         this.updateMoonSystemInfo();
         
-        // Initialize available planets and rotation state
-        this.availablePlanets = this.maptoglobe.GetAvailablePlanets();
-        const planetInfo = this.maptoglobe.GetPlanetInfo();
-        this.menu.planet.rotation.enabled = planetInfo.realTimeRotation;
-        this.menu.planet.rotation.planetType = planetInfo.type;
-        this.menu.planet.rotation.timeScale = planetInfo.timeScale;
+        // Initialize planet rotation speed
+        this.menu.planet.rotationSpeed = this.maptoglobe.GetPlanetRotationSpeed();
         
         // Load stored data and update storage info
         this.loadStoredData();
@@ -893,52 +919,20 @@ export default defineComponent({
             this.saveCurrentState();
         },
         
-        // Planet Rotation Methods
-        togglePlanetRotation() {
-            this.maptoglobe.EnableRealTimeRotation(this.menu.planet.rotation.enabled);
+        // Planet Rotation Method
+        setPlanetRotationSpeed(value: number) {
+            this.menu.planet.rotationSpeed = value;
+            this.maptoglobe.SetPlanetRotationSpeed(value);
             this.saveCurrentState();
         },
         
-        setPlanetType() {
-            this.maptoglobe.SetPlanetType(this.menu.planet.rotation.planetType);
-            this.saveCurrentState();
-        },
-        
-        setTimeScale(value: number) {
-            this.menu.planet.rotation.timeScale = value;
-            this.maptoglobe.SetTimeScale(value);
-            this.saveCurrentState();
-        },
-        
-        getTimeScaleDescription(scale: number): string {
-            if (scale < 0.5) return 'Very Slow';
-            if (scale < 1) return 'Slow';
-            if (scale === 1) return 'Real Time';
-            if (scale < 3) return 'Fast';
-            if (scale < 6) return 'Very Fast';
+        getRotationSpeedDescription(speed: number): string {
+            if (speed === 0) return 'Stopped';
+            if (speed < 1) return 'Slow';
+            if (speed < 2) return 'Medium';
+            if (speed < 3) return 'Fast';
+            if (speed < 4) return 'Very Fast';
             return 'Ultra Fast';
-        },
-        
-        getPlanetRotationPeriod(): string {
-            const planetPeriods: Record<string, string> = {
-                earth: '24 hours',
-                mars: '24.6 hours',
-                jupiter: '9.9 hours',
-                venus: '243 days',
-                mercury: '59 days',
-                saturn: '10.7 hours'
-            };
-            
-            const basePeriod = planetPeriods[this.menu.planet.rotation.planetType] || '24 hours';
-            const adjustedScale = this.menu.planet.rotation.timeScale;
-            
-            if (adjustedScale === 1) {
-                return basePeriod;
-            } else if (adjustedScale > 1) {
-                return `${basePeriod} @ ${adjustedScale.toFixed(1)}x speed`;
-            } else {
-                return `${basePeriod} @ ${adjustedScale.toFixed(1)}x speed`;
-            }
         },
         toggleMoon() {
             this.moonIsVisible = !this.moonIsVisible;
@@ -1058,10 +1052,24 @@ export default defineComponent({
             }, 100); // 100ms debounce
         },
         setBgBlack() {
+            this.menu.background.type = 'black';
             this.maptoglobe.SetBGBlack();
+            this.saveCurrentState();
         },
         setBgTransparent() {
+            this.menu.background.type = 'transparent';
             this.maptoglobe.SetBGTransparent();
+            this.saveCurrentState();
+        },
+        setBgColor() {
+            this.menu.background.type = 'color';
+            this.maptoglobe.SetBGColor(this.menu.background.color);
+            this.saveCurrentState();
+        },
+        setBgStarfield() {
+            this.menu.background.type = 'starfield';
+            this.maptoglobe.SetBGStarfield();
+            this.saveCurrentState();
         },
         triggerImageSelect() {
             const fileInput = document.getElementById('imageBG') as HTMLInputElement;
@@ -1076,7 +1084,9 @@ export default defineComponent({
             }
             const files = (event.target as HTMLInputElement).files;
             if (files !== null) {
+                this.menu.background.type = 'custom';
                 this.maptoglobe.SetBGImage(files[0]);
+                this.saveCurrentState();
             }
         },
         toggleControls(event: Event) {
@@ -1286,7 +1296,8 @@ export default defineComponent({
                         distance: this.menu.moon.distance
                     },
                     planet: {
-                        shininess: this.menu.planet.shininess
+                        shininess: this.menu.planet.shininess,
+                        rotationSpeed: this.menu.planet.rotationSpeed
                     },
                     rings: {
                         visible: this.ringsVisible,
@@ -1300,6 +1311,10 @@ export default defineComponent({
                     lighting: {
                         sunIntensity: this.menu.light.sunIntensity,
                         ambientIntensity: this.menu.light.ambientIntensity
+                    },
+                    background: {
+                        type: this.menu.background.type,
+                        color: this.menu.background.color
                     },
                     atmosphere: {
                         enabled: this.atmosphere.enabled
@@ -1352,7 +1367,9 @@ export default defineComponent({
                 
                 // Restore planet settings
                 this.menu.planet.shininess = stored.planet.shininess;
+                this.menu.planet.rotationSpeed = stored.planet.rotationSpeed || 0.0;
                 ((this.maptoglobe.planet.object.material as THREE.Material[])[0] as THREE.MeshPhongMaterial).shininess = stored.planet.shininess;
+                this.maptoglobe.SetPlanetRotationSpeed(this.menu.planet.rotationSpeed);
                 
                 // Restore rings
                 if (stored.rings.visible) {
@@ -1386,6 +1403,30 @@ export default defineComponent({
                 this.maptoglobe.instance.SetSunIntensity(stored.lighting.sunIntensity);
                 this.maptoglobe.instance.SetAmbientIntensity(stored.lighting.ambientIntensity);
                 
+                // Restore background
+                if (stored.background) {
+                    this.menu.background.type = stored.background.type || 'black';
+                    this.menu.background.color = stored.background.color || '#000000';
+                    
+                    // Apply the background based on type
+                    switch (stored.background.type) {
+                        case 'black':
+                            this.maptoglobe.SetBGBlack();
+                            break;
+                        case 'transparent':
+                            this.maptoglobe.SetBGTransparent();
+                            break;
+                        case 'color':
+                            this.maptoglobe.SetBGColor(stored.background.color || '#000000');
+                            break;
+                        case 'starfield':
+                            this.maptoglobe.SetBGStarfield();
+                            break;
+                        default:
+                            this.maptoglobe.SetBGBlack();
+                    }
+                }
+                
                 // Restore other settings
                 this.atmosphere.enabled = stored.atmosphere.enabled;
                 this.images.surface = stored.images.surface;
@@ -1416,9 +1457,7 @@ export default defineComponent({
                 
                 // Reset menu values to defaults
                 this.menu.planet.shininess = 60;
-                this.menu.planet.rotation.enabled = false;
-                this.menu.planet.rotation.planetType = 'earth';
-                this.menu.planet.rotation.timeScale = 1.0;
+                this.menu.planet.rotationSpeed = 0.0;
                 this.menu.moon.scale = 1;
                 this.menu.moon.distance = 3;
                 this.menu.light.sunIntensity = 0.4;
@@ -1432,6 +1471,10 @@ export default defineComponent({
                 this.menu.rings.opacity = 0.8;       // Within slider bounds (0.1-1)
                 this.menu.rings.rotationSpeed = 0.5; // Within slider bounds (0-3)
                 
+                // Reset background to defaults
+                this.menu.background.type = 'black';
+                this.menu.background.color = '#000000';
+                
                 // Reset image flags
                 this.images.surface = false;
                 this.images.clouds = false;
@@ -1443,9 +1486,10 @@ export default defineComponent({
                 this.maptoglobe.instance.SetAmbientIntensity(0.6);
                 
                 // Reset planet rotation
-                this.maptoglobe.EnableRealTimeRotation(false);
-                this.maptoglobe.SetPlanetType('earth');
-                this.maptoglobe.SetTimeScale(1.0);
+                this.maptoglobe.SetPlanetRotationSpeed(0.0);
+                
+                // Reset background
+                this.maptoglobe.SetBGBlack();
                 
                 // Clear local storage
                 StorageManager.clearState();
@@ -1514,12 +1558,41 @@ export default defineComponent({
     }
 
     /* Radio button styles */
-    input[type="radio"]:checked + .relative .radio-dot {
+    input[type="radio"]:checked + .relative .radio-dot,
+    input[type="radio"]:checked + div .radio-dot {
         opacity: 1;
     }
 
     .radio-dot {
         transition: opacity 0.2s ease-in-out;
+    }
+
+    /* Color picker styling */
+    input[type="color"] {
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        appearance: none;
+        background-color: transparent;
+        width: 48px;
+        height: 32px;
+        border: none;
+        cursor: pointer;
+    }
+
+    input[type="color"]::-webkit-color-swatch-wrapper {
+        padding: 0;
+        border: 2px solid #4b5563;
+        border-radius: 4px;
+    }
+
+    input[type="color"]::-webkit-color-swatch {
+        border: none;
+        border-radius: 2px;
+    }
+
+    input[type="color"]::-moz-color-swatch {
+        border: 2px solid #4b5563;
+        border-radius: 4px;
     }
 
     /* Smooth animations for collapsible sections */

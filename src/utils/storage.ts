@@ -33,9 +33,7 @@ export interface StoredAppState {
     // Planet settings
     planet: {
         shininess: number;
-        planetType?: string;
-        realTimeRotation?: boolean;
-        timeScale?: number;
+        rotationSpeed: number;
     };
     
     // Rings
@@ -57,7 +55,8 @@ export interface StoredAppState {
     
     // Background
     background: {
-        type: 'black' | 'transparent' | 'custom';
+        type: 'black' | 'transparent' | 'custom' | 'color' | 'starfield';
+        color?: string;
     };
     
     // Atmosphere
@@ -144,9 +143,7 @@ export class StorageManager {
             
             planet: {
                 shininess: 60,
-                planetType: 'earth',
-                realTimeRotation: false,
-                timeScale: 1
+                rotationSpeed: 0.0
             },
             
             rings: {
@@ -165,7 +162,8 @@ export class StorageManager {
             },
             
             background: {
-                type: 'black'
+                type: 'black',
+                color: '#000000'
             },
             
             atmosphere: {

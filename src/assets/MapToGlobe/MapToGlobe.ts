@@ -151,6 +151,14 @@ export default class MapToGlobe {
         this.instance.SetBGTransparent();
     }
 
+    SetBGColor(hexColor: string) {
+        this.instance.SetBGColor(hexColor);
+    }
+
+    SetBGStarfield() {
+        this.instance.SetBGStarfield();
+    }
+
     ToggleControls(object: THREE.Mesh) {
         if (object === this.instance.controls.object) {
             this.instance.controls.detach();
@@ -194,34 +202,15 @@ export default class MapToGlobe {
 
 
     /**
-     * SCIENCE FEATURES: Planetary Rotation Controls
+     * PLANET ROTATION CONTROL
      */
 
-    SetPlanetType(planetType: string) {
-        this.planet.SetPlanetType(planetType);
+    SetPlanetRotationSpeed(speed: number) {
+        this.planet.SetRotationSpeed(speed);
     }
 
-    EnableRealTimeRotation(enable: boolean) {
-        this.planet.EnableRealTimeRotation(enable);
-    }
-
-    SetTimeScale(scale: number) {
-        this.planet.SetTimeScale(scale);
-    }
-
-    GetPlanetInfo() {
-        return this.planet.GetPlanetInfo();
-    }
-
-    GetAvailablePlanets() {
-        return [
-            { name: 'Earth', key: 'earth' },
-            { name: 'Mars', key: 'mars' },
-            { name: 'Jupiter', key: 'jupiter' },
-            { name: 'Venus', key: 'venus' },
-            { name: 'Mercury', key: 'mercury' },
-            { name: 'Saturn', key: 'saturn' }
-        ];
+    GetPlanetRotationSpeed(): number {
+        return this.planet.GetRotationSpeed();
     }
 
     /**

@@ -1,14 +1,9 @@
 import * as THREE from 'three';
-import { AstronomyCalculator } from './Astronomy';
 
 export default class Planet {
     object: THREE.Mesh;
     cloudObject: THREE.Mesh;
-    currentPlanetType = 'earth';
     rotationSpeed = 0;
-    cloudRotationSpeed = 0;
-    realTimeRotation = false;
-    timeScale = 1;
 
     constructor(json?: THREE.Mesh) {
         if (json) {
@@ -44,9 +39,6 @@ export default class Planet {
         this.object = object;
 
         this.cloudObject = this.CreateNewCloudMesh();
-        
-        // Initialize rotation speed
-        this.updateRotationSpeed();
     }
 
     SetSurfaceImage(file: File) {
@@ -168,64 +160,25 @@ export default class Planet {
     }
 
     /**
-     * SCIENCE FEATURE: Planetary Rotation
+     * SIMPLE ROTATION CONTROL
      */
     
-    SetPlanetType(planetType: string) {
-        this.currentPlanetType = planetType;
-        this.updateRotationSpeed();
+    SetRotationSpeed(speed: number) {
+        this.rotationSpeed = speed * 0.01; // Scale down for smooth rotation
     }
 
-    EnableRealTimeRotation(enable: boolean) {
-        this.realTimeRotation = enable;
-    }
-
-    SetTimeScale(scale: number) {
-        this.timeScale = scale;
+    GetRotationSpeed(): number {
+        return this.rotationSpeed / 0.01; // Scale back up for UI display
     }
 
     UpdateRotation() {
-        if (this.realTimeRotation && this.rotationSpeed > 0) {
-            this.object.rotation.y += this.rotationSpeed * this.timeScale;
+        if (this.rotationSpeed > 0) {
+            this.object.rotation.y += this.rotationSpeed;
+            
+            // Clouds rotate slightly faster for visual interest
+            if (this.cloudObject) {
+                this.cloudObject.rotation.y += this.rotationSpeed * 1.2;
+            }
         }
-        
-        // Update cloud rotation independently (clouds typically move faster)
-        if (this.realTimeRotation && this.cloudObject && this.cloudRotationSpeed > 0) {
-            this.cloudObject.rotation.y += this.cloudRotationSpeed * this.timeScale;
-        }
-    }
-
-    private updateRotationSpeed() {
-        // Rotation speeds for different planets (radians per frame at 60fps)
-        const planetSpeeds = {
-            earth: 0.001,
-            mars: 0.00097,
-            jupiter: 0.0041,
-            venus: -0.000004, // Retrograde
-            mercury: 0.000017,
-            saturn: 0.0038
-        };
-        
-        // Cloud rotation speeds (typically 1.2-2x faster than surface)
-        const cloudSpeeds = {
-            earth: 0.0012,     // Earth's clouds move slightly faster
-            mars: 0.0015,      // Mars has fast-moving dust storms
-            jupiter: 0.0055,   // Jupiter's bands move at different speeds
-            venus: -0.000008,  // Venus retrograde, clouds much faster
-            mercury: 0.000025, // Mercury has very thin atmosphere
-            saturn: 0.0050     // Saturn's atmospheric bands
-        };
-        
-        this.rotationSpeed = planetSpeeds[this.currentPlanetType as keyof typeof planetSpeeds] || planetSpeeds.earth;
-        this.cloudRotationSpeed = cloudSpeeds[this.currentPlanetType as keyof typeof cloudSpeeds] || cloudSpeeds.earth;
-    }
-
-    GetPlanetInfo() {
-        return {
-            type: this.currentPlanetType,
-            rotationSpeed: this.rotationSpeed,
-            realTimeRotation: this.realTimeRotation,
-            timeScale: this.timeScale
-        };
     }
 }

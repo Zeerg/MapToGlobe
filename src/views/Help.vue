@@ -484,12 +484,20 @@
                     </div>
                     <div class="bg-gray-800 border border-gray-700 rounded-lg p-6">
                         <h3 class="text-xl font-semibold text-green-400 mb-4">Ring Textures</h3>
+                        <div class="mb-4">
+                            <h4 class="text-lg font-semibold text-blue-400 mb-2">Ring Texture Mapping</h4>
+                            <p class="text-sm text-gray-300 mb-3">Ring textures use a custom shader-based approach for perfect radial mapping. The shader calculates the distance from the ring center and maps it directly to texture coordinates.</p>
+                            <div class="bg-green-900/30 border border-green-700/50 rounded p-3">
+                                <h5 class="font-semibold text-green-300">How it works</h5>
+                                <p class="text-sm text-gray-300">The fragment shader calculates each pixel's distance from the center and maps it to a UV coordinate: <code class="bg-gray-800 px-1 rounded">u = (distance - innerRadius) / (outerRadius - innerRadius)</code>. This creates perfect radial gradients and density bands like Saturn's rings.</p>
+                            </div>
+                        </div>
+                        
                         <ul class="space-y-2 text-gray-300">
-                            <li>• <strong>Format:</strong> Radial density maps (any rectangular ratio)</li>
-                            <li>• <strong>Sampling:</strong> Left/top = inner radius, right/bottom = outer radius</li>
-                            <li>• <strong>Usage:</strong> Represents cross-section from center to edge</li>
-                            <li>• <strong>Perfect for:</strong> Saturn-style ring gaps and density variations</li>
+                            <li>• <strong>File Types:</strong> JPG, PNG, WebP (any rectangular ratio)</li>
+                            <li>• <strong>Size Limit:</strong> Recommended under 10MB</li>
                             <li>• <strong>Transparency:</strong> Use alpha maps for realistic ring structure</li>
+                            <li>• <strong>Mode Selection:</strong> Switch between modes in Ring Textures section</li>
                         </ul>
                     </div>
                 </div>

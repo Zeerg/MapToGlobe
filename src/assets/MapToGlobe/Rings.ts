@@ -34,7 +34,7 @@ export default class Rings {
             segments: 96,
             opacity: 0.8,      // Valid range for sliders
             rotationSpeed: 0.5,
-            color: 0xffffff
+            color: 0xffffff,
         };
 
         this.createRingMesh();
@@ -49,18 +49,12 @@ export default class Rings {
             segments: geometry.parameters?.thetaSegments || 96,
             opacity: (mesh.material as THREE.MeshLambertMaterial).opacity || 1.0,
             rotationSpeed: 0.5,
-            color: 0xffffff
+            color: 0xffffff,
         };
     }
 
     private createRingMesh() {
-        // Remove any existing ring from the parent object first
-        const existingRing = this.parentObject.children.find(child => child.name === "rings");
-        if (existingRing && existingRing !== this.object) {
-            this.parentObject.remove(existingRing);
-        }
-        
-        // Dispose of existing ring if it exists
+        // Clean up existing ring if it exists
         if (this.object) {
             try {
                 // More careful geometry disposal
@@ -137,47 +131,79 @@ export default class Rings {
         geometry.computeBoundingBox();
         geometry.computeBoundingSphere();
         
-        const material = new THREE.MeshLambertMaterial({ 
-            transparent: true, 
-            side: THREE.DoubleSide,
-            opacity: this.currentConfig.opacity,
-            color: this.currentConfig.color || 0xffffff
+        // Create shader material for proper radial texture mapping
+        const material = new THREE.ShaderMaterial({
+            uniforms: {
+                innerRadius: { value: this.currentConfig.innerRadius },
+                outerRadius: { value: this.currentConfig.outerRadius },
+                opacity: { value: this.currentConfig.opacity },
+                color: { value: new THREE.Color(this.currentConfig.color || 0xffffff) },
+                surfaceTexture: { value: null },
+                alphaTexture: { value: null },
+                hasTexture: { value: false },
+                hasAlphaTexture: { value: false }
+            },
+            vertexShader: `
+                varying vec3 vPos;
+                
+                void main() {
+                    vPos = position;
+                    vec3 viewPosition = (modelViewMatrix * vec4(position, 1.0)).xyz;
+                    gl_Position = projectionMatrix * vec4(viewPosition, 1.0);
+                }
+            `,
+            fragmentShader: `
+                uniform float innerRadius;
+                uniform float outerRadius;
+                uniform float opacity;
+                uniform vec3 color;
+                uniform sampler2D surfaceTexture;
+                uniform sampler2D alphaTexture;
+                uniform bool hasTexture;
+                uniform bool hasAlphaTexture;
+
+                varying vec3 vPos;
+
+                void main() {
+                    // Calculate radial distance
+                    float distance = length(vPos);
+                    
+                    // Calculate UV coordinate for radial mapping
+                    float u = (distance - innerRadius) / (outerRadius - innerRadius);
+                    
+                    // Discard fragments outside ring bounds
+                    if (u < 0.0 || u > 1.0) {
+                        discard;
+                    }
+                    
+                    vec2 uv = vec2(u, 0.5); // Use middle of texture vertically
+                    
+                    // Start with base color
+                    vec4 finalColor = vec4(color, opacity);
+                    
+                    // Apply surface texture if available
+                    if (hasTexture) {
+                        vec4 textureColor = texture2D(surfaceTexture, uv);
+                        finalColor.rgb = textureColor.rgb * color;
+                        finalColor.a *= textureColor.a;
+                    }
+                    
+                    // Apply alpha texture if available
+                    if (hasAlphaTexture) {
+                        vec4 alphaColor = texture2D(alphaTexture, uv);
+                        finalColor.a *= alphaColor.r; // Use red channel for alpha
+                    }
+                    
+                    gl_FragColor = finalColor;
+                }
+            `,
+            transparent: true,
+            side: THREE.DoubleSide
         });
         
         const rings = new THREE.Mesh(geometry, material);
         rings.name = "rings";
         rings.receiveShadow = true;
-
-        // Configure UV mapping for RADIAL DENSITY SAMPLING
-        // Texture represents cross-section from inner to outer radius
-        try {
-            const bufferGeometry = geometry as unknown as THREE.BufferGeometry;
-            if (bufferGeometry.attributes && bufferGeometry.attributes.position && bufferGeometry.attributes.uv) {
-                const pos = bufferGeometry.attributes.position;
-                const v3 = new THREE.Vector3();
-                const minRadius = this.currentConfig.innerRadius;
-                const maxRadius = this.currentConfig.outerRadius;
-                
-                for (let i = 0; i < pos.count; i++){
-                    v3.fromBufferAttribute(pos, i);
-                    const distance = v3.length();
-                    
-                    // RADIAL SAMPLING: Map distance to texture coordinate
-                    // 0 = inner radius (left/top of texture)
-                    // 1 = outer radius (right/bottom of texture)
-                    const radialPosition = (distance - minRadius) / (maxRadius - minRadius);
-                    
-                    // Use radial position for BOTH U and V to sample texture consistently
-                    // This treats the texture as a 1D gradient from inner to outer
-                    bufferGeometry.attributes.uv.setXY(i, radialPosition, 0.5);
-                }
-                
-                // Mark UV attribute as needing update
-                bufferGeometry.attributes.uv.needsUpdate = true;
-            }
-        } catch (error) {
-            // Skip UV mapping if there's an error - not critical for functionality
-        }
 
         this.object = rings;
         this.rotationSpeed = this.currentConfig.rotationSpeed;
@@ -195,22 +221,18 @@ export default class Rings {
     SetSurfaceImage(file: File) {
         const loader = new THREE.TextureLoader();
         const fileURL = URL.createObjectURL(file);
-        loader.load(fileURL, (res) => {
-            // For ring textures, we use them as RADIAL DENSITY MAPS
-            // The texture represents the cross-section from inner to outer radius
-            res.wrapS = THREE.ClampToEdgeWrapping;
-            res.wrapT = THREE.ClampToEdgeWrapping;
+        loader.load(fileURL, (texture) => {
+            // Configure texture settings
+            texture.wrapS = THREE.ClampToEdgeWrapping;
+            texture.wrapT = THREE.ClampToEdgeWrapping;
+            texture.generateMipmaps = true;
+            texture.minFilter = THREE.LinearMipmapLinearFilter;
+            texture.magFilter = THREE.LinearFilter;
             
-            // No repeating - we sample the texture radially
-            res.repeat.set(1, 1);
-            
-            // High quality filtering for smooth gradients
-            res.generateMipmaps = true;
-            res.minFilter = THREE.LinearMipmapLinearFilter;
-            res.magFilter = THREE.LinearFilter;
-            
-            const material = this.object.material as THREE.MeshLambertMaterial;
-            material.map = res;
+            // Update shader uniforms
+            const material = this.object.material as THREE.ShaderMaterial;
+            material.uniforms.surfaceTexture.value = texture;
+            material.uniforms.hasTexture.value = true;
             material.needsUpdate = true;
         });
     }
@@ -218,18 +240,18 @@ export default class Rings {
     SetTransparencyImage(file: File) {
         const loader = new THREE.TextureLoader();
         const fileURL = URL.createObjectURL(file);
-        loader.load(fileURL, (res) => {
-            // Transparency map also used as radial density map
-            res.wrapS = THREE.ClampToEdgeWrapping;
-            res.wrapT = THREE.ClampToEdgeWrapping;
-            res.repeat.set(1, 1);
+        loader.load(fileURL, (texture) => {
+            // Configure texture settings
+            texture.wrapS = THREE.ClampToEdgeWrapping;
+            texture.wrapT = THREE.ClampToEdgeWrapping;
+            texture.generateMipmaps = true;
+            texture.minFilter = THREE.LinearMipmapLinearFilter;
+            texture.magFilter = THREE.LinearFilter;
             
-            res.generateMipmaps = true;
-            res.minFilter = THREE.LinearMipmapLinearFilter;
-            res.magFilter = THREE.LinearFilter;
-            
-            const material = this.object.material as THREE.MeshLambertMaterial;
-            material.alphaMap = res;
+            // Update shader uniforms
+            const material = this.object.material as THREE.ShaderMaterial;
+            material.uniforms.alphaTexture.value = texture;
+            material.uniforms.hasAlphaTexture.value = true;
             material.needsUpdate = true;
         });
     }
@@ -298,8 +320,8 @@ export default class Rings {
      */
     SetOpacity(opacity: number) {
         this.currentConfig.opacity = Math.max(0, Math.min(1, opacity));
-        const material = this.object.material as THREE.MeshLambertMaterial;
-        material.opacity = this.currentConfig.opacity;
+        const material = this.object.material as THREE.ShaderMaterial;
+        material.uniforms.opacity.value = this.currentConfig.opacity;
         material.needsUpdate = true;
     }
 
@@ -308,8 +330,8 @@ export default class Rings {
      */
     SetColor(color: number) {
         this.currentConfig.color = color;
-        const material = this.object.material as THREE.MeshLambertMaterial;
-        material.color.setHex(color);
+        const material = this.object.material as THREE.ShaderMaterial;
+        material.uniforms.color.value.setHex(color);
         material.needsUpdate = true;
     }
 
@@ -334,42 +356,27 @@ export default class Rings {
      * Load a predefined ring system type
      */
     LoadRingSystemType(type: RingSystemType) {
-        switch (type) {
-            case 'saturn':
-                this.currentConfig = {
-                    innerRadius: 2.8,
-                    outerRadius: 6.2,
-                    segments: 128,
-                    opacity: 0.8,
-                    rotationSpeed: 0.3,
-                    color: 0xd4af37
-                };
-                break;
-            case 'uranus':
-                this.currentConfig = {
-                    innerRadius: 3.5,
-                    outerRadius: 4.5,
-                    segments: 64,
-                    opacity: 0.6,
-                    rotationSpeed: 0.1,
-                    color: 0x4169e1
-                };
-                break;
-            case 'jupiter':
-                this.currentConfig = {
-                    innerRadius: 2.2,
-                    outerRadius: 3.8,
-                    segments: 96,
-                    opacity: 0.4,
-                    rotationSpeed: 0.8,
-                    color: 0x8b4513
-                };
-                break;
-            case 'custom':
-            default:
-                // Keep current configuration for custom type
-                return;
-        }
+        const presets: Record<RingSystemType, RingConfig> = {
+            saturn: { innerRadius: 2.8, outerRadius: 6.2, segments: 128, opacity: 0.8, rotationSpeed: 0.3, color: 0xffffff },
+            uranus: { innerRadius: 3.5, outerRadius: 4.5, segments: 64, opacity: 0.6, rotationSpeed: 0.1, color: 0xffffff },
+            jupiter: { innerRadius: 2.2, outerRadius: 3.8, segments: 96, opacity: 0.4, rotationSpeed: 0.8, color: 0xffffff },
+            custom: { innerRadius: 1.2, outerRadius: 2.0, segments: 128, opacity: 0.8, rotationSpeed: 1.0, color: 0xffffff }
+        };
+
+        // Define texture presets for each ring system
+        const texturePresets: Record<RingSystemType, { surface?: string; alpha?: string }> = {
+            saturn: { 
+                surface: require('@/assets/images/saturn-rings.png'),
+                alpha: require('@/assets/images/saturn-rings-alpha.png')
+            },
+            uranus: {}, // No textures yet
+            jupiter: {}, // No textures yet
+            custom: {} // No default textures for custom rings
+        };
+
+        // Update current configuration with the preset
+        this.currentConfig = { ...presets[type] };
+        this.rotationSpeed = this.currentConfig.rotationSpeed;
         
         // Store visibility state before creating new mesh
         const wasVisible = this.parentObject.children.some(child => child.name === "rings");
@@ -383,10 +390,41 @@ export default class Rings {
         // Always recreate the ring mesh with new configuration
         this.createRingMesh();
         
+        // Load preset textures if available
+        const texturePreset = texturePresets[type];
+        if (texturePreset.surface) {
+            this.loadPresetTexture(texturePreset.surface, 'surface');
+        }
+        if (texturePreset.alpha) {
+            this.loadPresetTexture(texturePreset.alpha, 'alpha');
+        }
+        
         // If ring was visible, make sure the new ring is also visible
         if (wasVisible) {
             this.parentObject.add(this.object);
         }
+    }
+
+    /**
+     * Load a preset texture from the assets directory
+     */
+    private loadPresetTexture(texturePath: string, type: 'surface' | 'alpha') {
+        const loader = new THREE.TextureLoader();
+        loader.load(texturePath, (texture) => {
+            const material = this.object.material as THREE.ShaderMaterial;
+            
+            if (type === 'surface') {
+                material.uniforms.surfaceTexture.value = texture;
+                material.uniforms.hasTexture.value = true;
+            } else if (type === 'alpha') {
+                material.uniforms.alphaTexture.value = texture;
+                material.uniforms.hasAlphaTexture.value = true;
+            }
+            
+            material.needsUpdate = true;
+        }, undefined, (error) => {
+            console.warn(`Failed to load ring texture: ${texturePath}`, error);
+        });
     }
 
     /**
@@ -413,9 +451,9 @@ export default class Rings {
             let alphaTexture: THREE.Texture | null = null;
             
             if (this.object && this.object.material) {
-                const material = this.object.material as THREE.MeshLambertMaterial;
-                surfaceTexture = material.map;
-                alphaTexture = material.alphaMap;
+                const material = this.object.material as THREE.ShaderMaterial;
+                surfaceTexture = material.uniforms.surfaceTexture.value as THREE.Texture;
+                alphaTexture = material.uniforms.alphaTexture.value as THREE.Texture;
             }
             
             // Remove existing ring if visible
@@ -435,10 +473,16 @@ export default class Rings {
             
             // Reapply textures with updated settings
             if (surfaceTexture) {
-                this.reapplyTextureSettings(surfaceTexture, 'surface');
+                const material = this.object.material as THREE.ShaderMaterial;
+                material.uniforms.surfaceTexture.value = surfaceTexture;
+                material.uniforms.hasTexture.value = true;
+                material.needsUpdate = true;
             }
             if (alphaTexture) {
-                this.reapplyTextureSettings(alphaTexture, 'alpha');
+                const material = this.object.material as THREE.ShaderMaterial;
+                material.uniforms.alphaTexture.value = alphaTexture;
+                material.uniforms.hasAlphaTexture.value = true;
+                material.needsUpdate = true;
             }
             
             // Restore visibility if it was visible before
@@ -454,26 +498,6 @@ export default class Rings {
                 // Failed to recover ring geometry - skip
             }
         }
-    }
-
-    private reapplyTextureSettings(texture: THREE.Texture, type: 'surface' | 'alpha') {
-        // Configure texture as radial density map
-        texture.wrapS = THREE.ClampToEdgeWrapping;
-        texture.wrapT = THREE.ClampToEdgeWrapping;
-        texture.repeat.set(1, 1);
-        
-        // High quality filtering for smooth gradients
-        texture.generateMipmaps = true;
-        texture.minFilter = THREE.LinearMipmapLinearFilter;
-        texture.magFilter = THREE.LinearFilter;
-        
-        const material = this.object.material as THREE.MeshLambertMaterial;
-        if (type === 'surface') {
-            material.map = texture;
-        } else {
-            material.alphaMap = texture;
-        }
-        material.needsUpdate = true;
     }
 
     /**

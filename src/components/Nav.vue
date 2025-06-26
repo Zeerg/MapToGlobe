@@ -383,14 +383,14 @@
                                         <div>
                                             <label class="block text-xs text-gray-400 mb-2">
                                                 Size: {{ menu.moon.scale.toFixed(2) }}
-                                                <span class="text-gray-500">({{ menu.moon.scale < 0.5 ? 'Tiny' : menu.moon.scale < 1 ? 'Small' : menu.moon.scale < 1.5 ? 'Normal' : menu.moon.scale < 2 ? 'Large' : 'Huge' }})</span>
+                                                <span class="text-gray-500">({{ getMoonSizeDescription(menu.moon.scale) }})</span>
                                             </label>
                                             <vue-slider v-model="menu.moon.scale" :min="0.1" :max="3.0" :interval="0.1" :tooltip="'none'" @change="moonScale"></vue-slider>
                                         </div>
                                         <div>
                                             <label class="block text-xs text-gray-400 mb-2">
                                                 Distance: {{ menu.moon.distance.toFixed(1) }}
-                                                <span class="text-gray-500">({{ menu.moon.distance < 2 ? 'Very Close' : menu.moon.distance < 4 ? 'Close' : menu.moon.distance < 8 ? 'Normal' : menu.moon.distance < 15 ? 'Far' : 'Very Far' }})</span>
+                                                <span class="text-gray-500">({{ getMoonDistanceDescription(menu.moon.distance) }})</span>
                                             </label>
                                             <vue-slider v-model="menu.moon.distance" :min="1.5" :max="20" :interval="0.5" :tooltip="'none'" @change="moonDistance"></vue-slider>
                                         </div>
@@ -413,6 +413,27 @@
                                                     Load Moon Texture
                                                 </span>
                                             </label>
+                                        </div>
+                                        
+                                        <!-- Legacy Moon Color -->
+                                        <div>
+                                            <label class="block text-xs text-gray-400 mb-2">Moon Color</label>
+                                            <div class="flex items-center space-x-2">
+                                                <input 
+                                                    type="color" 
+                                                    v-model="menu.moon.color" 
+                                                    @change="updateLegacyMoonColor"
+                                                    class="w-12 h-8 rounded border border-gray-600 bg-gray-700 cursor-pointer"
+                                                    title="Select moon color"
+                                                />
+                                                <span class="text-xs text-gray-400">{{ menu.moon.color }}</span>
+                                                <button 
+                                                    @click="resetLegacyMoonColor" 
+                                                    class="px-2 py-1 text-xs text-gray-300 bg-gray-600 hover:bg-gray-500 rounded transition-colors"
+                                                    title="Reset to default">
+                                                    Reset
+                                                </button>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -589,6 +610,27 @@
                                                         Custom Texture
                                                     </span>
                                                 </label>
+                                            </div>
+                                            
+                                            <!-- Individual Moon Color -->
+                                            <div>
+                                                <label class="block text-xs text-gray-400 mb-1">Moon Color</label>
+                                                <div class="flex items-center space-x-2">
+                                                    <input 
+                                                        type="color" 
+                                                        :value="getMoonColor(moon.id)" 
+                                                        @change="(event) => updateMoonColor(moon.id, event)"
+                                                        class="w-10 h-6 rounded border border-gray-600 bg-gray-700 cursor-pointer"
+                                                        :title="`Select color for ${moon.name}`"
+                                                    />
+                                                    <span class="text-xs text-gray-400">{{ getMoonColor(moon.id) }}</span>
+                                                    <button 
+                                                        @click="resetMoonColor(moon.id)" 
+                                                        class="px-1 py-0.5 text-xs text-gray-300 bg-gray-600 hover:bg-gray-500 rounded transition-colors"
+                                                        title="Reset to default">
+                                                        Reset
+                                                    </button>
+                                                </div>
                                             </div>
                                             
                                             <!-- 3D Transform Controls -->
@@ -810,6 +852,25 @@
                                             <label class="block text-xs text-gray-400 mb-1">Rotation Speed: {{ menu.rings.rotationSpeed.toFixed(1) }}</label>
                                             <vue-slider v-model="menu.rings.rotationSpeed" :min="0" :max="3" :interval="0.1" :tooltip="'none'" @change="updateRingRotationSpeed" @drag-end="saveRingState"></vue-slider>
                                         </div>
+                                        <div>
+                                            <label class="block text-xs text-gray-400 mb-2">Ring Color</label>
+                                            <div class="flex items-center space-x-2">
+                                                <input 
+                                                    type="color" 
+                                                    v-model="menu.rings.color" 
+                                                    @change="updateRingColor"
+                                                    class="w-12 h-8 rounded border border-gray-600 bg-gray-700 cursor-pointer"
+                                                    title="Select ring color"
+                                                />
+                                                <span class="text-xs text-gray-400">{{ menu.rings.color }}</span>
+                                                <button 
+                                                    @click="resetRingColor" 
+                                                    class="px-2 py-1 text-xs text-gray-300 bg-gray-600 hover:bg-gray-500 rounded transition-colors"
+                                                    title="Reset to white">
+                                                    Reset
+                                                </button>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
 
@@ -827,7 +888,10 @@
                                             <path d="M9 5L16 12L9 19" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
                                         </svg>
                                     </button>
-                                    <div v-show="menu.open.ringsTextures" class="p-3 bg-gray-800/30 space-y-2">
+                                    <div v-show="menu.open.ringsTextures" class="p-3 bg-gray-800/30 space-y-3">
+
+
+                                        <!-- Texture Upload -->
                                         <div>
                                             <input type="file" class="hidden" id="ringsSurfaceSelect" accept="image/*" @change="setRingsImage">
                                             <label for="ringsSurfaceSelect" class="cursor-pointer py-2 px-3 block text-sm text-gray-200 hover:bg-amber-500/20 hover:text-amber-300 rounded transition-colors">
@@ -1238,7 +1302,8 @@ export default defineComponent({
                     controls: false,
                     scale: 1,
                     distance: 3,
-                    rotationSpeed: 0.0
+                    rotationSpeed: 0.0,
+                    color: '#cccccc'  // Default moon color
                 },
                 light: {
                     sunIntensity: 0.4,
@@ -1250,7 +1315,8 @@ export default defineComponent({
                     outerRadius: 4.0,  // Ensure within slider bounds (1-12) 
                     thickness: 2.0,    // Ensure within slider bounds (0.2-8)
                     opacity: 0.8,      // Already within bounds (0.1-1)
-                    rotationSpeed: 0.5 // Already within bounds (0-3)
+                    rotationSpeed: 0.5, // Already within bounds (0-3)
+                    color: '#ffffff'    // Default white color
                 },
                 background: {
                     type: 'black' as 'black' | 'transparent' | 'color' | 'starfield' | 'custom',
@@ -1284,6 +1350,7 @@ export default defineComponent({
                     orbitSpeed: number;
                     rotationSpeed: number;
                     retrograde: number;
+                    color?: string;
                 }>
             },
             customMoonCounter: 1,
@@ -1489,6 +1556,22 @@ export default defineComponent({
             return 'Ultra Fast';
         },
         
+        getMoonSizeDescription(scale: number): string {
+            if (scale < 0.5) return 'Tiny';
+            if (scale < 1) return 'Small';
+            if (scale < 1.5) return 'Normal';
+            if (scale < 2) return 'Large';
+            return 'Huge';
+        },
+        
+        getMoonDistanceDescription(distance: number): string {
+            if (distance < 2) return 'Very Close';
+            if (distance < 4) return 'Close';
+            if (distance < 8) return 'Normal';
+            if (distance < 15) return 'Far';
+            return 'Very Far';
+        },
+        
         // Planet Shape Methods
         updatePlanetShape() {
             this.maptoglobe.SetPlanetShape(
@@ -1554,6 +1637,9 @@ export default defineComponent({
                         this.maptoglobe.SetRingOuterRadius(this.menu.rings.outerRadius);
                         this.maptoglobe.SetRingOpacity(this.menu.rings.opacity);
                         this.maptoglobe.SetRingRotationSpeed(this.menu.rings.rotationSpeed);
+                        // Apply ring color
+                        const numColor = parseInt(this.menu.rings.color.replace('#', ''), 16);
+                        this.maptoglobe.SetRingColor(numColor);
                     } else {
                         // For preset types, still apply custom opacity and rotation if they were modified
                         this.maptoglobe.SetRingOpacity(this.menu.rings.opacity);
@@ -1641,6 +1727,8 @@ export default defineComponent({
                     this.menu.rings.thickness = config.outerRadius - config.innerRadius;
                     this.menu.rings.opacity = config.opacity;
                     this.menu.rings.rotationSpeed = config.rotationSpeed;
+                    // Update color in UI (convert from hex number to hex string)
+                    this.menu.rings.color = '#' + (config.color || 0xffffff).toString(16).padStart(6, '0');
                 }
             }
             
@@ -1693,6 +1781,23 @@ export default defineComponent({
             this.maptoglobe.SetRingRotationSpeed(value);
             this.saveCurrentState();
         },
+        
+        updateRingColor(event: Event) {
+            const hexColor = (event.target as HTMLInputElement).value;
+            this.menu.rings.color = hexColor;
+            // Convert hex to integer for Three.js
+            const numColor = parseInt(hexColor.replace('#', ''), 16);
+            this.maptoglobe.SetRingColor(numColor);
+            this.saveCurrentState();
+        },
+        
+        resetRingColor() {
+            this.menu.rings.color = '#ffffff';
+            this.maptoglobe.SetRingColor(0xffffff);
+            this.saveCurrentState();
+        },
+        
+
         
         debounceRingUpdate(callback: () => void) {
             if (this.ringUpdateTimeout) {
@@ -1819,6 +1924,21 @@ export default defineComponent({
             this.maptoglobe.SetMoonRotationSpeed(value);
             this.saveCurrentState();
         },
+        
+        updateLegacyMoonColor(event: Event) {
+            const hexColor = (event.target as HTMLInputElement).value;
+            this.menu.moon.color = hexColor;
+            // Convert hex to integer for Three.js
+            const numColor = parseInt(hexColor.replace('#', ''), 16);
+            this.maptoglobe.SetLegacyMoonColor(numColor);
+            this.saveCurrentState();
+        },
+        
+        resetLegacyMoonColor() {
+            this.menu.moon.color = '#cccccc';
+            this.maptoglobe.SetLegacyMoonColor(0xcccccc);
+            this.saveCurrentState();
+        },
         async setLegacyMoonImage(event: Event) {
             const files = (event.target as HTMLInputElement).files;
             if (files !== null && this.validateImageFile(files[0])) {
@@ -1860,6 +1980,9 @@ export default defineComponent({
         },
         
         loadMoonPreset(presetName: 'earth' | 'jupiter' | 'saturn' | 'custom') {
+            // First deactivate all transform controls
+            this.deactivateAllMoonTransformControls();
+            
             this.maptoglobe.LoadMoonPreset(presetName);
             this.updateMoonSystemInfo();
             
@@ -1896,6 +2019,9 @@ export default defineComponent({
         },
         
         clearMoonSystem() {
+            // First deactivate all transform controls
+            this.deactivateAllMoonTransformControls();
+            
             this.maptoglobe.ClearMoonSystem();
             // Clear all moon controls visibility states
             this.moonControlsVisible = {};
@@ -1957,6 +2083,42 @@ export default defineComponent({
         updateMoonOrbitDirection(moonId: string, retrograde: number) {
             this.maptoglobe.UpdateMoonRetrograde(moonId, retrograde);
             this.updateMoonSystemInfo();
+        },
+        
+        getMoonColor(moonId: string): string {
+            const moon = this.moonSystemInfo.moons.find(m => m.id === moonId);
+            if (moon && moon.color) {
+                return moon.color;
+            }
+            return '#cccccc'; // Default color
+        },
+        
+        updateMoonColor(moonId: string, event: Event) {
+            const hexColor = (event.target as HTMLInputElement).value;
+            // Convert hex to integer for Three.js
+            const numColor = parseInt(hexColor.replace('#', ''), 16);
+            this.maptoglobe.UpdateMoonColor(moonId, numColor);
+            
+            // Update the moon info with the new color
+            const moon = this.moonSystemInfo.moons.find(m => m.id === moonId);
+            if (moon) {
+                moon.color = hexColor;
+            }
+            
+            this.saveCurrentState();
+        },
+        
+        resetMoonColor(moonId: string) {
+            const defaultColor = '#cccccc';
+            this.maptoglobe.UpdateMoonColor(moonId, 0xcccccc);
+            
+            // Update the moon info with the default color
+            const moon = this.moonSystemInfo.moons.find(m => m.id === moonId);
+            if (moon) {
+                moon.color = defaultColor;
+            }
+            
+            this.saveCurrentState();
         },
         
         getOrbitDirection(retrograde: number): string {
@@ -2059,7 +2221,8 @@ export default defineComponent({
                         visible: this.moonIsVisible,
                         scale: this.menu.moon.scale,
                         distance: this.menu.moon.distance,
-                        rotationSpeed: this.menu.moon.rotationSpeed
+                        rotationSpeed: this.menu.moon.rotationSpeed,
+                        color: this.menu.moon.color
                     },
                     planet: {
                         shininess: this.menu.planet.shininess,
@@ -2081,6 +2244,7 @@ export default defineComponent({
                         thickness: this.menu.rings.thickness,
                         opacity: this.menu.rings.opacity,
                         rotationSpeed: this.menu.rings.rotationSpeed,
+
                         // Save 3D transformation state if rings exist
                         transform: this.ringsVisible && this.maptoglobe.rings.object ? {
                             position: {
@@ -2158,9 +2322,13 @@ export default defineComponent({
                     this.menu.moon.scale = stored.legacyMoon.scale;
                     this.menu.moon.distance = stored.legacyMoon.distance;
                     this.menu.moon.rotationSpeed = stored.legacyMoon.rotationSpeed || 0.0;
+                    this.menu.moon.color = stored.legacyMoon.color || '#cccccc';
                     this.maptoglobe.moon.Scale(stored.legacyMoon.scale);
                     this.maptoglobe.moon.Distance(stored.legacyMoon.distance);
                     this.maptoglobe.SetMoonRotationSpeed(stored.legacyMoon.rotationSpeed || 0.0);
+                    // Apply moon color
+                    const numColor = parseInt(this.menu.moon.color.replace('#', ''), 16);
+                    this.maptoglobe.SetLegacyMoonColor(numColor);
                 }
                 
                 // Restore planet settings
@@ -2188,6 +2356,7 @@ export default defineComponent({
                     this.menu.rings.thickness = Math.max(0.2, Math.min(8, stored.rings.thickness || 2));
                     this.menu.rings.opacity = Math.max(0.1, Math.min(1, stored.rings.opacity || 0.8));
                     this.menu.rings.rotationSpeed = Math.max(0, Math.min(3, stored.rings.rotationSpeed || 0.5));
+                    this.menu.rings.color = stored.rings.color || '#ffffff';
                 }
                 
                 // Restore rings visibility and apply configuration
@@ -2208,6 +2377,8 @@ export default defineComponent({
                             this.maptoglobe.SetRingOpacity(this.menu.rings.opacity);
                             this.maptoglobe.SetRingRotationSpeed(this.menu.rings.rotationSpeed);
                         }
+                        
+
                         
                         // Restore 3D transformation if it was saved
                         if (stored.rings.transform && this.maptoglobe.rings.object) {
@@ -2377,6 +2548,7 @@ export default defineComponent({
                 this.menu.moon.scale = 1;
                 this.menu.moon.distance = 3;
                 this.menu.moon.rotationSpeed = 0.0;
+                this.menu.moon.color = '#cccccc';
                 this.menu.light.sunIntensity = 0.4;
                 this.menu.light.ambientIntensity = 0.6;
                 
@@ -2387,6 +2559,8 @@ export default defineComponent({
                 this.menu.rings.thickness = 2.0;     // Within slider bounds (0.2-8)
                 this.menu.rings.opacity = 0.8;       // Within slider bounds (0.1-1)
                 this.menu.rings.rotationSpeed = 0.5; // Within slider bounds (0-3)
+                this.menu.rings.color = '#ffffff';   // Default white color
+
                 
                 // Reset background to defaults
                 this.menu.background.type = 'black';
@@ -2470,7 +2644,15 @@ export default defineComponent({
         },
         toggleMoonControls(event: Event, moonId: string, control: 'position' | 'rotation' | 'scale') {
             const property = `moon${control.charAt(0).toUpperCase() + control.slice(1)}ControlsVisible` as 'moonPositionControlsVisible' | 'moonRotationControlsVisible' | 'moonScaleControlsVisible';
-            this[property][moonId] = !this[property][moonId];
+            const isActivating = !this[property][moonId];
+            
+            // If activating a control, first deactivate ALL other transform controls
+            if (isActivating) {
+                this.deactivateAllMoonTransformControls();
+            }
+            
+            // Now toggle the specific control
+            this[property][moonId] = isActivating;
             
             // Toggle the visual transform controls
             const moon = this.maptoglobe.GetMoonById(moonId);
@@ -2479,20 +2661,34 @@ export default defineComponent({
             const moonInfo = this.moonSystemInfo.moons.find(m => m.id === moonId);
             const isMoonVisible = moonInfo?.visible === true;
             
+            // Debug logging
+            // eslint-disable-next-line no-console
+            console.log('Toggle moon controls:', { moonId, control, moon: !!moon, isMoonVisible, isActivating });
+            
             if (moon && moon.object && isMoonVisible) {
-                if (this[property][moonId]) {
+                if (isActivating) {
                     // Set the transform control mode and attach to moon
                     this.maptoglobe.SetTransformMode(control);
                     this.maptoglobe.ToggleControls(moon.object);
+                    // eslint-disable-next-line no-console
+                    console.log('Attached controls to moon:', moonId, control);
                 } else {
                     // Detach transform controls
                     this.maptoglobe.ToggleControls(moon.object);
+                    // eslint-disable-next-line no-console
+                    console.log('Detached controls from moon:', moonId, control);
                 }
             } else {
                 // If moon is not visible or doesn't exist, ensure controls are detached
                 // and reset the UI state
                 this[property][moonId] = false;
-                this.maptoglobe.ToggleControls(null as any); // This will trigger detach in ToggleControls
+                // eslint-disable-next-line no-console
+                console.warn('Moon not available for controls:', { moonId, moon: !!moon, isMoonVisible });
+                
+                // Try to detach any existing controls
+                if (this.maptoglobe.instance.controls.object) {
+                    this.maptoglobe.instance.controls.detach();
+                }
             }
         },
         
@@ -2511,6 +2707,25 @@ export default defineComponent({
                 if (isCurrentlyControlled) {
                     this.maptoglobe.ToggleControls(moon.object); // This will detach
                 }
+            }
+        },
+        
+        // Helper method to deactivate ALL transform controls across all moons
+        deactivateAllMoonTransformControls() {
+            // Detach any currently active transform controls
+            if (this.maptoglobe.instance.controls.object) {
+                this.maptoglobe.instance.controls.detach();
+            }
+            
+            // Reset all UI states for all moons
+            for (const moonId of Object.keys(this.moonPositionControlsVisible)) {
+                this.moonPositionControlsVisible[moonId] = false;
+            }
+            for (const moonId of Object.keys(this.moonRotationControlsVisible)) {
+                this.moonRotationControlsVisible[moonId] = false;
+            }
+            for (const moonId of Object.keys(this.moonScaleControlsVisible)) {
+                this.moonScaleControlsVisible[moonId] = false;
             }
         }
     }

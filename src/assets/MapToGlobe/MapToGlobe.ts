@@ -106,6 +106,12 @@ export default class MapToGlobe {
         return this.moon.GetRotationSpeed();
     }
 
+    SetLegacyMoonColor(color: number) {
+        const material = this.moon.moon.material as THREE.MeshPhongMaterial;
+        material.color.setHex(color);
+        material.needsUpdate = true;
+    }
+
     ToggleRings() {
         this.rings.Toggle();
     }
@@ -159,6 +165,8 @@ export default class MapToGlobe {
         return Rings.GetAvailableRingTypes();
     }
 
+
+
     SetBGBlack() {
         this.instance.SetBGBlack();
     }
@@ -180,8 +188,8 @@ export default class MapToGlobe {
     }
 
     ToggleControls(object: THREE.Mesh) {
-        // Validate that the object exists and is part of the scene graph
-        if (!object || !this.isObjectInScene(object)) {
+        // Validate that the object exists
+        if (!object) {
             // If object is invalid, just detach any existing controls
             if (this.instance.controls.object) {
                 this.instance.controls.detach();
@@ -189,13 +197,26 @@ export default class MapToGlobe {
             return;
         }
 
+        // Additional validation for scene graph membership (with debug logging)
+        const isInScene = this.isObjectInScene(object);
+        if (!isInScene) {
+            // eslint-disable-next-line no-console
+            console.warn('Object not in scene graph, attempting to attach anyway:', object.name || 'unnamed');
+        }
+
         if (object === this.instance.controls.object) {
             this.instance.controls.detach();
+            // eslint-disable-next-line no-console
+            console.log('Detached transform controls from:', object.name || 'unnamed');
         } else if (object !== this.instance.controls.object && this.instance.controls.visible) {
             this.instance.controls.detach();
             this.instance.controls.attach(object);
+            // eslint-disable-next-line no-console
+            console.log('Switched transform controls to:', object.name || 'unnamed');
         } else {
             this.instance.controls.attach(object);
+            // eslint-disable-next-line no-console
+            console.log('Attached transform controls to:', object.name || 'unnamed');
         }
     }
 
@@ -208,7 +229,16 @@ export default class MapToGlobe {
             }
             current = current.parent;
         }
-        return false;
+        
+        // Also check if the object can be found by traversing from the scene
+        let found = false;
+        this.instance.scene.traverse((child) => {
+            if (child === object) {
+                found = true;
+            }
+        });
+        
+        return found;
     }
 
     // Set up event listener for ring transform changes
@@ -397,6 +427,13 @@ export default class MapToGlobe {
         }
     }
 
+    UpdateMoonColor(moonId: string, color: number): void {
+        const moon = this.moonSystem.getMoon(moonId);
+        if (moon) {
+            moon.setColor(color);
+        }
+    }
+
     /**
      * Rename a moon in the system
      */
@@ -512,7 +549,8 @@ export default class MapToGlobe {
                 distance: moon.config.distance,
                 orbitSpeed: moon.config.orbitSpeed,
                 rotationSpeed: moon.config.rotationSpeed,
-                retrograde: moon.config.retrograde
+                retrograde: moon.config.retrograde,
+                color: moon.config.color ? '#' + moon.config.color.toString(16).padStart(6, '0') : '#cccccc'
             }))
         };
     }

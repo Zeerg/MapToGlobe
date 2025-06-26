@@ -35,6 +35,7 @@ export interface StoredAppState {
         scale: number;
         distance: number;
         rotationSpeed: number;
+        color?: string;
     };
     
     // Planet settings
@@ -62,6 +63,7 @@ export interface StoredAppState {
         thickness: number;
         opacity: number;
         rotationSpeed: number;
+        color?: string;
         // 3D transformation state for visual helper controls
         transform?: {
             position: { x: number; y: number; z: number };
@@ -180,7 +182,8 @@ export class StorageManager {
                 visible: false,
                 scale: 1,
                 distance: 3,
-                rotationSpeed: 0.0
+                rotationSpeed: 0.0,
+                color: '#cccccc'
             },
             
             planet: {
@@ -204,7 +207,8 @@ export class StorageManager {
                 outerRadius: 5,
                 thickness: 2,
                 opacity: 0.8,
-                rotationSpeed: 0.5
+                rotationSpeed: 0.5,
+                color: '#ffffff'
             },
             
             lighting: {

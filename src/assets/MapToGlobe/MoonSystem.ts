@@ -139,6 +139,13 @@ export class Moon {
         this.config.retrograde = retrograde;
     }
 
+    public setColor(color: number): void {
+        this.config.color = color;
+        const material = this.mesh.material as THREE.MeshPhongMaterial;
+        material.color.setHex(color);
+        material.needsUpdate = true;
+    }
+
     // 3D Transform methods
     public setPosition(x: number, y: number, z: number): void {
         if (!this.config.transform) {
